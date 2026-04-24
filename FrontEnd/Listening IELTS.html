@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Listening IELTS</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ── LIGHT THEME ── */
+:root,[data-theme="light"]{
+  --blue:#1A6FD4;--blue-dark:#0E4FA0;--blue-light:#E8F1FC;
+  --accent:#F5A623;--accent-light:#FEF3DC;
+  --bg:#F4F6FB;--surface:#FFFFFF;--border:#E2E8F2;
+  --text-primary:#111827;--text-secondary:#6B7A99;--text-muted:#A0AABF;
+  --radius:14px;--radius-sm:8px;
+  --shadow:0 8px 28px rgba(26,111,212,.10);
+  --modal-overlay:rgba(15,23,42,.45);
+}
+
+/* ── DARK THEME ── */
+[data-theme="dark"]{
+  --blue:#4A9EF0;--blue-dark:#2A7FD4;--blue-light:#1A2E44;
+  --accent:#F5A623;--accent-light:#3A2800;
+  --bg:#0F1623;--surface:#1A2232;--border:#2A3550;
+  --text-primary:#E8EDF5;--text-secondary:#8A9BBB;--text-muted:#4A5A7A;
+  --shadow:0 8px 28px rgba(0,0,0,.35);
+  --modal-overlay:rgba(0,0,0,.65);
+}
+
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text-primary);min-height:100vh;transition:background .3s,color .3s}
+
+/* ── NAV ── */
+nav{background:var(--surface);border-bottom:1px solid var(--border);height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;position:sticky;top:0;z-index:100;transition:background .3s,border-color .3s}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer}
+.logo-mark{width:36px;height:36px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;color:white;font-size:18px}
+.logo-text{font-family:'Sora',sans-serif;font-size:17px;font-weight:700;color:var(--text-primary)}
+.logo-text span{color:var(--blue)}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-links a{font-size:14px;color:var(--text-secondary);text-decoration:none;padding:6px 14px;border-radius:var(--radius-sm);transition:background .15s,color .15s;cursor:pointer}
+.nav-links a:hover{background:var(--bg);color:var(--text-primary)}
+.nav-links a.active{color:var(--blue);font-weight:500;background:var(--blue-light)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.btn-login{font-size:14px;color:var(--text-secondary);background:none;border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 16px;cursor:pointer;font-family:inherit;transition:border-color .15s,color .15s}
+.btn-login:hover{border-color:var(--blue);color:var(--blue)}
+.btn-register{font-size:14px;font-weight:500;color:white;background:var(--blue);border:none;border-radius:var(--radius-sm);padding:7px 18px;cursor:pointer;font-family:inherit}
+.btn-register:hover{background:var(--blue-dark)}
+
+/* ── THEME TOGGLE BUTTON ── */
+.btn-theme{
+  width:36px;height:36px;border-radius:8px;
+  background:var(--bg);border:1px solid var(--border);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:16px;transition:all .2s;position:relative;
+  flex-shrink:0;
+}
+.btn-theme:hover{border-color:var(--blue);background:var(--blue-light)}
+
+/* ── THEME DROPDOWN ── */
+.theme-dropdown-wrap{position:relative}
+.theme-dropdown{
+  display:none;position:absolute;top:calc(100% + 8px);right:0;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:6px;min-width:130px;
+  box-shadow:0 8px 24px rgba(0,0,0,.12);
+  z-index:200;animation:dropIn .15s ease;
+}
+.theme-dropdown.open{display:block}
+@keyframes dropIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.theme-option{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 10px;border-radius:6px;
+  font-size:13px;font-weight:500;color:var(--text-secondary);
+  cursor:pointer;transition:background .12s,color .12s;
+}
+.theme-option:hover{background:var(--bg);color:var(--text-primary)}
+.theme-option.active{color:var(--blue);background:var(--blue-light)}
+.theme-option span{font-size:15px}
+
+/* ── PAGES ── */
+.page{display:none}.page.active{display:block}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#0E4FA0 0%,#1A6FD4 60%,#3B8FE8 100%);padding:3rem 2.5rem 2.5rem;text-align:center}
+.hero h1{font-family:'Sora',sans-serif;font-size:28px;font-weight:700;color:white;margin-bottom:8px}
+.hero p{font-size:15px;color:rgba(255,255,255,.75);margin-bottom:1.5rem}
+.search-bar{max-width:480px;margin:0 auto;display:flex;background:white;border-radius:10px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.15)}
+.search-bar input{flex:1;border:none;outline:none;font-family:inherit;font-size:14px;padding:12px 16px;color:#111827}
+.search-bar input::placeholder{color:#A0AABF}
+.search-bar button{background:var(--accent);border:none;padding:0 18px;cursor:pointer;color:white;font-size:16px}
+.stats{display:flex;justify-content:center;gap:2.5rem;margin-top:1.5rem}
+.stat{text-align:center}
+.stat-num{font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:white}
+.stat-label{font-size:12px;color:rgba(255,255,255,.65);margin-top:2px}
+
+/* ── MAIN ── */
+main{padding:2rem 2.5rem 3rem;max-width:1200px;margin:0 auto}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.section-title{font-family:'Sora',sans-serif;font-size:20px;font-weight:700}
+.view-all{font-size:13px;color:var(--blue);text-decoration:none;font-weight:500}
+.filter-tabs{display:flex;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap}
+.tab{font-size:13px;font-weight:500;padding:6px 16px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-secondary);cursor:pointer;transition:all .15s}
+.tab:hover{border-color:var(--blue);color:var(--blue)}
+.tab.active{background:var(--blue);color:white;border-color:var(--blue)}
+.topics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:900px){.topics-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.topics-grid{grid-template-columns:1fr}}
+
+/* ── CARDS ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;display:flex;align-items:center;gap:14px;cursor:pointer;text-decoration:none;transition:transform .18s,box-shadow .18s,border-color .18s;position:relative;overflow:hidden;animation:fadeUp .4s ease both}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:#C4D8F7}
+[data-theme="dark"] .card:hover{border-color:#3A5A8A}
+.card.featured{border:2px solid var(--blue);background:linear-gradient(135deg,var(--blue-light),var(--surface))}
+.card.featured::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),#5BA8F5)}
+.card-thumb{width:60px;height:60px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:26px}
+.card-body{flex:1;min-width:0}
+.card-top{display:flex;align-items:center;gap:6px;margin-bottom:4px;flex-wrap:wrap}
+.card-title{font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:var(--blue);line-height:1.3}
+.badge-video{font-size:10px;font-weight:600;background:var(--accent-light);color:#8B5E00;padding:2px 7px;border-radius:4px}
+[data-theme="dark"] .badge-video{color:#F5A623}
+.badge-featured{font-size:10px;font-weight:600;background:var(--blue);color:white;padding:2px 7px;border-radius:4px}
+.card-meta{font-size:12px;color:var(--text-muted);line-height:1.7}
+.card-meta strong{color:var(--text-secondary);font-weight:500}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.card:nth-child(1){animation-delay:.05s}.card:nth-child(2){animation-delay:.08s}.card:nth-child(3){animation-delay:.11s}
+.card:nth-child(4){animation-delay:.14s}.card:nth-child(5){animation-delay:.17s}.card:nth-child(6){animation-delay:.20s}
+.card:nth-child(7){animation-delay:.23s}.card:nth-child(8){animation-delay:.26s}.card:nth-child(9){animation-delay:.29s}
+.card:nth-child(10){animation-delay:.32s}.card:nth-child(11){animation-delay:.35s}.card:nth-child(12){animation-delay:.38s}
+
+/* ── TOP USERS ── */
+.top-users-wrap{max-width:1100px;margin:0 auto;padding:2rem 2.5rem 3rem}
+.top-users-wrap h2{font-family:'Sora',sans-serif;font-size:26px;font-weight:700;margin-bottom:1.5rem}
+.leaderboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:700px){.leaderboard-grid{grid-template-columns:1fr}}
+.lb-card{background:var(--surface);border-radius:20px;border:1px solid var(--border);padding:1.5rem;transition:background .3s,border-color .3s}
+.lb-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.25rem}
+.lb-title{font-size:17px;font-weight:600}
+.lb-sub{font-size:13px;color:var(--text-secondary);margin-top:3px}
+.lb-sub span{color:#EA580C;font-weight:500}
+.lb-badge{font-size:11px;padding:4px 12px;border-radius:20px;font-weight:600}
+.badge-orange{background:#FFF7ED;color:#C2410C}
+[data-theme="dark"] .badge-orange{background:#3A1500;color:#FB923C}
+.badge-blue-lb{background:#EFF6FF;color:#1D4ED8}
+[data-theme="dark"] .badge-blue-lb{background:#0A1E3A;color:#60A5FA}
+.lb-table{width:100%;border-collapse:collapse}
+.lb-table th{font-size:12px;color:var(--text-secondary);text-align:left;padding:10px 0;border-bottom:1px solid var(--border);font-weight:500}
+.lb-table th:last-child{text-align:right}
+.lb-table td{padding:12px 0;border-bottom:1px solid var(--bg);vertical-align:middle}
+.lb-table td:last-child{text-align:right;font-weight:500;font-size:14px}
+.lb-table tr:last-child td{border-bottom:none}
+.user-cell{display:flex;align-items:center;gap:10px}
+.user-avatar{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-size:11px;font-weight:700;flex-shrink:0}
+.rank-num{font-size:14px;font-weight:700;width:24px}
+.rank-gold{color:#D97706}.rank-silver{color:#6B7A99}.rank-bronze{color:#92400E}.rank-normal{color:var(--text-secondary)}
+
+/* ── EXERCISE PAGE ── */
+.exercise-wrap{max-width:860px;margin:0 auto;padding:2rem 2rem 3rem}
+.breadcrumb{font-size:13px;color:var(--text-secondary);margin-bottom:1.25rem;display:flex;align-items:center;gap:6px}
+.breadcrumb a{color:var(--blue);text-decoration:none;cursor:pointer}
+.breadcrumb a:hover{text-decoration:underline}
+.breadcrumb span{color:var(--text-muted)}
+.exercise-wrap h1{font-family:'Sora',sans-serif;font-size:22px;font-weight:700;color:var(--text-primary);margin-bottom:1.5rem}
+
+.section-item{background:var(--surface);padding:14px 18px;border-radius:10px;margin-bottom:8px;cursor:pointer;border:1px solid var(--border);font-size:15px;font-weight:500;color:var(--text-primary);display:flex;align-items:center;justify-content:space-between;transition:background .15s}
+.section-item:hover{background:var(--blue-light)}
+.section-item .arrow{color:var(--text-muted);font-size:12px;transition:transform .2s}
+.section-item.open .arrow{transform:rotate(90deg)}
+
+.section-detail{display:none;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:10px;transition:background .3s,border-color .3s}
+.section-detail.open{display:block}
+.section-detail audio{width:100%;margin:0 0 14px}
+
+.yt-wrap{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden;margin-bottom:14px}
+.yt-wrap iframe{width:100%;height:100%;border:none;display:block}
+
+.yt-input-row{display:flex;gap:8px;margin-bottom:14px;align-items:center}
+.yt-input-row input{flex:1;padding:9px 13px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:13px;outline:none;transition:border-color .15s;background:var(--bg);color:var(--text-primary)}
+.yt-input-row input:focus{border-color:var(--blue)}
+.yt-input-row button{padding:9px 16px;background:var(--blue);color:white;border:none;border-radius:var(--radius-sm);font-size:13px;cursor:pointer;font-family:inherit;white-space:nowrap}
+.yt-input-row button:hover{background:var(--blue-dark)}
+
+.section-detail textarea{width:100%;height:90px;padding:10px 12px;border-radius:8px;border:1px solid var(--border);font-family:inherit;font-size:14px;resize:vertical;outline:none;transition:border-color .15s;background:var(--bg);color:var(--text-primary)}
+.section-detail textarea:focus{border-color:var(--blue)}
+.btn-check{margin-top:10px;padding:8px 20px;border-radius:var(--radius-sm);border:none;cursor:pointer;font-family:inherit;font-size:14px;font-weight:500;background:var(--blue);color:white}
+.btn-check:hover{background:var(--blue-dark)}
+.btn-skip{padding:8px 18px;border-radius:var(--radius-sm);border:none;cursor:pointer;font-family:inherit;font-size:14px;background:var(--border);color:var(--text-secondary);margin-left:8px;transition:background .15s}
+.btn-skip:hover{background:var(--blue-light);color:var(--text-primary)}
+
+/* ── MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:var(--modal-overlay);z-index:999;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:18px;padding:2.2rem 2.5rem 2rem;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.18);position:relative;animation:modalIn .22s ease;border:1px solid var(--border)}
+@keyframes modalIn{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:20px;color:var(--text-muted);cursor:pointer;padding:4px 8px;border-radius:6px}
+.modal-close:hover{background:var(--bg);color:var(--text-primary)}
+.modal h2{font-family:'Sora',sans-serif;font-size:22px;font-weight:700;margin-bottom:1.4rem;color:var(--text-primary)}
+.btn-google{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:10px 0;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;color:var(--text-primary)}
+.btn-google:hover{border-color:#aaa}
+.divider{display:flex;align-items:center;gap:12px;margin:1.3rem 0 1.2rem}
+.divider-line{flex:1;height:1px;background:var(--border)}
+.divider span{font-size:13px;color:var(--text-muted);white-space:nowrap}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:13px;font-weight:500;color:var(--text-secondary);margin-bottom:6px}
+.form-group input{width:100%;padding:10px 13px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:14px;outline:none;transition:border-color .15s;background:var(--bg);color:var(--text-primary)}
+.form-group input:focus{border-color:var(--blue)}
+.btn-submit{width:100%;padding:11px 0;background:#2E7D32;color:white;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;margin-top:4px}
+.btn-submit:hover{background:#1B5E20}
+.modal-footer-links{margin-top:1.2rem;font-size:13px;color:var(--text-secondary);line-height:2}
+.modal-footer-links a{color:var(--blue);text-decoration:none;font-weight:500}
+
+footer{text-align:center;padding:1.5rem;font-size:12px;color:var(--text-muted);border-top:1px solid var(--border)}
+
+/* ── INTRO SECTION ── */
+.intro-section{padding:4rem 2.5rem 3.5rem;max-width:860px;margin:0 auto}
+.intro-section h1{font-family:'Sora',sans-serif;font-size:clamp(28px,5vw,48px);font-weight:700;color:var(--text-primary);line-height:1.2;margin-bottom:1.25rem;letter-spacing:-0.5px}
+.intro-section h1 span{color:var(--blue)}
+.intro-section p{font-size:16px;color:var(--text-secondary);line-height:1.75;max-width:640px;margin-bottom:1rem}
+.intro-section p+p{margin-bottom:2rem}
+.btn-start{display:inline-flex;align-items:center;gap:8px;padding:13px 32px;background:var(--blue);color:white;border:none;border-radius:10px;font-family:inherit;font-size:16px;font-weight:600;cursor:pointer;transition:background .18s,transform .15s,box-shadow .18s;box-shadow:0 4px 16px rgba(26,111,212,.3)}
+.btn-start:hover{background:var(--blue-dark);transform:translateY(-2px);box-shadow:0 8px 24px rgba(26,111,212,.4)}
+.intro-divider{height:1px;background:var(--border);margin:0 2.5rem}
+
+/* ── HERO (search bar only, below intro) ── */
+.hero-mini{background:linear-gradient(135deg,#0E4FA0 0%,#1A6FD4 60%,#3B8FE8 100%);padding:2rem 2.5rem;text-align:center}
+.hero-mini .search-bar{max-width:480px;margin:0 auto;display:flex;background:white;border-radius:10px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.15)}
+.hero-mini .search-bar input{flex:1;border:none;outline:none;font-family:inherit;font-size:14px;padding:12px 16px;color:#111827}
+.hero-mini .search-bar input::placeholder{color:#A0AABF}
+.hero-mini .search-bar button{background:var(--accent);border:none;padding:0 18px;cursor:pointer;color:white;font-size:16px}
+.stats{display:flex;justify-content:center;gap:2.5rem;margin-top:1.5rem}
+.stat{text-align:center}
+.stat-num{font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:white}
+.stat-label{font-size:12px;color:rgba(255,255,255,.65);margin-top:2px}
+
+/* Dark mode card thumb backgrounds */
+[data-theme="dark"] .card-thumb[style*="DBEAFE"]{background:#1A2E44!important}
+[data-theme="dark"] .card-thumb[style*="EEF2FF"]{background:#1E1A3A!important}
+[data-theme="dark"] .card-thumb[style*="F0FDF4"]{background:#0D2A1A!important}
+[data-theme="dark"] .card-thumb[style*="FDF4FF"]{background:#25102A!important}
+[data-theme="dark"] .card-thumb[style*="EFF6FF"]{background:#0A1E3A!important}
+[data-theme="dark"] .card-thumb[style*="FFF7ED"]{background:#2A1800!important}
+[data-theme="dark"] .card-thumb[style*="FFF1F2"]{background:#2A0A0E!important}
+[data-theme="dark"] .card-thumb[style*="F0FDF4"]{background:#0D2A1A!important}
+[data-theme="dark"] .card-thumb[style*="ECFDF5"]{background:#0A2A1E!important}
+[data-theme="dark"] .card-thumb[style*="FEF3C7"]{background:#2A2000!important}
+[data-theme="dark"] .card-thumb[style*="F5F3FF"]{background:#1A1530!important}
+
+/* ══════════════════════════════
+   MOBILE RESPONSIVE
+══════════════════════════════ */
+
+/* Hamburger button - hidden on desktop */
+.btn-hamburger{
+  display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;
+  width:38px;height:38px;background:none;border:1px solid var(--border);
+  border-radius:8px;cursor:pointer;padding:6px;transition:border-color .15s;
+}
+.btn-hamburger:hover{border-color:var(--blue)}
+.btn-hamburger span{display:block;width:18px;height:2px;background:var(--text-primary);border-radius:2px;transition:all .25s}
+.btn-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.btn-hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.btn-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* Mobile menu overlay */
+.mobile-menu-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:300;
+  backdrop-filter:blur(2px);
+}
+.mobile-menu-overlay.open{display:block}
+
+/* Mobile slide-in menu */
+.mobile-menu{
+  display:none;position:fixed;top:0;right:0;bottom:0;width:min(300px,85vw);
+  background:var(--surface);z-index:400;padding:0;
+  box-shadow:-8px 0 40px rgba(0,0,0,.18);
+  flex-direction:column;overflow-y:auto;
+  transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);
+}
+.mobile-menu.open{display:flex;transform:translateX(0)}
+
+.mobile-menu-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px;border-bottom:1px solid var(--border);
+}
+.mobile-menu-close{
+  background:none;border:none;font-size:18px;color:var(--text-muted);
+  cursor:pointer;padding:4px 8px;border-radius:6px;
+}
+.mobile-menu-close:hover{background:var(--bg);color:var(--text-primary)}
+
+.mobile-nav{display:flex;flex-direction:column;padding:12px 0}
+.mobile-nav a{
+  padding:14px 20px;font-size:15px;font-weight:500;color:var(--text-primary);
+  text-decoration:none;cursor:pointer;transition:background .12s;
+  border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;
+}
+.mobile-nav a:last-child{border-bottom:none}
+.mobile-nav a:hover{background:var(--blue-light);color:var(--blue)}
+
+.mobile-menu-actions{display:flex;flex-direction:column;gap:10px;padding:16px 20px;border-top:1px solid var(--border)}
+.mobile-full{width:100%;text-align:center;padding:11px 0;font-size:15px;border-radius:var(--radius-sm)}
+
+.mobile-menu-theme{padding:16px 20px;border-top:1px solid var(--border)}
+.mobile-menu-theme>span{font-size:13px;color:var(--text-secondary);font-weight:500;display:block;margin-bottom:10px}
+.mobile-theme-btns{display:flex;gap:8px}
+.mobile-theme-btn{
+  flex:1;padding:9px 0;border-radius:8px;border:1px solid var(--border);
+  background:var(--bg);color:var(--text-secondary);font-family:inherit;
+  font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;
+}
+.mobile-theme-btn.active{background:var(--blue);color:white;border-color:var(--blue)}
+
+/* ── MOBILE BREAKPOINTS ── */
+@media(max-width:768px){
+
+  /* Nav */
+  nav{padding:0 1rem;height:56px}
+  .nav-links{display:none}
+  .btn-login,.btn-register,.theme-dropdown-wrap{display:none}
+  .btn-hamburger{display:flex}
+
+  /* Intro */
+  .intro-section{padding:2rem 1.25rem 2rem}
+  .intro-section h1{font-size:26px}
+  .intro-section p{font-size:14px}
+  .btn-start{padding:11px 24px;font-size:15px}
+  .intro-divider{margin:0 1.25rem}
+
+  /* Hero mini */
+  .hero-mini{padding:1.5rem 1rem}
+  .stats{gap:1rem;flex-wrap:wrap}
+  .stat-num{font-size:17px}
+
+  /* Main */
+  main{padding:1.25rem 1rem 2rem}
+  .topics-grid{grid-template-columns:1fr!important;gap:10px}
+  .card{padding:.85rem 1rem}
+  .card-thumb{width:50px;height:50px;font-size:22px}
+
+  /* Filter tabs - horizontal scroll */
+  .filter-tabs{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .filter-tabs::-webkit-scrollbar{display:none}
+  .tab{white-space:nowrap;flex-shrink:0}
+
+  /* Top users */
+  .top-users-wrap{padding:1.25rem 1rem 2rem}
+  .top-users-wrap h2{font-size:20px}
+  .lb-card{padding:1rem}
+  .lb-header{flex-direction:column;gap:8px}
+
+  /* Exercise page */
+  .exercise-wrap{padding:1.25rem 1rem 2rem}
+
+  /* Modal - full screen on mobile */
+  .modal{
+    max-width:100%;width:100%;border-radius:18px 18px 0 0;
+    position:fixed;bottom:0;left:0;right:0;
+    padding:1.75rem 1.5rem 2rem;
+    animation:modalSlideUp .25s ease;
+    max-height:90vh;overflow-y:auto;
+  }
+  @keyframes modalSlideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .modal-overlay{align-items:flex-end}
+}
+
+@media(max-width:400px){
+  .intro-section h1{font-size:22px}
+  .stat{min-width:60px}
+}
+
+/* ── FLOATING VIEW SWITCHER ── */
+.view-switcher{
+  position:fixed;bottom:24px;right:24px;z-index:9000;
+  display:flex;align-items:center;gap:2px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:4px;
+  box-shadow:0 4px 24px rgba(0,0,0,.14),0 1px 4px rgba(0,0,0,.08);
+  transition:background .3s,border-color .3s;
+}
+.vs-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:7px 12px;border-radius:8px;border:none;
+  background:transparent;color:var(--text-secondary);
+  font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;
+  transition:all .18s;white-space:nowrap;
+}
+.vs-btn:hover{background:var(--bg);color:var(--text-primary)}
+.vs-btn.active{background:var(--blue);color:white;box-shadow:0 2px 8px rgba(26,111,212,.3)}
+.vs-btn svg{flex-shrink:0;transition:stroke .18s}
+.vs-btn.active svg{stroke:white}
+.vs-divider{width:1px;height:22px;background:var(--border)}
+
+/* Mobile preview frame wrapper */
+body.mobile-preview-mode{background:#6B7A99;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding-top:32px;padding-bottom:80px}
+body.mobile-preview-mode .mobile-frame-wrap{
+  width:390px;max-width:calc(100vw - 32px);
+  background:var(--bg);border-radius:44px;overflow:hidden;
+  box-shadow:0 0 0 8px #1A1A2E, 0 0 0 10px #3A3A5E, 0 20px 80px rgba(0,0,0,.5);
+  min-height:700px;position:relative;flex-shrink:0;
+}
+/* Fake phone notch */
+body.mobile-preview-mode .mobile-frame-wrap::before{
+  content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:120px;height:28px;background:#1A1A2E;border-radius:0 0 18px 18px;z-index:9999;
+}
+/* Label above phone */
+body.mobile-preview-mode .preview-label{
+  color:white;font-size:13px;font-weight:500;opacity:.7;margin-bottom:12px;
+  font-family:'DM Sans',sans-serif;letter-spacing:.3px;
+}
+/* Hide view switcher label on mobile to save space */
+@media(max-width:768px){.vs-btn span{display:none}.vs-btn{padding:8px 10px}}
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo" onclick="showPage('home')">
+    <div class="logo-mark">🎧</div>
+    <span class="logo-text">Listening<span>IELTS</span></span>
+  </div>
+  <div class="nav-links" id="navLinks">
+    <a id="nav-home" class="active" onclick="showPage('home');closeMobileMenu()">All exercises</a>
+    <a id="nav-topusers" onclick="showPage('topusers');closeMobileMenu()">Top users</a>
+    <a id="nav-other" href="#">Other lessons &#9662;</a>
+  </div>
+  <div class="nav-right">
+    <!-- THEME TOGGLE -->
+    <div class="theme-dropdown-wrap" id="themeWrap">
+      <button class="btn-theme" id="btnTheme" title="Chuyển giao diện" onclick="toggleThemeDropdown()">
+        <span id="themeIcon">☀️</span>
+      </button>
+      <div class="theme-dropdown" id="themeDropdown">
+        <div class="theme-option active" id="opt-light" onclick="setTheme('light')">
+          <span>☀️</span> Light
+        </div>
+        <div class="theme-option" id="opt-dark" onclick="setTheme('dark')">
+          <span>🌙</span> Dark
+        </div>
+      </div>
+    </div>
+    <button class="btn-login" id="btnLogin">Login</button>
+    <button class="btn-register" id="btnRegister">Register</button>
+    <button class="btn-hamburger" id="btnHamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE MENU OVERLAY -->
+<div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="closeMobileMenu()"></div>
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mobile-menu-header">
+    <div class="logo">
+      <div class="logo-mark">&#127911;</div>
+      <span class="logo-text">Listening<span>IELTS</span></span>
+    </div>
+    <button class="mobile-menu-close" onclick="closeMobileMenu()">&#10005;</button>
+  </div>
+  <nav class="mobile-nav">
+    <a onclick="showPage('home');closeMobileMenu()">&#127911; All exercises</a>
+    <a onclick="showPage('topusers');closeMobileMenu()">&#127942; Top users</a>
+    <a href="#">&#128218; Other lessons</a>
+  </nav>
+  <div class="mobile-menu-actions">
+    <button class="btn-login mobile-full" id="btnLoginMobile">Login</button>
+    <button class="btn-register mobile-full" id="btnRegisterMobile">Register</button>
+  </div>
+  <div class="mobile-menu-theme">
+    <span>Theme</span>
+    <div class="mobile-theme-btns">
+      <button onclick="setTheme('light');closeMobileMenu()" id="mobile-opt-light" class="mobile-theme-btn active">&#9728;&#65039; Light</button>
+      <button onclick="setTheme('dark');closeMobileMenu()" id="mobile-opt-dark" class="mobile-theme-btn">&#127769; Dark</button>
+    </div>
+  </div>   
+</div>
+
+<!-- PAGE: HOME -->
+<div id="page-home" class="page active">
+
+  <!-- INTRO LANDING -->
+  <section class="intro-section">
+    <h1>Practice English with<br><span>dictation exercises</span></h1>
+    <p>Welcome to Listening IELTS the app will help you promote skill listening for EngLish.</p>
+    <p>This website contains thousands of audio recordings &amp; videos to help English learners practice easily and improve quickly.</p>
+    <button class="btn-start" onclick="document.getElementById('all-topics').scrollIntoView({behavior:'smooth'})">
+      &#9654; Start Now
+    </button>
+  </section>
+
+  <div class="intro-divider"></div>
+
+  <!-- SEARCH + STATS BAR -->
+  <section class="hero-mini">
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search for exercises..." />
+      <button onclick="doSearch()">&#128269;</button>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="stat-num">1,974</div><div class="stat-label">Lessons</div></div>
+      <div class="stat"><div class="stat-num">12</div><div class="stat-label">Topics</div></div>
+      <div class="stat"><div class="stat-num">A1&ndash;C2</div><div class="stat-label">Levels</div></div>
+      <div class="stat"><div class="stat-num">50K+</div><div class="stat-label">Students</div></div>
+    </div>
+  </section>
+
+  <main id="all-topics">
+    <div class="section-header">
+      <h2 class="section-title">All topics</h2>
+      <a href="#" class="view-all">Xem tất cả →</a>
+    </div>
+    <div class="filter-tabs">
+      <div class="tab active">Tất cả</div>
+      <div class="tab">Beginner (A1–A2)</div>
+      <div class="tab">Intermediate (B1–B2)</div>
+      <div class="tab">Advanced (C1–C2)</div>
+      <div class="tab">Video</div>
+    </div>
+
+    <div class="topics-grid">
+
+      <div class="card featured" onclick="openExercise('IELTS Listening', false)">
+        <div class="card-thumb" style="background:#DBEAFE">🎓</div>
+        <div class="card-body">
+          <div class="card-top"><span class="card-title">IELTS Listening</span><span class="badge-featured">Featured</span></div>
+          <div class="card-meta"><strong>Levels:</strong> B1–C1<br>344 lessons</div>
+        </div>
+      </div>
+
+      <div class="card" onclick="openExercise('Short Stories', false)">
+        <div class="card-thumb" style="background:#EEF2FF">📖</div>
+        <div class="card-body">
+          <div class="card-top"><span class="card-title">Short Stories</span></div>
+          <div class="card-meta"><strong>Levels:</strong> A1–C1<br>289 lessons</div>
+        </div>
+      </div>
+
+      <div class="card" onclick="openExercise('Conversations', false)">
+        <div class="card-thumb" style="background:#F0FDF4">💬</div>
+        <div class="card-body">
+          <div class="card-top"><span class="card-title">Conversations</span></div>
+          <div class="card-meta"><strong>Levels:</strong> A1–B1<br>100 lessons</div>
+        </div>
+      </div>
+
+      <div class="card" onclick="openExercise('Stories for Kids', true)">
+        <div class="card-thumb" style="background:#FDF4FF">🧚</div>
+        <div class="card-body">
+          <div class="card-top"><span class="card-title">Stories for Kids</span><span class="badge-video">Video</span></div>
+          <div class="card-meta"><strong>Levels:</strong> A2–B2<br>13 lessons</div>
+        </div>
+      </div>
+
+      <div class="card" onclick="openExercise('TOEIC Listening', false)">
+        <div class="card-thumb" style="background:#EFF6FF">🎧</div>
+        <div class="card-body">
+          <div class="card-top"><span class="card-title">TOEIC Listening</span></div>
+          <div class="card-meta"><strong>Levels:</strong> A2–C1<br>600 lessons</div>
+        </div>
+      </div>
+
+      <div class="card" onclick="openExercise('Random Videos', true)">
+        <div class="card-thumb" style="background:#FFF7ED">▶️</div>
+        <div class="card-body">
+          <div class="card-top"><span class="card-title">Random Videos</span><span class="badge-video">Video</span></div>
+          <div class="card-meta"><strong>Levels:</strong> B1–C2<br>181 lessons</div>
+        </div>
+      </div>
+
+      <div class="card" onclick="openExercise('News', true)">
+        <div class="card-thumb" style="background:#FFF1F2">📰</div>
+        <div class="card-body">
+          <div class="card-top"><span class="card-title">News</span><span class="badge-video">Video</span></div>
+          <div class="card-meta"><strong>Levels:</strong> B1–C1<br>203 lessons</div>
+        </div>
+      </div>
+
+      <div class="card" onclick="openExercise('TED Talks', true)">
+        <div class="card-thumb" style="background:#F0FDF4">🎤</div>
+        <div class="card-body">
+          <div class="card-top"><span class="card-title">TED Talks</span><span class="badge-video">Video</span></div>
+          <div class="card-meta"><strong>Levels:</strong> C1–C2<br>90 lessons</div>
+        </div>
+      </div>
+
+      <div class="card" onclick="openExercise('TOEFL Listening', false)">
+        <div class="card-thumb" style="background:#EEF2FF">📝</div>
+        <div class="card-body">
+          <div class="card-top"><span class="card-title">TOEFL Listening</span></div>
+          <div class="card-meta"><strong>Levels:</strong> B1–C2<br>54 lessons</div>
+        </div>
+      </div>
+
+      <div class="card" onclick="openExercise('Medical English (OET)', false)">
+        <div class="card-thumb" style="background:#ECFDF5">🏥</div>
+        <div class="card-body">
+          <div class="card-top"><span class="card-title">Medical English (OET)</span></div>
+          <div class="card-meta"><strong>Levels:</strong> B1–C2<br>80 lessons</div>
+        </div>
+      </div>
+
+      <div class="card" onclick="openExercise('IPA', false)">
+        <div class="card-thumb" style="background:#FEF3C7">🔤</div>
+        <div class="card-body">
+          <div class="card-top"><span class="card-title">IPA</span></div>
+          <div class="card-meta"><strong>Levels:</strong> A1<br>42 lessons</div>
+        </div>
+      </div>
+
+      <div class="card" onclick="openExercise('Numbers', false)">
+        <div class="card-thumb" style="background:#F5F3FF">🔢</div>
+        <div class="card-body">
+          <div class="card-top"><span class="card-title">Numbers</span></div>
+          <div class="card-meta"><strong>Levels:</strong> A1<br>9 lessons</div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+  <footer>© 2026 ListeningIELTS · Luyện nghe tiếng Anh mỗi ngày</footer>
+</div>
+
+<!-- PAGE: TOP USERS -->
+<div id="page-topusers" class="page">
+  <div class="top-users-wrap">
+    <h2>🏆 Bảng xếp hạng người dùng năng động</h2>
+    <div class="leaderboard-grid">
+      <div class="lb-card">
+        <div class="lb-header">
+          <div><div class="lb-title">Top 30 users (7 ngày qua)</div><div class="lb-sub">Thời gian hoạt động: <span>0 giờ</span></div></div>
+          <span class="lb-badge badge-orange">LAST 7 DAYS</span>
+        </div>
+        <table class="lb-table">
+          <thead><tr><th>#</th><th>Username</th><th>Active time</th></tr></thead>
+          <tbody>
+            <tr><td><span class="rank-num rank-gold">1</span></td><td><div class="user-cell"><div class="user-avatar" style="background:linear-gradient(135deg,#FBBF24,#D97706)">AL</div>Alexander 🏆</div></td><td>21+ hours</td></tr>
+            <tr><td><span class="rank-num rank-silver">2</span></td><td><div class="user-cell"><div class="user-avatar" style="background:#EF4444">L</div>Lạc Gia</div></td><td>21+ hours</td></tr>
+            <tr><td><span class="rank-num rank-bronze">3</span></td><td><div class="user-cell"><div class="user-avatar" style="background:#14B8A6">t</div>IELTSCONGVU</div></td><td>21+ hours</td></tr>
+            <tr><td><span class="rank-num rank-normal">4</span></td><td><div class="user-cell"><div class="user-avatar" style="background:#8B5CF6">MN</div>MinhNguyen</div></td><td>18+ hours</td></tr>
+            <tr><td><span class="rank-num rank-normal">5</span></td><td><div class="user-cell"><div class="user-avatar" style="background:#3B82F6">HT</div>HuongTran</div></td><td>15+ hours</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="lb-card">
+        <div class="lb-header">
+          <div><div class="lb-title">Top 30 users (30 ngày qua)</div><div class="lb-sub">Thời gian hoạt động: <span>0 giờ</span></div></div>
+          <span class="lb-badge badge-blue-lb">LAST 30 DAYS</span>
+        </div>
+        <table class="lb-table">
+          <thead><tr><th>#</th><th>Username</th><th>Active time</th></tr></thead>
+          <tbody>
+            <tr><td><span class="rank-num rank-gold">1</span></td><td><div class="user-cell"><div class="user-avatar" style="background:#14B8A6">t</div>IELTSCONGVU 🏆</div></td><td>90+ hours</td></tr>
+            <tr><td><span class="rank-num rank-silver">2</span></td><td><div class="user-cell"><div class="user-avatar" style="background:linear-gradient(135deg,#FBBF24,#D97706)">AL</div>Alexander</div></td><td>78+ hours</td></tr>
+            <tr><td><span class="rank-num rank-bronze">3</span></td><td><div class="user-cell"><div class="user-avatar" style="background:#8B5CF6">MN</div>MinhNguyen</div></td><td>65+ hours</td></tr>
+            <tr><td><span class="rank-num rank-normal">4</span></td><td><div class="user-cell"><div class="user-avatar" style="background:#EF4444">L</div>Lạc Gia</div></td><td>60+ hours</td></tr>
+            <tr><td><span class="rank-num rank-normal">5</span></td><td><div class="user-cell"><div class="user-avatar" style="background:#3B82F6">HT</div>HuongTran</div></td><td>52+ hours</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <footer>© 2026 ListeningIELTS · Luyện nghe tiếng Anh mỗi ngày</footer>
+</div>
+
+<!-- PAGE: EXERCISE -->
+<div id="page-exercise" class="page">
+  <div class="exercise-wrap">
+    <div class="breadcrumb">
+      <a onclick="showPage('home')">All topics</a>
+      <span>/</span>
+      <span id="ex-title-crumb">Lesson</span>
+    </div>
+    <h1 id="ex-title-h1">Lesson</h1>
+    <div id="sections-container"></div>
+  </div>
+  <footer>© 2026 ListeningIELTS · Luyện nghe tiếng Anh mỗi ngày</footer>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">✕</button>
+    <h2>Login</h2>
+    <button class="btn-google">
+      <svg width="18" height="18" viewBox="0 0 48 48">
+        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+      </svg>
+      Đăng nhập bằng Google
+    </button>
+    <div class="divider"><div class="divider-line"></div><span>Or enter your password</span><div class="divider-line"></div></div>
+    <div class="form-group"><label>Username or Email</label><input type="text" placeholder="Nhập email hoặc tên đăng nhập"></div>
+    <div class="form-group"><label>Password</label><input type="password" placeholder="Nhập mật khẩu"></div>
+    <button class="btn-submit">Submit</button>
+    <div class="modal-footer-links">Forgot your password? <a href="#">Click here</a><br>Haven't had an account? <a href="#" id="goToRegister">Register here</a></div>
+  </div>
+</div>
+
+<!-- REGISTER MODAL -->
+<div class="modal-overlay" id="registerModal">
+  <div class="modal">
+    <button class="modal-close" id="registerModalClose">&#10005;</button>
+    <h2>Create an account</h2>
+    <button class="btn-google">
+      <svg width="18" height="18" viewBox="0 0 48 48">
+        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+      </svg>
+      Sign up with Google
+    </button>
+    <div class="divider"><div class="divider-line"></div><span>Or enter your information</span><div class="divider-line"></div></div>
+    <div class="form-group"><label>Nickname</label><input type="text" id="reg-nickname" placeholder="Enter your nickname"></div>
+    <div class="form-group"><label>Email</label><input type="email" id="reg-email" placeholder="Enter your email"></div>
+    <div class="form-group"><label>Password</label><input type="password" id="reg-password" placeholder="Enter your password"></div>
+    <button class="btn-submit">Submit</button>
+    <div class="modal-footer-links">Already have an account? <a href="#" id="goToLogin">Login here</a></div>
+  </div>
+</div>
+
+<script>
+/* ─── THEME ─── */
+const THEME_KEY = 'listeningielts-theme';
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  document.getElementById('themeIcon').textContent = theme === 'dark' ? '🌙' : '☀️';
+  document.getElementById('opt-light').classList.toggle('active', theme === 'light');
+  document.getElementById('opt-dark').classList.toggle('active', theme === 'dark');
+  localStorage.setItem(THEME_KEY, theme);
+}
+
+function setTheme(theme) {
+  applyTheme(theme);
+  document.getElementById('themeDropdown').classList.remove('open');
+}
+
+function toggleThemeDropdown() {
+  document.getElementById('themeDropdown').classList.toggle('open');
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+  const wrap = document.getElementById('themeWrap');
+  if (!wrap.contains(e.target)) {
+    document.getElementById('themeDropdown').classList.remove('open');
+  }
+});
+
+// Load saved theme on init
+(function() {
+  const saved = localStorage.getItem(THEME_KEY);
+  if (saved) applyTheme(saved);
+})();
+
+/* ─── Navigation ─── */
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  const map = { home:'nav-home', topusers:'nav-topusers', other:'nav-other', exercise:'nav-home' };
+  const el = document.getElementById(map[name]);
+  if (el) el.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+/* ─── Build exercise page ─── */
+function openExercise(title, isVideo) {
+  document.getElementById('ex-title-crumb').textContent = title;
+  document.getElementById('ex-title-h1').textContent = title;
+
+  const container = document.getElementById('sections-container');
+  container.innerHTML = '';
+
+  for (let i = 1; i <= 5; i++) {
+    const item = document.createElement('div');
+    item.className = 'section-item';
+    item.id = 'sec-' + i;
+    item.innerHTML = 'Section ' + i + ' <span class="arrow">▶</span>';
+    item.onclick = () => toggleSection(i);
+
+    const detail = document.createElement('div');
+    detail.className = 'section-detail';
+    detail.id = 'detail-' + i;
+
+    if (isVideo) {
+      detail.innerHTML = `
+        <div class="yt-input-row">
+          <input type="text" id="yt-input-${i}" placeholder="Dán link YouTube vào đây (vd: https://youtu.be/xxxxxx)">
+          <button onclick="loadYoutube(${i})">Tải video</button>
+        </div>
+        <div class="yt-wrap" id="yt-wrap-${i}" style="display:none">
+          <iframe id="yt-frame-${i}" src="" allowfullscreen
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+          </iframe>
+        </div>
+        <textarea placeholder="Type what you hear..."></textarea><br>
+        <button class="btn-check">Check</button>
+        <button class="btn-skip">Skip</button>
+      `;
+    } else {
+      detail.innerHTML = `
+        <audio controls src=""></audio>
+        <textarea placeholder="Type what you hear..."></textarea><br>
+        <button class="btn-check">Check</button>
+        <button class="btn-skip">Skip</button>
+      `;
+    }
+
+    container.appendChild(item);
+    container.appendChild(detail);
+  }
+
+  showPage('exercise');
+}
+
+/* ─── Toggle accordion ─── */
+function toggleSection(id) {
+  const detail = document.getElementById('detail-' + id);
+  const item   = document.getElementById('sec-' + id);
+  const isOpen = detail.classList.contains('open');
+  document.querySelectorAll('.section-detail').forEach(d => d.classList.remove('open'));
+  document.querySelectorAll('.section-item').forEach(s => s.classList.remove('open'));
+  if (!isOpen) { detail.classList.add('open'); item.classList.add('open'); }
+}
+
+/* ─── Load YouTube embed from URL ─── */
+function loadYoutube(sectionId) {
+  const input = document.getElementById('yt-input-' + sectionId).value.trim();
+  if (!input) { alert('Vui lòng dán link YouTube vào ô nhập!'); return; }
+
+  let videoId = '';
+  try {
+    const url = new URL(input);
+    if (url.hostname.includes('youtu.be')) {
+      videoId = url.pathname.slice(1);
+    } else {
+      videoId = url.searchParams.get('v') || '';
+    }
+  } catch(e) {
+    const m = input.match(/(?:v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+    if (m) videoId = m[1];
+  }
+
+  if (!videoId) { alert('Không tìm thấy video ID. Hãy dán đúng link YouTube!'); return; }
+
+  const frame = document.getElementById('yt-frame-' + sectionId);
+  const wrap  = document.getElementById('yt-wrap-' + sectionId);
+  frame.src = 'https://www.youtube.com/embed/' + videoId + '?rel=0';
+  wrap.style.display = 'block';
+}
+
+/* ─── Filter tabs ─── */
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+  });
+});
+
+/* ─── Search ─── */
+function doSearch() {
+  const v = document.getElementById('searchInput').value.trim();
+  if (v) alert('Tìm kiếm: ' + v);
+}
+document.getElementById('searchInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doSearch();
+});
+
+/* ─── Login modal ─── */
+const modal    = document.getElementById('loginModal');
+const btnLogin = document.getElementById('btnLogin');
+const btnClose = document.getElementById('modalClose');
+btnLogin.addEventListener('click', () => modal.classList.add('open'));
+btnClose.addEventListener('click', () => modal.classList.remove('open'));
+modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
+
+/* ─── Register modal ─── */
+const regModal    = document.getElementById('registerModal');
+const btnRegister = document.getElementById('btnRegister');
+const btnRegClose = document.getElementById('registerModalClose');
+btnRegister.addEventListener('click', () => regModal.classList.add('open'));
+btnRegClose.addEventListener('click', () => regModal.classList.remove('open'));
+regModal.addEventListener('click', e => { if (e.target === regModal) regModal.classList.remove('open'); });
+
+/* ─── Cross-link between login & register ─── */
+document.getElementById('goToRegister').addEventListener('click', e => {
+  e.preventDefault();
+  modal.classList.remove('open');
+  regModal.classList.add('open');
+});
+document.getElementById('goToLogin').addEventListener('click', e => {
+  e.preventDefault();
+  regModal.classList.remove('open');
+  modal.classList.add('open');
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    modal.classList.remove('open');
+    regModal.classList.remove('open');
+  }
+});
+
+
+/* ─── View Mode Switcher ─── */
+let currentViewMode = 'desktop';
+
+function setViewMode(mode) {
+  currentViewMode = mode;
+  document.getElementById('vs-desktop').classList.toggle('active', mode === 'desktop');
+  document.getElementById('vs-mobile').classList.toggle('active', mode === 'mobile');
+
+  if (mode === 'mobile') {
+    enableMobilePreview();
+  } else {
+    disableMobilePreview();
+  }
+}
+
+function enableMobilePreview() {
+  // Wrap all content in a mobile frame
+  const body = document.body;
+  body.classList.add('mobile-preview-mode');
+
+  // Create wrapper if not exists
+  if (!document.getElementById('mobileFrameWrap')) {
+    const label = document.createElement('div');
+    label.className = 'preview-label';
+    label.id = 'previewLabel';
+    label.textContent = '📱 Mobile Preview — 390px';
+
+    const wrap = document.createElement('div');
+    wrap.className = 'mobile-frame-wrap';
+    wrap.id = 'mobileFrameWrap';
+
+    // Move all direct children (except switcher, modals, scripts, styles) into wrap
+    const toMove = [];
+    body.childNodes.forEach(node => {
+      if (node.nodeType === 1) {
+        const id = node.id || '';
+        const tag = node.tagName || '';
+        if (!['viewSwitcher','mobileFrameWrap','previewLabel','loginModal','registerModal',
+              'mobileMenu','mobileMenuOverlay'].includes(id)
+            && !['SCRIPT','STYLE','LINK'].includes(tag)) {
+          toMove.push(node);
+        }
+      }
+    });
+    toMove.forEach(n => wrap.appendChild(n));
+
+    // Force 390px width inside wrap - inject style
+    const styleEl = document.createElement('style');
+    styleEl.id = 'mobilePreviewStyle';
+    styleEl.textContent = `
+      #mobileFrameWrap nav { padding: 0 1rem; height: 56px; }
+      #mobileFrameWrap .nav-links, #mobileFrameWrap .btn-login,
+      #mobileFrameWrap .btn-register, #mobileFrameWrap .theme-dropdown-wrap { display: none !important; }
+      #mobileFrameWrap .btn-hamburger { display: flex !important; }
+      #mobileFrameWrap .intro-section { padding: 2rem 1.25rem 2rem; }
+      #mobileFrameWrap .intro-section h1 { font-size: 24px; }
+      #mobileFrameWrap .intro-section p { font-size: 14px; }
+      #mobileFrameWrap .hero-mini { padding: 1.5rem 1rem; }
+      #mobileFrameWrap .stats { gap: 1rem; }
+      #mobileFrameWrap main { padding: 1.25rem 1rem 2rem; }
+      #mobileFrameWrap .topics-grid { grid-template-columns: 1fr !important; gap: 10px; }
+      #mobileFrameWrap .filter-tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+      #mobileFrameWrap .filter-tabs::-webkit-scrollbar { display: none; }
+      #mobileFrameWrap .tab { white-space: nowrap; flex-shrink: 0; }
+      #mobileFrameWrap .leaderboard-grid { grid-template-columns: 1fr; }
+      #mobileFrameWrap .top-users-wrap { padding: 1.25rem 1rem 2rem; }
+      #mobileFrameWrap .exercise-wrap { padding: 1.25rem 1rem 2rem; }
+      #mobileFrameWrap .card-thumb { width: 50px; height: 50px; font-size: 22px; }
+    `;
+    document.head.appendChild(styleEl);
+
+    body.insertBefore(label, body.firstChild);
+    body.insertBefore(wrap, body.children[1]);
+  }
+}
+
+function disableMobilePreview() {
+  const body = document.body;
+  body.classList.remove('mobile-preview-mode');
+
+  const wrap = document.getElementById('mobileFrameWrap');
+  const label = document.getElementById('previewLabel');
+  const styleEl = document.getElementById('mobilePreviewStyle');
+
+  if (wrap) {
+    // Move children back to body
+    const toRestore = Array.from(wrap.childNodes);
+    toRestore.forEach(n => body.insertBefore(n, wrap));
+    wrap.remove();
+  }
+  if (label) label.remove();
+  if (styleEl) styleEl.remove();
+}
+
+/* ─── Mobile menu ─── */
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobileMenu');
+  const overlay = document.getElementById('mobileMenuOverlay');
+  const btn = document.getElementById('btnHamburger');
+  const isOpen = menu.classList.contains('open');
+  if (isOpen) {
+    menu.classList.remove('open');
+    overlay.classList.remove('open');
+    btn.classList.remove('open');
+  } else {
+    menu.classList.add('open');
+    overlay.classList.add('open');
+    btn.classList.add('open');
+  }
+}
+function closeMobileMenu() {
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.getElementById('mobileMenuOverlay').classList.remove('open');
+  document.getElementById('btnHamburger').classList.remove('open');
+}
+
+/* Mobile Login/Register buttons */
+document.getElementById('btnLoginMobile').addEventListener('click', () => {
+  closeMobileMenu();
+  modal.classList.add('open');
+});
+document.getElementById('btnRegisterMobile').addEventListener('click', () => {
+  closeMobileMenu();
+  regModal.classList.add('open');
+});
+
+/* Sync mobile theme buttons with applyTheme */
+const _origApplyTheme = applyTheme;
+// patch applyTheme to also update mobile buttons
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  document.getElementById('themeIcon').textContent = theme === 'dark' ? '🌙' : '☀️';
+  document.getElementById('opt-light').classList.toggle('active', theme === 'light');
+  document.getElementById('opt-dark').classList.toggle('active', theme === 'dark');
+  const ml = document.getElementById('mobile-opt-light');
+  const md = document.getElementById('mobile-opt-dark');
+  if(ml) ml.classList.toggle('active', theme === 'light');
+  if(md) md.classList.toggle('active', theme === 'dark');
+  localStorage.setItem(THEME_KEY, theme);
+}
+// re-run to sync mobile buttons on load
+(function(){ const s=localStorage.getItem(THEME_KEY); if(s) applyTheme(s); })();
+</script>
+
+<!-- FLOATING VIEW SWITCHER -->
+<div class="view-switcher" id="viewSwitcher">
+  <button class="vs-btn active" id="vs-desktop" onclick="setViewMode('desktop')" title="Giao diện máy tính">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
+    </svg>
+    <span>Desktop</span>
+  </button>
+  <div class="vs-divider"></div>
+  <button class="vs-btn" id="vs-mobile" onclick="setViewMode('mobile')" title="Giao diện điện thoại">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="17" r="1" fill="currentColor" stroke="none"/>
+    </svg>
+    <span>Mobile</span>
+  </button>
+</div>
+
+</body>
+</html>

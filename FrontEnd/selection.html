@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Listening IELTS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background: #f5f7fb;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 40px;
+  background: white;
+  border-bottom: 1px solid #ddd;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.nav {
+  display: flex;
+  gap: 25px;
+}
+
+.nav a {
+  text-decoration: none;
+  color: #444;
+  font-size: 14px;
+}
+
+.nav a:hover {
+  color: #2563eb;
+}
+
+/* BREADCRUMB */
+.breadcrumb {
+  padding: 15px 80px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* MAIN */
+.container {
+  padding: 20px 80px;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+/* SECTION */
+.section {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  border: 1px solid #ddd;
+}
+
+.section:hover {
+  background: #eef3ff;
+}
+
+/* DETAIL */
+.detail {
+  display: none;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 15px;
+}
+
+/* AUDIO */
+audio {
+  width: 100%;
+  margin: 15px 0;
+}
+
+/* TEXTAREA */
+textarea {
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* BUTTON */
+.btn {
+  margin-top: 10px;
+  padding: 8px 15px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.check {
+  background: #2563eb;
+  color: white;
+}
+
+.skip {
+  background: #ddd;
+  margin-left: 10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">🎧 Listening IELTS</div>
+
+  <div class="nav">
+    <a href="#">All topics</a>
+    <a href="#">All exercises</a>
+    <a href="#">Top users</a>
+    <a href="#">Other lessons</a>
+  </div>
+</div>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  All topics / Listening Practice
+</div>
+
+<!-- MAIN -->
+<div class="container">
+  <h1>Listening Practice</h1>
+
+  <!-- SECTION 1 -->
+  <div class="section" onclick="toggle(1)">Section 1</div>
+  <div id="detail-1" class="detail">
+    <audio controls src="audio/sample.mp3"></audio>
+    <textarea placeholder="Type what you hear..."></textarea>
+    <br>
+    <button class="btn check">Check</button>
+    <button class="btn skip">Skip</button>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section" onclick="toggle(2)">Section 2</div>
+  <div id="detail-2" class="detail">
+    <audio controls src="audio/sample.mp3"></audio>
+    <textarea placeholder="Type what you hear..."></textarea>
+    <br>
+    <button class="btn check">Check</button>
+    <button class="btn skip">Skip</button>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section" onclick="toggle(3)">Section 3</div>
+  <div id="detail-3" class="detail">
+    <audio controls src="audio/sample.mp3"></audio>
+    <textarea placeholder="Type what you hear..."></textarea>
+    <br>
+    <button class="btn check">Check</button>
+    <button class="btn skip">Skip</button>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section" onclick="toggle(4)">Section 4</div>
+  <div id="detail-4" class="detail">
+    <audio controls src="audio/sample.mp3"></audio>
+    <textarea placeholder="Type what you hear..."></textarea>
+    <br>
+    <button class="btn check">Check</button>
+    <button class="btn skip">Skip</button>
+  </div>
+
+  <!-- SECTION 5 -->
+  <div class="section" onclick="toggle(5)">Section 5</div>
+  <div id="detail-5" class="detail">
+    <audio controls src="audio/sample.mp3"></audio>
+    <textarea placeholder="Type what you hear..."></textarea>
+    <br>
+    <button class="btn check">Check</button>
+    <button class="btn skip">Skip</button>
+  </div>
+
+</div>
+
+<script>
+function toggle(id) {
+  let el = document.getElementById("detail-" + id);
+
+  if (el.style.display === "block") {
+    el.style.display = "none";
+  } else {
+    document.querySelectorAll('.detail').forEach(d => d.style.display = "none");
+    el.style.display = "block";
+  }
+}
+</script>
+
+</body>
+</html>

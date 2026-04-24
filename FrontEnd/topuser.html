@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top Active Users - Listening IELTS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+    .rank-1 { background: linear-gradient(135deg, #facc15, #eab308); }
+    .rank-2 { background: linear-gradient(135deg, #e5e7eb, #d1d5db); }
+    .rank-3 { background: linear-gradient(135deg, #fcd34d, #fbbf24); }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-white shadow-sm border-b">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-blue-600 text-white flex items-center justify-center rounded-xl font-bold text-2xl">L</div>
+        <div>
+          <h1 class="text-2xl font-bold text-gray-800">Listening IELTS</h1>
+          <p class="text-xs text-gray-500 -mt-1">Practice Everyday</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-6 text-sm">
+        <a href="#" class="hover:text-blue-600 font-medium">All Exercises</a>
+        <a href="#" class="text-blue-600 font-semibold border-b-2 border-blue-600 pb-1">Top Users</a>
+        <a href="#" class="hover:text-blue-600 font-medium">Other Lessons</a>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <button class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl text-sm font-medium flex items-center gap-2">
+          <i class="fas fa-crown"></i> Upgrade
+        </button>
+        <!-- Phần Phước Phạm đã bị xóa -->
+      </div>
+    </div>
+  </header>
+
+  <div class="max-w-7xl mx-auto px-6 py-8">
+    <h2 class="text-3xl font-bold text-gray-800 mb-8">🏆 Bảng xếp hạng người dùng năng động</h2>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+      <!-- Top 30 users - Last 7 days -->
+      <div class="bg-white rounded-3xl shadow-sm border p-6">
+        <div class="flex justify-between items-center mb-6">
+          <div>
+            <h3 class="text-xl font-semibold">Top 30 users (7 ngày qua)</h3>
+            <p class="text-gray-500 text-sm">Thời gian hoạt động của bạn: <span class="font-medium text-orange-600">0 giờ</span></p>
+          </div>
+          <div class="text-xs bg-orange-100 text-orange-600 px-4 py-1.5 rounded-2xl font-medium">LAST 7 DAYS</div>
+        </div>
+
+        <table class="w-full">
+          <thead>
+            <tr class="border-b text-left text-gray-500 text-sm">
+              <th class="py-3 w-12">#</th>
+              <th class="py-3">Username</th>
+              <th class="py-3 text-right">Active time</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-700">
+            <tr class="border-b hover:bg-gray-50">
+              <td class="py-4 font-bold text-amber-500">1</td>
+              <td class="py-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-7 h-7 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-lg flex items-center justify-center text-white text-xs font-bold">AL</div>
+                  <span class="font-medium">Alexander <span class="text-amber-500">🏆</span></span>
+                </div>
+              </td>
+              <td class="py-4 text-right font-medium">21+ hours</td>
+            </tr>
+            <tr class="border-b hover:bg-gray-50">
+              <td class="py-4 font-bold">2</td>
+              <td class="py-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-7 h-7 bg-red-500 text-white rounded-lg flex items-center justify-center text-xs font-bold">L</div>
+                  <span class="font-medium">Lạc Gia</span>
+                </div>
+              </td>
+              <td class="py-4 text-right font-medium">21+ hours</td>
+            </tr>
+            <tr class="border-b hover:bg-gray-50">
+              <td class="py-4 font-bold text-blue-600">3</td>
+              <td class="py-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-7 h-7 bg-teal-500 text-white rounded-lg flex items-center justify-center text-xs font-bold">t</div>
+                  <span class="font-medium">IELTSCONGVU</span>
+                </div>
+              </td>
+              <td class="py-4 text-right font-medium">21+ hours</td>
+            </tr>
+            <!-- Bạn có thể thêm nhiều dòng nữa ở đây -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Top 30 users - Last 30 days -->
+      <div class="bg-white rounded-3xl shadow-sm border p-6">
+        <div class="flex justify-between items-center mb-6">
+          <div>
+            <h3 class="text-xl font-semibold">Top 30 users (30 ngày qua)</h3>
+            <p class="text-gray-500 text-sm">Thời gian hoạt động của bạn: <span class="font-medium text-orange-600">0 giờ</span></p>
+          </div>
+          <div class="text-xs bg-blue-100 text-blue-600 px-4 py-1.5 rounded-2xl font-medium">LAST 30 DAYS</div>
+        </div>
+
+        <table class="w-full">
+          <thead>
+            <tr class="border-b text-left text-gray-500 text-sm">
+              <th class="py-3 w-12">#</th>
+              <th class="py-3">Username</th>
+              <th class="py-3 text-right">Active time</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-700">
+            <tr class="border-b hover:bg-gray-50">
+              <td class="py-4 font-bold text-teal-500">1</td>
+              <td class="py-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-7 h-7 bg-teal-500 text-white rounded-lg flex items-center justify-center text-xs font-bold">t</div>
+                  <span class="font-medium">IELTSCONGVU <span class="text-amber-500">🏆</span></span>
+                </div>
+              </td>
+              <td class="py-4 text-right font-medium">90+ hours</td>
+            </tr>
+            <!-- Thêm nhiều dòng khác ở đây -->
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

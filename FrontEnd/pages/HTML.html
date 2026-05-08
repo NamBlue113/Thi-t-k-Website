@@ -1,0 +1,19 @@
+HTML 
+<div id="video"></div>
+
+<div class="controls">
+  <button onclick="playVideo()">▶ Play</button>
+  <button onclick="pauseVideo()">⏸ Pause</button>
+  <button onclick="rewind5s()">⏪ -5s</button>
+
+  <select onchange="changeSpeed(this.value)">
+    <option value="1">1x</option>
+    <option value="1.5">1.5x</option>
+    <option value="2">2x</option>
+  </select>
+</div>
+
+<input id="inputText" placeholder="Type what you hear...">
+<button onclick="checkAnswer()">Check</button>
+
+<div id="result"></div>

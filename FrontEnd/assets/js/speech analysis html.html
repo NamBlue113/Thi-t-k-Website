@@ -1,11 +1,11 @@
-<h2>Pronunciation Check</h2>
-
-<p id="targetSentence">
-    I love learning English
-</p>
-
-<button onclick="startSpeech()">
-    Start Speaking
+<button onclick="startRecording()">
+    Start Recording
 </button>
 
-<div id="speechResult"></div>
+<button onclick="stopRecording()">
+    Stop
+</button>
+
+<audio id="audioPlayback" controls></audio>
+
+<div id="result"></div>

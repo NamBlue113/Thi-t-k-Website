@@ -10,6 +10,7 @@ const attemptRoutes = require("./src/routes/attemptRoutes");
 const errorHandler = require("./src/middleware/errorMiddleware");
 
 const speechRoutes = require("./src/routes/speechRoutes");
+const aiRoutes = require("./src/routes/aiRoutes");
 
 const app = express();
 
@@ -42,5 +43,10 @@ module.exports = app;
 
 // SPEECH 
 app.use("/api/speech",speechRoutes);
+
+module.exports = app;
+
+// AI CHATBOX
+app.use("/api/ai",aiRoutes);
 
 module.exports = app;

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+    <title>AI Chat Box</title>
+
+    <link rel="stylesheet"
+    href="chat.css">
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+</head>
+
+<body>
+
+    <!-- CHAT BUTTON -->
+
+    <div
+    class="chat-toggle"
+    onclick="toggleChat()">
+
+        <i class="fa-solid fa-robot"></i>
+
+    </div>
+
+
+
+    <!-- CHAT BOX -->
+
+    <div
+    class="chat-container"
+    id="chatContainer">
+
+        <!-- HEADER -->
+
+        <div class="chat-header">
+
+            <div class="chat-title">
+
+                🤖 AI English Tutor
+
+            </div>
+
+            <button
+            class="close-btn"
+            onclick="toggleChat()">
+
+                ✖
+
+            </button>
+
+        </div>
+
+
+
+        <!-- CHAT BODY -->
+
+        <div
+        class="chat-body"
+        id="chatBody">
+
+            <!-- AI MESSAGE -->
+
+            <div class="message bot">
+
+                <div class="avatar ai">
+                    AI
+                </div>
+
+                <div class="text">
+
+                    Hello 👋 <br><br>
+
+                    Ask me:
+                    <br>
+                    • Grammar
+                    <br>
+                    • IELTS
+                    <br>
+                    • Vocabulary
+                    <br>
+                    • Speaking tips
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- INPUT -->
+
+        <div class="chat-input">
+
+            <textarea
+            id="userInput"
+            placeholder="Type your message..."></textarea>
+
+            <button
+            onclick="sendMessage()">
+
+                <i class="fa-solid fa-paper-plane"></i>
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+<script src="chat.js"></script>
+
+</body>
+
+</html>

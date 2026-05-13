@@ -1,73 +1,114 @@
-let lessons = [];
+const Lesson = require("../models/lessonModel");
 
-const createLesson = (req, res) => {
-    const newLesson = {
-        id: Date.now().toString(),
-        ...req.body,
-    };
+console.log("NEW LESSON CONTROLLER RUNNING");
 
-    lessons.push(newLesson);
+// CREATE LESSON
+const createLesson = async (req, res) => {
+    try {
+        const lesson = await Lesson.create(req.body);
 
-    res.status(201).json({
-        message: "Tạo bài học thành công",
-        data: newLesson,
-    });
-};
+        res.status(201).json({
+            message: "Tạo bài học thành công",
+            data: lesson,
+        });
 
-const getLessons = (req, res) => {
-    res.json(lessons);
-};
-
-const getLessonById = (req, res) => {
-    const lesson = lessons.find((l) => l.id === req.params.id);
-
-    if (!lesson) {
-        return res.status(404).json({
-            message: "Không tìm thấy bài học",
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
         });
     }
-
-    res.json(lesson);
 };
 
-const updateLesson = (req, res) => {
-    const index = lessons.findIndex((l) => l.id === req.params.id);
 
-    if (index === -1) {
-        return res.status(404).json({
-            message: "Không tìm thấy bài học",
+// GET ALL LESSONS
+const getLessons = async (req, res) => {
+    try {
+        const lessons = await Lesson.find();
+
+        res.status(200).json(lessons);
+
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
         });
     }
-
-    lessons[index] = {
-        ...lessons[index],
-        ...req.body,
-    };
-
-    res.json({
-        message: "Cập nhật thành công",
-        data: lessons[index],
-    });
 };
 
-const deleteLesson = (req, res) => {
-    const index = lessons.findIndex((l) => l.id === req.params.id);
 
-    if (index === -1) {
-        return res.status(404).json({
-            message: "Không tìm thấy bài học",
+// GET LESSON BY ID
+const getLessonById = async (req, res) => {
+    try {
+        const lesson = await Lesson.findById(req.params.id);
+
+        if (!lesson) {
+            return res.status(404).json({
+                message: "Không tìm thấy bài học",
+            });
+        }
+
+        res.status(200).json(lesson);
+
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
         });
     }
-
-    const deleted = lessons[index];
-
-    lessons.splice(index, 1);
-
-    res.json({
-        message: "Xóa thành công",
-        data: deleted,
-    });
 };
+
+
+// UPDATE LESSON
+const updateLesson = async (req, res) => {
+    try {
+        const updatedLesson = await Lesson.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            {
+                new: true,
+            }
+        );
+
+        if (!updatedLesson) {
+            return res.status(404).json({
+                message: "Không tìm thấy bài học",
+            });
+        }
+
+        res.status(200).json({
+            message: "Cập nhật thành công",
+            data: updatedLesson,
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
+
+// DELETE LESSON
+const deleteLesson = async (req, res) => {
+    try {
+        const deletedLesson = await Lesson.findByIdAndDelete(req.params.id);
+
+        if (!deletedLesson) {
+            return res.status(404).json({
+                message: "Không tìm thấy bài học",
+            });
+        }
+
+        res.status(200).json({
+            message: "Xóa thành công",
+            data: deletedLesson,
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 
 module.exports = {
     createLesson,

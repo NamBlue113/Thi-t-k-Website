@@ -959,6 +959,8 @@ body.mobile-preview-mode .preview-label{color:white;font-size:13px;font-weight:5
 <script>
 /* ─── PREMIUM STATE ─── */
 let isPremium = false;
+let currentQuestion = null;
+let questionStartTime = null;
 
 function activatePremium() {
   isPremium = true;
@@ -1106,52 +1108,124 @@ document.getElementById('premiumModal').addEventListener('click', function(e) {
 });
 
 /* ─── BUILD EXERCISE PAGE ─── */
-function openExercise(title, isVideo) {
-  document.getElementById('ex-title-crumb').textContent = title;
-  document.getElementById('ex-title-h1').textContent = title;
+async function openExercise(title, isVideo) {
 
-  const container = document.getElementById('sections-container');
-  container.innerHTML = '';
+    document.getElementById('ex-title-crumb').textContent = title;
 
-  for (let i = 1; i <= 5; i++) {
-    const item = document.createElement('div');
-    item.className = 'section-item';
-    item.id = 'sec-' + i;
-    item.innerHTML = 'Section ' + i + ' <span class="arrow">▶</span>';
-    item.onclick = () => toggleSection(i);
+    document.getElementById('ex-title-h1').textContent = title;
 
-    const detail = document.createElement('div');
-    detail.className = 'section-detail';
-    detail.id = 'detail-' + i;
+    const container =
+      document.getElementById('sections-container');
 
-    if (isVideo) {
-      detail.innerHTML = `
-        <div class="yt-input-row">
-          <input type="text" id="yt-input-${i}" placeholder="Dán link YouTube vào đây (vd: https://youtu.be/xxxxxx)">
-          <button onclick="loadYoutube(${i})">Tải video</button>
-        </div>
-        <div class="yt-wrap" id="yt-wrap-${i}" style="display:none">
-          <iframe id="yt-frame-${i}" src="" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
-        </div>
-        <textarea placeholder="Type what you hear..."></textarea><br>
-        <button class="btn-check">Check</button>
-        <button class="btn-skip">Skip</button>
-      `;
-    } else {
-      detail.innerHTML = `
-        <audio controls src=""></audio>
-        <textarea placeholder="Type what you hear..."></textarea><br>
-        <button class="btn-check">Check</button>
-        <button class="btn-skip">Skip</button>
-      `;
-    }
+    container.innerHTML = `
+    <div class="section-detail open">
 
-    container.appendChild(item);
-    container.appendChild(detail);
+      ${isVideo
+        ? `
+            <div class="yt-wrap">
+              <iframe
+                id="questionVideo"
+                src=""
+                allowfullscreen>
+              </iframe>
+            </div>
+          `
+        : `
+            <audio
+              id="questionAudio"
+              controls
+              src="">
+            </audio>
+          `
+      }
+
+      <div style="margin-bottom:12px">
+        <strong id="questionText">
+          Loading question...
+        </strong>
+      </div>
+
+      <textarea
+        id="answerInput"
+        placeholder="Type what you hear...">
+      </textarea>
+
+      <br>
+
+      <button
+        class="btn-check"
+        id="submitBtn"
+        onclick="submitAnswer()">
+
+        Check
+      </button>
+
+      <button
+        class="btn-skip">
+        Skip
+      </button>
+
+      <div
+        id="attemptResult"
+        style="margin-top:16px">
+      </div>
+
+    </div>
+  `;
+
+    await loadMockQuestion(isVideo);
+
+    showPage('exercise');
   }
 
-  showPage('exercise');
-}
+  async function loadMockQuestion(isVideo) {
+
+    currentQuestion = {
+      _id: "demo-question-id",
+
+      questionText:
+        "Listen and type the sentence you hear.",
+
+      correctAnswer:
+        "hello how are you",
+
+      audioUrl:
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+
+      videoUrl:
+        "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    };
+
+    questionStartTime = Date.now();
+
+    document.getElementById(
+      "questionText"
+    ).textContent =
+      currentQuestion.questionText;
+
+    if (isVideo) {
+
+      document.getElementById(
+        "questionVideo"
+      ).src =
+        currentQuestion.videoUrl;
+
+    } else {
+
+      document.getElementById(
+        "questionAudio"
+      ).src =
+        currentQuestion.audioUrl;
+    }
+
+    document.getElementById(
+      "answerInput"
+    ).value = "";
+
+    document.getElementById(
+      "attemptResult"
+    ).innerHTML = "";
+  }
 
 /* ─── TOGGLE ACCORDION ─── */
 function toggleSection(id) {

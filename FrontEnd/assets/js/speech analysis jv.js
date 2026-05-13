@@ -1,60 +1,78 @@
-function startSpeech() {
+let mediaRecorder;
+let audioChunks = [];
 
-    const SpeechRecognition =
-        window.SpeechRecognition ||
-        window.webkitSpeechRecognition;
+async function startRecording(){
 
-    const recognition = new SpeechRecognition();
+    const stream =
+        await navigator.mediaDevices.getUserMedia({
+            audio:true
+        });
 
-    recognition.lang = "en-US";
+    mediaRecorder =
+        new MediaRecorder(stream);
 
-    recognition.start();
+    audioChunks = [];
 
-    recognition.onresult = function(event) {
-
-        const speechResult =
-            event.results[0][0].transcript;
-
-        const correctSentence =
-            document.getElementById("targetSentence")
-            .innerText;
-
-        checkAccuracy(
-            speechResult,
-            correctSentence
-        );
+    mediaRecorder.ondataavailable = event => {
+        audioChunks.push(event.data);
     };
+
+    mediaRecorder.start();
 }
 
 
 
-function checkAccuracy(userSpeech, correctSentence) {
+async function stopRecording(){
 
-    userSpeech = userSpeech.toLowerCase();
-    correctSentence = correctSentence.toLowerCase();
+    mediaRecorder.stop();
 
-    let correctWords = 0;
+    mediaRecorder.onstop = async () => {
 
-    const userWords = userSpeech.split(" ");
-    const correctWordsArray =
-        correctSentence.split(" ");
+        const audioBlob =
+            new Blob(audioChunks,{
+                type:'audio/wav'
+            });
 
-    for(let i = 0; i < correctWordsArray.length; i++) {
+        const audioUrl =
+            URL.createObjectURL(audioBlob);
 
-        if(userWords[i] === correctWordsArray[i]) {
-            correctWords++;
-        }
+        document.getElementById(
+            "audioPlayback"
+        ).src = audioUrl;
 
-    }
+        // SEND TO SERVER
 
-    const accuracy =
-        (correctWords / correctWordsArray.length) * 100;
+        const formData = new FormData();
 
-    document.getElementById("speechResult")
-        .innerHTML =
-        `
-        You said: ${userSpeech}
-        <br>
-        Accuracy: ${accuracy.toFixed(2)}%
+        formData.append(
+            "audio",
+            audioBlob,
+            "speech.wav"
+        );
+
+        formData.append(
+            "correctText",
+            "I love learning English"
+        );
+
+        const response =
+            await fetch(
+                "http://localhost:3000/analyze-speech",
+                {
+                    method:"POST",
+                    body:formData
+                }
+            );
+
+        const data = await response.json();
+
+        document.getElementById("result")
+        .innerHTML = `
+            Accuracy:
+            ${data.accuracy}%
+            <br>
+            AI Heard:
+            ${data.transcript}
         `;
+    };
 }

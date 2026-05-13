@@ -9,6 +9,8 @@ const topicRoutes = require("./src/routes/topicRoutes");
 const attemptRoutes = require("./src/routes/attemptRoutes");
 const errorHandler = require("./src/middleware/errorMiddleware");
 
+const speechRoutes = require("./src/routes/speechRoutes");
+
 const app = express();
 
 app.use(cors());
@@ -34,5 +36,11 @@ app.use("/api/questions", questionRoutes);
 
 // ERROR MIDDLEWARE
 app.use(errorHandler);
+
+module.exports = app;
+
+
+// SPEECH ROUTES
+app.use("/api/speech",speechRoutes);
 
 module.exports = app;

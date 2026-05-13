@@ -40,7 +40,7 @@ app.use(errorHandler);
 module.exports = app;
 
 
-// SPEECH ROUTES
+// SPEECH 
 app.use("/api/speech",speechRoutes);
 
 module.exports = app;

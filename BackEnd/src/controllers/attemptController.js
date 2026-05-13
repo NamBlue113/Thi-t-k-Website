@@ -26,6 +26,31 @@ const checkAnswer = asyncHandler(
             answer,
         } = req.body;
 
+        if (!sectionId) {
+
+            const error = new Error(
+                "Thiếu sectionId"
+            );
+
+            error.statusCode = 400;
+
+            throw error;
+        }
+
+        if (
+            answer === undefined ||
+            answer === null
+        ) {
+
+            const error = new Error(
+                "Thiếu answer"
+            );
+
+            error.statusCode = 400;
+
+            throw error;
+        }
+
         const section = await Section.findById(
             sectionId
         );
@@ -60,10 +85,13 @@ const checkAnswer = asyncHandler(
         );
 
         const similarity =
-            (
-                (maxLength - distance)
-                / maxLength
-            ) * 100;
+            maxLength === 0
+                ? 100
+                : (
+                    (
+                        maxLength - distance
+                    ) / maxLength
+                ) * 100;
 
         let status = "wrong";
 
@@ -91,7 +119,10 @@ const checkAnswer = asyncHandler(
             correctAnswer:
                 section.correctAnswer,
 
-            score: Math.round(similarity),
+            score: Math.max(
+                0,
+                Math.round(similarity)
+            ),
 
             status,
         });

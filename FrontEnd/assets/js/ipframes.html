@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+    <title>YouTube IELTS Player</title>
+
+    <link rel="stylesheet"
+    href="style.css">
+
+</head>
+
+<body>
+
+    <div class="player-container">
+
+        <h1>
+            IELTS Listening Player
+        </h1>
+
+        <!-- YOUTUBE PLAYER -->
+
+        <div id="player"></div>
+
+
+
+        <!-- CONTROLS -->
+
+        <div class="controls">
+
+            <button onclick="playVideo()">
+                ▶ Play
+            </button>
+
+            <button onclick="pauseVideo()">
+                ⏸ Pause
+            </button>
+
+            <button onclick="rewind5s()">
+                ⏪ -5s
+            </button>
+
+            <button onclick="forward5s()">
+                ⏩ +5s
+            </button>
+
+        </div>
+
+
+
+        <!-- SPEED -->
+
+        <div class="speed-controls">
+
+            <h3>Playback Speed</h3>
+
+            <button onclick="changeSpeed(0.5)">
+                0.5x
+            </button>
+
+            <button onclick="changeSpeed(1)">
+                1x
+            </button>
+
+            <button onclick="changeSpeed(1.5)">
+                1.5x
+            </button>
+
+            <button onclick="changeSpeed(2)">
+                2x
+            </button>
+
+        </div>
+
+
+
+        <!-- STATUS -->
+
+        <div id="status"></div>
+
+    </div>
+
+
+
+    <!-- YOUTUBE API -->
+
+    <script
+    src="https://www.youtube.com/iframe_api">
+    </script>
+
+    <script src="player.js"></script>
+
+</body>
+</html>

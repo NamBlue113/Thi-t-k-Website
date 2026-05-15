@@ -1206,7 +1206,7 @@ async function openExercise(title, isVideo) {
       ${isVideo
         ? `
             <div class="yt-wrap">
-              <div id="questionVideo"></div>
+              <iframe id="lessonVideo" width="700" height="400" src="" allowfullscreen></iframe>
             </div>
           `
         : `
@@ -1316,15 +1316,13 @@ async function openExercise(title, isVideo) {
 
           youtubePlayer =
             new YT.Player(
-              "questionVideo",
+              "lessonVideo",
               {
-                videoId,
-
+                videoId: videoId,
                 playerVars: {
                   rel: 0,
                   controls: 1,
                 },
-
                 events: {
                   onReady: () => {
                     console.log(
@@ -2136,5 +2134,6 @@ function disableMobilePreview() {
     }
   }
 </script>
+<script src="lesson.js"></script>
 </body>
 </html>

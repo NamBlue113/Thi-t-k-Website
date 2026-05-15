@@ -1,5 +1,6 @@
 const Lesson = require("../models/lessonModel");
 
+
 console.log("NEW LESSON CONTROLLER RUNNING");
 
 // CREATE LESSON

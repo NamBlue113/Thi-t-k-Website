@@ -1,0 +1,48 @@
+/* ============================================
+   CSS Variables — Listening IELTS
+   Mirror từ index-old.html để giữ UI cũ
+   ============================================ */
+
+/* ── LIGHT THEME (default) ── */
+:root,
+[data-theme='light'] {
+  --blue: #1a6fd4;
+  --blue-dark: #0e4fa0;
+  --blue-light: #e8f1fc;
+  --accent: #f5a623;
+  --accent-light: #fef3dc;
+  --bg: #f4f6fb;
+  --surface: #ffffff;
+  --border: #e2e8f2;
+  --text-primary: #111827;
+  --text-secondary: #6b7a99;
+  --text-muted: #a0aabf;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow: 0 8px 28px rgba(26, 111, 212, 0.1);
+  --modal-overlay: rgba(15, 23, 42, 0.45);
+
+  /* Premium gold */
+  --premium-gold: #d97706;
+  --premium-gold-light: #fef3c7;
+  --premium-gold-border: #f59e0b;
+  --premium-gold-dark: #92400e;
+  --premium-glow: 0 0 0 2px #f59e0b40;
+}
+
+/* ── DARK THEME ── */
+[data-theme='dark'] {
+  --blue: #4a9ef0;
+  --blue-dark: #2a7fd4;
+  --blue-light: #1a2e44;
+  --accent: #f5a623;
+  --accent-light: #3a2800;
+  --bg: #0f1623;
+  --surface: #1a2232;
+  --border: #2a3550;
+  --text-primary: #e8edf5;
+  --text-secondary: #8a9bbb;
+  --text-muted: #4a5a7a;
+  --shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+  --modal-overlay: rgba(0, 0, 0, 0.65);
+}

@@ -251,6 +251,44 @@ body.is-premium .breadcrumb a{color:#D97706}
 body.is-premium .exercise-wrap h1{color:#D97706}
 [data-theme="dark"] body.is-premium .exercise-wrap h1{color:#FBBF24}
 
+/* ── STAGE SYSTEM ── */
+.stage-list{display:flex;flex-direction:column;gap:10px;margin-bottom:1.5rem}
+.stage-btn{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:transform .15s,box-shadow .15s,border-color .15s;text-align:left;font-family:inherit}
+.stage-btn:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:#C4D8F7}
+body.is-premium .stage-btn:hover{border-color:#F59E0B80}
+.stage-btn.active{border-color:var(--blue);background:var(--blue-light)}
+body.is-premium .stage-btn.active{border-color:#F59E0B;background:#FEF9EE}
+.stage-num{width:40px;height:40px;border-radius:10px;background:var(--blue);color:white;font-family:'Sora',sans-serif;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+body.is-premium .stage-num{background:linear-gradient(135deg,#D97706,#F59E0B)}
+.stage-info{flex:1}
+.stage-title{font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:2px}
+.stage-sub{font-size:12px;color:var(--text-muted)}
+.stage-arrow{color:var(--text-muted);font-size:13px}
+
+/* ── SPEED CONTROL ── */
+.speed-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.speed-label{font-size:13px;font-weight:500;color:var(--text-secondary);flex-shrink:0}
+.speed-btns{display:flex;gap:6px;flex-wrap:wrap}
+.speed-btn{font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-secondary);cursor:pointer;font-family:inherit;transition:all .15s}
+.speed-btn:hover{border-color:var(--blue);color:var(--blue)}
+.speed-btn.active{background:var(--blue);color:white;border-color:var(--blue)}
+body.is-premium .speed-btn.active{background:linear-gradient(135deg,#D97706,#F59E0B);border-color:#D97706}
+.speed-btn.locked-speed{opacity:.45;cursor:not-allowed;position:relative}
+.speed-btn.locked-speed::after{content:'👑';font-size:9px;margin-left:3px}
+
+/* ── BACK TO STAGES ── */
+.btn-back-stages{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--blue);background:none;border:none;cursor:pointer;font-family:inherit;margin-bottom:14px;padding:0}
+body.is-premium .btn-back-stages{color:#D97706}
+.btn-back-stages:hover{text-decoration:underline}
+
+/* ── AUDIO NAV ARROWS ── */
+.audio-nav{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.audio-nav-counter{font-size:13px;font-weight:600;color:var(--text-secondary);min-width:80px;text-align:center}
+.btn-nav-arrow{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text-primary);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+.btn-nav-arrow:hover:not(:disabled){background:var(--blue);color:white;border-color:var(--blue)}
+body.is-premium .btn-nav-arrow:hover:not(:disabled){background:linear-gradient(135deg,#D97706,#F59E0B);border-color:#D97706}
+.btn-nav-arrow:disabled{opacity:.35;cursor:not-allowed}
+
 .section-item{background:var(--surface);padding:14px 18px;border-radius:10px;margin-bottom:8px;cursor:pointer;border:1px solid var(--border);font-size:15px;font-weight:500;color:var(--text-primary);display:flex;align-items:center;justify-content:space-between;transition:background .15s}
 .section-item:hover{background:var(--blue-light)}
 body.is-premium .section-item:hover{background:#FEF3C7}
@@ -522,6 +560,47 @@ body.mobile-preview-mode .preview-label{color:white;font-size:13px;font-weight:5
 }
 .result-wrong {
   color: #EF4444; font-weight: 600;
+}
+/* ── PLAYBACK SPEED CONTROL ── */
+.speed-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 16px 0;
+  font-size: 14px;
+}
+
+.speed-control label {
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.speed-select {
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all .15s;
+}
+
+.speed-select:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(26,111,212,.15);
+}
+
+body.is-premium .speed-select:focus {
+  border-color: #F59E0B;
+  box-shadow: 0 0 0 3px rgba(245,158,11,.15);
+}
+
+[data-theme="dark"] .speed-select {
+  background: var(--bg);
 }
 </style>
 </head>
@@ -1000,20 +1079,177 @@ body.mobile-preview-mode .preview-label{color:white;font-size:13px;font-weight:5
 <script>
 /* ─── PREMIUM STATE ─── */
 let isPremium = false;
-  const API_BASE_URL ="https://thi-t-k-website.onrender.com/api";
+const API_BASE_URL = "https://thi-t-k-website.onrender.com/api";
 
 let currentQuestion = null;
 let currentSection = null;
 let currentQuestionIndex = 0;
-  let currentSegmentIndex = 0;
-
-  let youtubePlayer = null;
-
-  let videoPauseInterval = null;
-
-  let currentSegment = null;
-
+let currentSegmentIndex = 0;
+let youtubePlayer = null;
+let videoPauseInterval = null;
+let currentSegment = null;
 let questionStartTime = null;
+
+/* ─── STAGE STATE ─── */
+const STAGES_COUNT = 10;
+let currentStage = null;       // 0-9
+let currentTopicTitle = null;
+let currentTopicIsVideo = false;
+let allSections = [];          // all sections loaded for the topic
+
+/* ─── SPEED STATE ─── */
+let currentSpeed = 1.0;
+const FREE_SPEEDS  = [0.75, 1.0, 1.25, 1.5];
+const PREMIUM_SPEEDS = [0.75, 1.0, 1.25, 1.5, 1.75, 2.0];
+
+function getAvailableSpeeds() {
+  return isPremium ? PREMIUM_SPEEDS : FREE_SPEEDS;
+}
+
+function setSpeed(speed) {
+  if (!isPremium && speed > 1.5) {
+    openPremiumModal('Tốc độ phát 1.75x & 2x');
+    return;
+  }
+  currentSpeed = speed;
+  // Apply to audio element if present
+  const audio = document.getElementById('questionAudio');
+  if (audio) audio.playbackRate = currentSpeed;
+  // Apply to YouTube player via setPlaybackRate if available
+  if (youtubePlayer && typeof youtubePlayer.setPlaybackRate === 'function') {
+    try { youtubePlayer.setPlaybackRate(currentSpeed); } catch(e) {}
+  }
+  // Update buttons
+  document.querySelectorAll('.speed-btn').forEach(btn => {
+    btn.classList.toggle('active', parseFloat(btn.dataset.speed) === currentSpeed);
+  });
+}
+
+function buildSpeedBar(isVideo) {
+  const speeds = isPremium ? PREMIUM_SPEEDS : FREE_SPEEDS;
+  const allSpeeds = [0.75, 1.0, 1.25, 1.5, 1.75, 2.0];
+  let btns = allSpeeds.map(s => {
+    const isLocked = !isPremium && s > 1.5;
+    const isActive = s === currentSpeed;
+    const label = s === 1.0 ? '1x' : s + 'x';
+    return `<button class="speed-btn${isActive ? ' active' : ''}${isLocked ? ' locked-speed' : ''}"
+      data-speed="${s}"
+      onclick="setSpeed(${s})"
+      title="${isLocked ? 'Yêu cầu Premium' : label}">${label}</button>`;
+  }).join('');
+  return `<div class="speed-bar"><span class="speed-label">⚡ Tốc độ:</span><div class="speed-btns">${btns}</div></div>`;
+}
+
+/* ─── STAGE HELPERS ─── */
+function getStageSections(stageIndex, sections) {
+  const total = sections.length;
+  const perStage = Math.ceil(total / STAGES_COUNT);
+  const start = stageIndex * perStage;
+  const end = Math.min(start + perStage, total);
+  return sections.slice(start, end);
+}
+
+function buildStageList(topicTitle, isVideo) {
+  let html = `<div class="stage-list" id="stageList">`;
+  for (let i = 0; i < STAGES_COUNT; i++) {
+    const stageSections = getStageSections(i, allSections);
+    if (!stageSections.length) break;
+    html += `
+      <button class="stage-btn" onclick="enterStage(${i}, ${isVideo})">
+        <div class="stage-num">${i + 1}</div>
+        <div class="stage-info">
+          <div class="stage-title">Stage ${i + 1}</div>
+          <div class="stage-sub">${stageSections.length} bài · ${isVideo ? 'Video' : 'Audio'}</div>
+        </div>
+        <span class="stage-arrow">›</span>
+      </button>`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+function enterStage(stageIndex, isVideo) {
+  currentStage = stageIndex;
+  currentTopicIsVideo = isVideo;
+  const stageSections = getStageSections(stageIndex, allSections);
+  window.currentSections = stageSections;
+  currentQuestionIndex = 0;
+  currentSection = stageSections[0];
+  currentSegment = currentSection?.segments?.[0] || null;
+  currentSegmentIndex = 0;
+
+  // Build exercise UI
+  const container = document.getElementById('sections-container');
+  container.innerHTML = buildExerciseUI(isVideo, stageIndex);
+
+  renderCurrentQuestion(isVideo);
+  // Apply current speed to newly created audio
+  const audio = document.getElementById('questionAudio');
+  if (audio) audio.playbackRate = currentSpeed;
+  updateNavUI();
+}
+
+function backToStages() {
+  // Clean up
+  if (videoPauseInterval) { clearInterval(videoPauseInterval); videoPauseInterval = null; }
+  if (youtubePlayer) { try { youtubePlayer.destroy(); } catch(e) {} youtubePlayer = null; }
+  currentStage = null;
+  currentSegment = null;
+
+  const container = document.getElementById('sections-container');
+  container.innerHTML = buildStageList(currentTopicTitle, currentTopicIsVideo) + buildSpeedBar(currentTopicIsVideo);
+}
+
+function updateNavUI() {
+  const counter = document.getElementById('audioCounter');
+  const btnPrev = document.getElementById('btnPrev');
+  const btnNext = document.getElementById('btnNext');
+  if (!counter || !window.currentSections) return;
+  const total = window.currentSections.length;
+  counter.textContent = `${currentQuestionIndex + 1} / ${total}`;
+  if (btnPrev) btnPrev.disabled = currentQuestionIndex <= 0;
+  if (btnNext) btnNext.disabled = currentQuestionIndex >= total - 1;
+}
+
+function prevQuestion(isVideo) {
+  if (currentQuestionIndex <= 0) return;
+  setButtonsDisabled(true);
+  if (videoPauseInterval) { clearInterval(videoPauseInterval); videoPauseInterval = null; }
+  currentSegmentIndex = 0;
+  currentSegment = null;
+  currentQuestionIndex--;
+  currentSection = window.currentSections[currentQuestionIndex];
+  currentSegment = currentSection.segments?.[0];
+  renderCurrentQuestion(isVideo);
+  const audio = document.getElementById('questionAudio');
+  if (audio) audio.playbackRate = currentSpeed;
+  updateNavUI();
+  setButtonsDisabled(false);
+}
+
+function buildExerciseUI(isVideo, stageIndex) {
+  return `
+    <button class="btn-back-stages" onclick="backToStages()">← Quay lại Stage</button>
+    <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Stage ${stageIndex + 1} / ${STAGES_COUNT}</div>
+    ${buildSpeedBar(isVideo)}
+    <div class="section-detail open">
+      ${isVideo
+        ? `<div class="yt-wrap"><div id="questionVideo"></div></div>`
+        : `<audio id="questionAudio" controls src=""></audio>`}
+      <div class="audio-nav">
+        <button class="btn-nav-arrow" id="btnPrev" onclick="prevQuestion(${isVideo})" title="Bài trước">&#8592;</button>
+        <span class="audio-nav-counter" id="audioCounter">1 / ?</span>
+        <button class="btn-nav-arrow" id="btnNext" onclick="nextQuestion(${isVideo})" title="Bài tiếp theo">&#8594;</button>
+      </div>
+      <div style="margin-bottom:12px"><strong id="questionText">Loading question...</strong></div>
+      <textarea id="answerInput" placeholder="Type what you hear..."></textarea>
+      <br>
+      <button class="btn-check" id="submitBtn" onclick="submitAnswer()">Check</button>
+      <button class="btn-skip" onclick="nextQuestion(${isVideo})">Skip</button>
+      <button class="btn-next-segment" id="nextSegmentBtn" onclick="nextSegment()">Next Segment ▶</button>
+      <div id="attemptResult" style="margin-top:16px"></div>
+    </div>`;
+}
 
 function activatePremium() {
   isPremium = true;
@@ -1178,6 +1414,8 @@ document.getElementById('premiumModal').addEventListener('click', function(e) {
 async function openExercise(title, isVideo) {
 
     window.currentIsVideo = isVideo;
+    currentTopicTitle = title;
+    currentTopicIsVideo = isVideo;
 
     // Clean up previous YouTube player & intervals
     if (videoPauseInterval) {
@@ -1192,77 +1430,52 @@ async function openExercise(title, isVideo) {
 
     currentSegment = null;
     currentSegmentIndex = 0;
+    currentStage = null;
 
     document.getElementById('ex-title-crumb').textContent = title;
-
     document.getElementById('ex-title-h1').textContent = title;
 
     const container =
       document.getElementById('sections-container');
 
-    container.innerHTML = `
-    <div class="section-detail open">
-
-      ${isVideo
-        ? `
-            <div class="yt-wrap">
-              <div id="questionVideo"></div>
-            </div>
-          `
-        : `
-            <audio
-              id="questionAudio"
-              controls
-              src="">
-            </audio>
-          `
-      }
-
-      <div style="margin-bottom:12px">
-        <strong id="questionText">
-          Loading question...
-        </strong>
-      </div>
-
-      <textarea
-        id="answerInput"
-        placeholder="Type what you hear...">
-      </textarea>
-
-      <br>
-
-      <button
-        class="btn-check"
-        id="submitBtn"
-        onclick="submitAnswer()">
-
-        Check
-      </button>
-
-      <button
-        class="btn-skip"
-        onclick="nextQuestion(${isVideo})">
-        Skip
-      </button>
-
-      <button
-        class="btn-next-segment"
-        id="nextSegmentBtn"
-        onclick="nextSegment()">
-        Next Segment ▶
-      </button>
-
-      <div
-        id="attemptResult"
-        style="margin-top:16px">
-      </div>
-
-    </div>
-  `;
-
-    await loadRealSection(title, isVideo);
+    container.innerHTML = `<div style="text-align:center;padding:2.5rem 1rem;color:var(--text-muted)"><div style="font-size:28px;margin-bottom:10px">⏳</div>Đang tải bài học...</div>`;
 
     showPage('exercise');
+    await loadAllSectionsForStages(title, isVideo);
+  }
+
+  async function loadAllSectionsForStages(topicTitle, isVideo) {
+    try {
+      const topicRes = await fetch(`${API_BASE_URL}/topics`);
+      const topicData = await topicRes.json();
+      const topic = topicData.data.find(t => t.title === topicTitle);
+
+      if (!topic) {
+        document.getElementById('sections-container').innerHTML =
+          `<div style="color:#EF4444;margin-top:10px">❌ Không tìm thấy chủ đề "${topicTitle}".</div>`;
+        return;
+      }
+
+      const sectionRes = await fetch(`${API_BASE_URL}/topics/${topic._id}/sections`);
+      const sectionData = await sectionRes.json();
+
+      if (!sectionData.data.length) {
+        document.getElementById('sections-container').innerHTML =
+          `<div style="color:#EF4444;margin-top:10px">❌ Chủ đề này chưa có bài tập.</div>`;
+        return;
+      }
+
+      allSections = sectionData.data;
+
+      // Show stage list
+      document.getElementById('sections-container').innerHTML =
+        buildStageList(topicTitle, isVideo) + buildSpeedBar(isVideo);
+
+    } catch(error) {
+      console.error(error);
+      document.getElementById('sections-container').innerHTML =
+        `<div style="color:#EF4444;margin-top:10px">❌ Lỗi kết nối server.</div>`;
+    }
   }
 
   function extractYoutubeId(url) {
@@ -1327,10 +1540,8 @@ async function openExercise(title, isVideo) {
 
                 events: {
                   onReady: () => {
-                    console.log(
-                      "Player ready"
-                    );
-
+                    console.log("Player ready");
+                    try { youtubePlayer.setPlaybackRate(currentSpeed); } catch(e) {}
                     if (hasSegments) {
                       playSegment();
                     }
@@ -1374,10 +1585,9 @@ async function openExercise(title, isVideo) {
 
       } else {
 
-        document.getElementById(
-          "questionAudio"
-        ).src =
-          currentSection.audioUrl || "";
+        const audioEl = document.getElementById("questionAudio");
+        audioEl.src = currentSection.audioUrl || "";
+        audioEl.playbackRate = currentSpeed;
       }
 
       document.getElementById(
@@ -1558,98 +1768,7 @@ async function openExercise(title, isVideo) {
     }
   }
 
-  async function loadRealSection(topicTitle, isVideo) {
-
-      window.currentIsVideo = isVideo;
-
-      try {
-
-        const topicRes = await fetch(
-          `${API_BASE_URL}/topics`
-        );
-
-        const topicData = await topicRes.json();
-
-        const topic = topicData.data.find(
-          t => t.title === topicTitle
-        );
-
-        if (!topic) {
-
-          document.getElementById(
-            "questionText"
-          ).textContent = "Topic not found";
-
-          document.getElementById(
-            "attemptResult"
-          ).innerHTML = `
-            <div style="color:#EF4444;margin-top:10px">
-              ❌ Không tìm thấy chủ đề "${topicTitle}".
-            </div>
-          `;
-
-          return;
-        }
-
-        const sectionRes = await fetch(
-          `${API_BASE_URL}/topics/${topic._id}/sections`
-        );
-
-        const sectionData = await sectionRes.json();
-
-        if (!sectionData.data.length) {
-
-          document.getElementById(
-            "questionText"
-          ).textContent = "No sections";
-
-          document.getElementById(
-            "attemptResult"
-          ).innerHTML = `
-            <div style="color:#EF4444;margin-top:10px">
-              ❌ Chủ đề này chưa có bài tập.
-            </div>
-          `;
-
-          return;
-        }
-
-        window.currentSections = sectionData.data;
-
-        currentQuestionIndex = 0;
-
-        currentSection =
-          window.currentSections[currentQuestionIndex];
-
-        questionStartTime = Date.now();
-
-        renderCurrentQuestion(isVideo);
-
-      } catch (error) {
-
-        console.error(error);
-
-        const qText = document.getElementById(
-          "questionText"
-        );
-
-        if (qText) {
-          qText.textContent = "Connection error";
-        }
-
-        const resultEl = document.getElementById(
-          "attemptResult"
-        );
-
-        if (resultEl) {
-          resultEl.innerHTML = `
-            <div style="color:#EF4444;margin-top:10px">
-              ❌ Lỗi kết nối server. Vui lòng thử lại.
-            </div>
-          `;
-        }
-      }
-    }
+  /* loadRealSection removed — replaced by loadAllSectionsForStages + enterStage */
 
 
 /* ─── TOGGLE ACCORDION ─── */
@@ -1944,11 +2063,18 @@ function disableMobilePreview() {
       currentQuestionIndex >=
       window.currentSections.length
     ) {
-
-      alert("Completed all questions!");
-
-      showPage("home");
-
+      const nextStage = currentStage + 1;
+      if (nextStage < STAGES_COUNT && getStageSections(nextStage, allSections).length > 0) {
+        const goNext = confirm(`✅ Hoàn thành Stage ${currentStage + 1}!\n\nChuyển sang Stage ${nextStage + 1}?`);
+        if (goNext) {
+          enterStage(nextStage, isVideo);
+        } else {
+          backToStages();
+        }
+      } else {
+        alert("🎉 Bạn đã hoàn thành tất cả Stage!");
+        backToStages();
+      }
       return;
     }
 
@@ -1960,6 +2086,11 @@ function disableMobilePreview() {
 
     renderCurrentQuestion(isVideo);
 
+    // Apply speed to new audio
+    const audio = document.getElementById('questionAudio');
+    if (audio) audio.playbackRate = currentSpeed;
+
+    updateNavUI();
     setButtonsDisabled(false);
   }
 

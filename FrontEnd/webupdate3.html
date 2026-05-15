@@ -481,10 +481,51 @@ body.mobile-preview-mode .preview-label{color:white;font-size:13px;font-weight:5
 }
 @media(max-width:400px){
   .intro-section h1{font-size:22px}
-  .stat{min-width:60px}
+  .stat{min-width:60px} 
+}
+
+/* ── SEGMENT DICTATION ── */
+@keyframes inputShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(5px); }
+}
+.input-shake {
+  animation: inputShake 0.5s ease;
+  border-color: #EF4444 !important;
+  box-shadow: 0 0 0 2px rgba(239,68,68,.25) !important;
+}
+.segment-info {
+  font-size: 12px; color: var(--text-muted); margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.segment-info strong { color: var(--blue); }
+.btn-next-segment {
+  display: none;
+  margin-left: 8px;
+  padding: 8px 18px;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  background: #22c55e;
+  color: white;
+  transition: background .15s;
+}
+.btn-next-segment:hover { background: #16a34a; }
+.btn-next-segment.show { display: inline-block; }
+.result-correct {
+  color: #16a34a; font-weight: 600;
+}
+.result-wrong {
+  color: #EF4444; font-weight: 600;
 }
 </style>
 </head>
+<script src="https://www.youtube.com/iframe_api"></script>
 <body>
 
 <!-- UNLOCK TOAST -->
@@ -959,7 +1000,19 @@ body.mobile-preview-mode .preview-label{color:white;font-size:13px;font-weight:5
 <script>
 /* ─── PREMIUM STATE ─── */
 let isPremium = false;
+const API_BASE_URL = "http://localhost:5000/api";
+
 let currentQuestion = null;
+let currentSection = null;
+let currentQuestionIndex = 0;
+  let currentSegmentIndex = 0;
+
+  let youtubePlayer = null;
+
+  let videoPauseInterval = null;
+
+  let currentSegment = null;
+
 let questionStartTime = null;
 
 function activatePremium() {
@@ -1069,6 +1122,12 @@ document.addEventListener('click', function(e) {
 
 /* ─── NAVIGATION ─── */
 function showPage(name) {
+  // Clean up segment playback when leaving exercise page
+  if (videoPauseInterval) {
+    clearInterval(videoPauseInterval);
+    videoPauseInterval = null;
+  }
+
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-links a, .nav-links .nav-other-btn').forEach(a => a.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
@@ -1107,8 +1166,32 @@ document.getElementById('premiumModal').addEventListener('click', function(e) {
   if (e.target === this) closePremiumModal();
 });
 
+  function onYouTubeIframeAPIReady() {
+
+    console.log(
+      "YouTube API Ready"
+    );
+
+  }
+
 /* ─── BUILD EXERCISE PAGE ─── */
 async function openExercise(title, isVideo) {
+
+    window.currentIsVideo = isVideo;
+
+    // Clean up previous YouTube player & intervals
+    if (videoPauseInterval) {
+      clearInterval(videoPauseInterval);
+      videoPauseInterval = null;
+    }
+
+    if (youtubePlayer) {
+      try { youtubePlayer.destroy(); } catch (e) {}
+      youtubePlayer = null;
+    }
+
+    currentSegment = null;
+    currentSegmentIndex = 0;
 
     document.getElementById('ex-title-crumb').textContent = title;
 
@@ -1123,11 +1206,7 @@ async function openExercise(title, isVideo) {
       ${isVideo
         ? `
             <div class="yt-wrap">
-              <iframe
-                id="questionVideo"
-                src=""
-                allowfullscreen>
-              </iframe>
+              <div id="questionVideo"></div>
             </div>
           `
         : `
@@ -1161,8 +1240,16 @@ async function openExercise(title, isVideo) {
       </button>
 
       <button
-        class="btn-skip">
+        class="btn-skip"
+        onclick="nextQuestion(${isVideo})">
         Skip
+      </button>
+
+      <button
+        class="btn-next-segment"
+        id="nextSegmentBtn"
+        onclick="nextSegment()">
+        Next Segment ▶
       </button>
 
       <div
@@ -1173,59 +1260,397 @@ async function openExercise(title, isVideo) {
     </div>
   `;
 
-    await loadMockQuestion(isVideo);
+    await loadRealSection(title, isVideo);
 
     showPage('exercise');
   }
 
-  async function loadMockQuestion(isVideo) {
+  function extractYoutubeId(url) {
 
-    currentQuestion = {
-      _id: "demo-question-id",
+      if (!url) return null;
 
-      questionText:
-        "Listen and type the sentence you hear.",
+      const regExp =
+        /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
 
-      correctAnswer:
-        "hello how are you",
+      const match =
+        url.match(regExp);
 
-      audioUrl:
-        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+      return (
+        match &&
+        match[2].length === 11
+      )
+        ? match[2]
+        : null;
+    }
 
-      videoUrl:
-        "https://www.youtube.com/embed/dQw4w9WgXcQ",
-    };
+  function renderCurrentQuestion(isVideo) {
 
-    questionStartTime = Date.now();
+    currentSegmentIndex = 0;
 
-    document.getElementById(
-      "questionText"
-    ).textContent =
-      currentQuestion.questionText;
+    currentSegment = currentSection.segments?.[
+      currentSegmentIndex
+      ];
 
-    if (isVideo) {
+    console.log("Segment:", currentSegment);
+      questionStartTime = Date.now();
+
+      const segments = currentSection.segments;
+      const hasSegments = segments && segments.length > 0;
 
       document.getElementById(
-        "questionVideo"
-      ).src =
-        currentQuestion.videoUrl;
+        "questionText"
+      ).textContent =
+        hasSegments
+          ? `Segment ${
+              currentSegmentIndex + 1
+            }/${segments.length}`
+          : currentSection.title || "Listening Exercise";
+
+      if (isVideo) {
+      const videoId =
+          extractYoutubeId(
+            currentSection.youtubeUrl
+          );
+
+        if (!youtubePlayer) {
+
+          youtubePlayer =
+            new YT.Player(
+              "questionVideo",
+              {
+                videoId,
+
+                playerVars: {
+                  rel: 0,
+                  controls: 1,
+                },
+
+                events: {
+                  onReady: () => {
+                    console.log(
+                      "Player ready"
+                    );
+
+                    if (hasSegments) {
+                      playSegment();
+                    }
+                  }
+                }
+              }
+            );
+
+        } else {
+
+          youtubePlayer.loadVideoById(
+            videoId
+          );
+
+          if (hasSegments) {
+
+            // Poll until player is ready after loading new video
+            let attempts = 0;
+            const readyCheck = setInterval(() => {
+              attempts++;
+              try {
+                if (
+                  youtubePlayer &&
+                  typeof youtubePlayer.seekTo === "function" &&
+                  youtubePlayer.getPlayerState() >= 0
+                ) {
+                  clearInterval(readyCheck);
+                  playSegment();
+                } else if (attempts > 25) {
+                  clearInterval(readyCheck);
+                }
+              } catch (e) {
+                if (attempts > 25) {
+                  clearInterval(readyCheck);
+                }
+              }
+            }, 200);
+          }
+
+        }
+
+      } else {
+
+        document.getElementById(
+          "questionAudio"
+        ).src =
+          currentSection.audioUrl || "";
+      }
+
+      document.getElementById(
+        "answerInput"
+      ).value = "";
+
+      document.getElementById(
+        "answerInput"
+      ).classList.remove("input-shake");
+
+      document.getElementById(
+        "attemptResult"
+      ).innerHTML =
+        hasSegments
+          ? `<div class="segment-info">
+              <span>📝</span>
+              <span>Segment <strong>${
+                currentSegmentIndex + 1
+              }</strong> of <strong>${
+                segments.length
+              }</strong></span>
+            </div>`
+          : "";
+
+      const nextBtn =
+        document.getElementById(
+          "nextSegmentBtn"
+        );
+
+      if (nextBtn) {
+        nextBtn.classList.remove("show");
+      }
+    }
+
+  function playSegment() {
+
+    if (!currentSegment) return;
+
+    if (videoPauseInterval) {
+      clearInterval(videoPauseInterval);
+      videoPauseInterval = null;
+    }
+
+    if (youtubePlayer && typeof youtubePlayer.seekTo === "function") {
+
+      youtubePlayer.seekTo(
+        currentSegment.startTime,
+        true
+      );
+
+      youtubePlayer.playVideo();
+
+      videoPauseInterval = setInterval(() => {
+
+        try {
+
+          const currentTime =
+            youtubePlayer.getCurrentTime();
+
+          if (
+            currentTime >=
+            currentSegment.endTime
+          ) {
+
+            youtubePlayer.pauseVideo();
+
+            clearInterval(
+              videoPauseInterval
+            );
+
+            videoPauseInterval = null;
+
+            console.log(
+              "Auto-paused at",
+              currentTime
+            );
+          }
+        } catch (e) {
+
+          clearInterval(
+            videoPauseInterval
+          );
+
+          videoPauseInterval = null;
+        }
+      }, 200);
+    }
+  }
+
+  function nextSegment() {
+
+    setButtonsDisabled(true);
+
+    const segments =
+      currentSection.segments;
+
+    if (!segments || !segments.length) {
+
+      return;
+    }
+
+    if (
+      currentSegmentIndex <
+      segments.length - 1
+    ) {
+
+      currentSegmentIndex++;
+
+      currentSegment =
+        segments[currentSegmentIndex];
+
+      document.getElementById(
+        "questionText"
+      ).textContent =
+        `Segment ${
+          currentSegmentIndex + 1
+        }/${segments.length}`;
+
+      document.getElementById(
+        "answerInput"
+      ).value = "";
+
+      document.getElementById(
+        "answerInput"
+      ).classList.remove(
+        "input-shake"
+      );
+
+      document.getElementById(
+        "attemptResult"
+      ).innerHTML = `
+        <div class="segment-info">
+          <span>📝</span>
+          <span>Segment <strong>${
+            currentSegmentIndex + 1
+          }</strong> of <strong>${
+            segments.length
+          }</strong></span>
+        </div>
+      `;
+
+      const nextBtn =
+        document.getElementById(
+          "nextSegmentBtn"
+        );
+
+      if (nextBtn) {
+        nextBtn.classList.remove("show");
+      }
+
+      questionStartTime = Date.now();
+
+      if (youtubePlayer) {
+
+        if (videoPauseInterval) {
+          clearInterval(
+            videoPauseInterval
+          );
+          videoPauseInterval = null;
+        }
+
+        playSegment();
+      }
+
+      setButtonsDisabled(false);
 
     } else {
 
-      document.getElementById(
-        "questionAudio"
-      ).src =
-        currentQuestion.audioUrl;
+      setButtonsDisabled(false);
+
+      alert(
+        "✅ All segments completed!"
+      );
+
+      nextQuestion(
+        window.currentIsVideo || false
+      );
+    }
+  }
+
+  async function loadRealSection(topicTitle, isVideo) {
+
+      window.currentIsVideo = isVideo;
+
+      try {
+
+        const topicRes = await fetch(
+          `${API_BASE_URL}/topics`
+        );
+
+        const topicData = await topicRes.json();
+
+        const topic = topicData.data.find(
+          t => t.title === topicTitle
+        );
+
+        if (!topic) {
+
+          document.getElementById(
+            "questionText"
+          ).textContent = "Topic not found";
+
+          document.getElementById(
+            "attemptResult"
+          ).innerHTML = `
+            <div style="color:#EF4444;margin-top:10px">
+              ❌ Không tìm thấy chủ đề "${topicTitle}".
+            </div>
+          `;
+
+          return;
+        }
+
+        const sectionRes = await fetch(
+          `${API_BASE_URL}/topics/${topic._id}/sections`
+        );
+
+        const sectionData = await sectionRes.json();
+
+        if (!sectionData.data.length) {
+
+          document.getElementById(
+            "questionText"
+          ).textContent = "No sections";
+
+          document.getElementById(
+            "attemptResult"
+          ).innerHTML = `
+            <div style="color:#EF4444;margin-top:10px">
+              ❌ Chủ đề này chưa có bài tập.
+            </div>
+          `;
+
+          return;
+        }
+
+        window.currentSections = sectionData.data;
+
+        currentQuestionIndex = 0;
+
+        currentSection =
+          window.currentSections[currentQuestionIndex];
+
+        questionStartTime = Date.now();
+
+        renderCurrentQuestion(isVideo);
+
+      } catch (error) {
+
+        console.error(error);
+
+        const qText = document.getElementById(
+          "questionText"
+        );
+
+        if (qText) {
+          qText.textContent = "Connection error";
+        }
+
+        const resultEl = document.getElementById(
+          "attemptResult"
+        );
+
+        if (resultEl) {
+          resultEl.innerHTML = `
+            <div style="color:#EF4444;margin-top:10px">
+              ❌ Lỗi kết nối server. Vui lòng thử lại.
+            </div>
+          `;
+        }
+      }
     }
 
-    document.getElementById(
-      "answerInput"
-    ).value = "";
-
-    document.getElementById(
-      "attemptResult"
-    ).innerHTML = "";
-  }
 
 /* ─── TOGGLE ACCORDION ─── */
 function toggleSection(id) {
@@ -1262,7 +1687,8 @@ function loadYoutube(sectionId) {
 function applyFilter(filter) {
   /* Mark active tab */
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelector(`.tab[data-filter="${filter}"]`).classList.add('active');
+  const activeTab = document.querySelector(`.tab[data-filter="${filter}"]`);
+  if (activeTab) activeTab.classList.add('active');
 
   /* Filter free cards */
   const mainCards = document.querySelectorAll('#mainGrid .card');
@@ -1458,6 +1884,257 @@ function disableMobilePreview() {
   if (label) label.remove();
   if (styleEl) styleEl.remove();
 }
+
+  function setButtonsDisabled(disabled) {
+
+    const ids = [
+      "submitBtn",
+      "nextSegmentBtn",
+    ];
+
+    ids.forEach(id => {
+
+      const btn =
+        document.getElementById(id);
+
+      if (btn) {
+        btn.disabled = disabled;
+        btn.style.opacity = disabled
+          ? "0.6"
+          : "";
+        btn.style.cursor = disabled
+          ? "not-allowed"
+          : "";
+      }
+    });
+
+    // Skip button has no id, find by class
+    const skipBtn =
+      document.querySelector(
+        ".btn-skip"
+      );
+
+    if (skipBtn) {
+      skipBtn.disabled = disabled;
+      skipBtn.style.opacity = disabled
+        ? "0.6"
+        : "";
+      skipBtn.style.cursor = disabled
+        ? "not-allowed"
+        : "";
+    }
+  }
+
+  function nextQuestion(isVideo) {
+
+    setButtonsDisabled(true);
+
+    // Clean up segment playback
+    if (videoPauseInterval) {
+      clearInterval(videoPauseInterval);
+      videoPauseInterval = null;
+    }
+
+    currentSegmentIndex = 0;
+    currentSegment = null;
+
+    currentQuestionIndex++;
+
+    if (
+      currentQuestionIndex >=
+      window.currentSections.length
+    ) {
+
+      alert("Completed all questions!");
+
+      showPage("home");
+
+      return;
+    }
+
+    currentSection =
+      window.currentSections[currentQuestionIndex];
+
+    currentSegment =
+      currentSection.segments?.[0];
+
+    renderCurrentQuestion(isVideo);
+
+    setButtonsDisabled(false);
+  }
+
+  async function submitAnswer() {
+
+    setButtonsDisabled(true);
+
+    try {
+
+      const answerInput =
+        document.getElementById(
+          "answerInput"
+        );
+
+      const answer = answerInput.value.trim();
+
+      if (!answer) {
+        setButtonsDisabled(false);
+        alert("Please type your answer");
+        return;
+      }
+
+      // ── SEGMENT MODE: compare locally ──
+      if (currentSegment && currentSegment.content) {
+
+        const normalizedAnswer =
+          answer.trim().toLowerCase();
+
+        const normalizedSegment =
+          currentSegment.content
+            .trim()
+            .toLowerCase();
+
+        const isCorrect =
+          normalizedAnswer ===
+          normalizedSegment;
+
+        const resultDiv =
+          document.getElementById(
+            "attemptResult"
+          );
+
+        if (isCorrect) {
+
+          resultDiv.innerHTML = `
+            <div style="
+              padding:14px;
+              border-radius:10px;
+              background:#f0fdf4;
+              margin-top:10px;
+              border:1px solid #bbf7d0;
+            ">
+              <div class="result-correct">
+                ✅ Correct!
+              </div>
+              <div style="font-size:13px;color:var(--text-secondary);margin-top:4px">
+                "${currentSegment.content}"
+              </div>
+            </div>
+          `;
+
+          answerInput.classList.remove(
+            "input-shake"
+          );
+
+          const nextBtn =
+            document.getElementById(
+              "nextSegmentBtn"
+            );
+
+          if (nextBtn) {
+            nextBtn.classList.add("show");
+          }
+
+          setButtonsDisabled(false);
+
+        } else {
+
+          resultDiv.innerHTML = `
+            <div style="
+              padding:14px;
+              border-radius:10px;
+              background:#fef2f2;
+              margin-top:10px;
+              border:1px solid #fecaca;
+            ">
+              <div class="result-wrong">
+                ❌ Not correct. Try again!
+              </div>
+              <div style="font-size:13px;color:var(--text-secondary);margin-top:4px">
+                Expected: "${currentSegment.content}"
+              </div>
+            </div>
+          `;
+
+          answerInput.classList.add(
+            "input-shake"
+          );
+
+          setTimeout(() => {
+
+            answerInput.classList.remove(
+              "input-shake"
+            );
+          }, 500);
+
+          answerInput.value = "";
+          answerInput.focus();
+
+          setButtonsDisabled(false);
+        }
+
+        return;
+      }
+
+      // ── ORIGINAL MODE: backend check ──
+      const response = await fetch(
+        `${API_BASE_URL}/attempts/check`,
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+          body: JSON.stringify({
+            sectionId: currentSection._id,
+            answer,
+          }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (!result.success) {
+        alert(result.message);
+        return;
+      }
+
+      const data = result.data;
+
+      document.getElementById(
+        "attemptResult"
+      ).innerHTML = `
+      <div style="
+        padding:14px;
+        border-radius:10px;
+        background:#f3f4f6;
+        margin-top:10px;
+      ">
+
+        <div>
+          <strong>Score:</strong>
+          ${data.score}%
+        </div>
+
+        <div>
+          <strong>Status:</strong>
+          ${data.status}
+        </div>
+
+      </div>
+    `;
+
+      setButtonsDisabled(false);
+
+    } catch (error) {
+
+      console.error(error);
+
+      setButtonsDisabled(false);
+
+      alert("Submit failed");
+    }
+  }
 </script>
 </body>
 </html>

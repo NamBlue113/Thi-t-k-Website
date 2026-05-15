@@ -2,8 +2,7 @@
 // FILE: BackEnd/src/controllers/speechController.js
 // ======================================================
 
-const speechService =
-require("../services/speechService");
+const speechService = require("../services/speechService");
 
 
 

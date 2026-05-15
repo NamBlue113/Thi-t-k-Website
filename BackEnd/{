@@ -1,0 +1,2 @@
+// Speech service - analyzes English speech transcripts 
+const analyzeSpeech = (transcript

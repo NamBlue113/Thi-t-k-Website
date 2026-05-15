@@ -26,7 +26,6 @@ const sectionSchema = new mongoose.Schema(
 
         audioUrl: {
             type: String,
-            default: "",
         },
 
         youtubeVideoId: {
@@ -36,7 +35,6 @@ const sectionSchema = new mongoose.Schema(
 
         youtubeUrl: {
             type: String,
-            default: "",
         },
 
         transcript: {
@@ -53,10 +51,33 @@ const sectionSchema = new mongoose.Schema(
             type: String,
             default: "",
         },
+
+        segments: [
+            {
+                startTime: {
+                    type: Number,
+                    required: true,
+                },
+
+                endTime: {
+                    type: Number,
+                    required: true,
+                },
+
+                content: {
+                    type: String,
+                    required: true,
+                },
+            },
+        ],
     },
+
     {
         timestamps: true,
     }
 );
 
-module.exports = mongoose.model("Section", sectionSchema);
+module.exports = mongoose.model(
+    "Section",
+    sectionSchema
+);

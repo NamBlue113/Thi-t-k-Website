@@ -5,23 +5,17 @@ const lessonRoutes = require("./src/routes/lessonRoutes");
 const questionRoutes = require("./src/routes/questionRoutes");
 const authRoutes = require("./src/routes/authRoutes");
 const topicRoutes = require("./src/routes/topicRoutes");
-
 const attemptRoutes = require("./src/routes/attemptRoutes");
-const errorHandler = require("./src/middleware/errorMiddleware");
-
 const speechRoutes = require("./src/routes/speechRoutes");
 const aiRoutes = require("./src/routes/aiRoutes");
+
+const errorHandler = require("./src/middleware/errorMiddleware");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use("/api/auth", authRoutes);
-app.use("/api/topics", topicRoutes);
-app.use("/api/attempts", attemptRoutes);    
 
-
-// HEALTH CHECK
 app.get("/api/health", (req, res) => {
     res.status(200).json({
         success: true,
@@ -29,24 +23,14 @@ app.get("/api/health", (req, res) => {
     });
 });
 
-
-// ROUTES
+app.use("/api/auth", authRoutes);
+app.use("/api/topics", topicRoutes);
+app.use("/api/attempts", attemptRoutes);
 app.use("/api/lessons", lessonRoutes);
 app.use("/api/questions", questionRoutes);
+app.use("/api/speech", speechRoutes);
+app.use("/api/ai", aiRoutes);
 
-
-// ERROR MIDDLEWARE
 app.use(errorHandler);
-
-module.exports = app;
-
-
-// SPEECH 
-app.use("/api/speech",speechRoutes);
-
-module.exports = app;
-
-// AI CHATBOX
-app.use("/api/ai",aiRoutes);
 
 module.exports = app;

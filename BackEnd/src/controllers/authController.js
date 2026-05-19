@@ -7,9 +7,9 @@ const { successResponse, errorResponse } = require("../utils/apiResponse");
 // Hàm chuyển đổi format dữ liệu trả về cho Client
 const toAuthUser = (user) => ({
     id: user._id,
-    username: user.username, // Đổi từ nickname sang username
+    username: user.username,
     email: user.email,
-    accountType: user.accountType || "free", // Đổi từ plan sang accountType để khớp bảng MongoDB
+    plan: user.plan || "free",
     role: user.role,
 });
 

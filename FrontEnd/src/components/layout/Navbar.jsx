@@ -9,7 +9,7 @@ import MobileMenu from './MobileMenu';
 import PremiumBadge from '../premium/PremiumBadge';
 
 export default function Navbar({ onOpenLogin, onOpenRegister, onOpenPremium }) {
-  const { user, isAuthenticated, isPremium, logout } = useAuth();
+  const { user, isAuthenticated, isPremium, isAdmin, logout } = useAuth();
   const { theme, setTheme } = useTheme();
   const location = useLocation();
   const [themeOpen, setThemeOpen] = useState(false);
@@ -49,7 +49,11 @@ export default function Navbar({ onOpenLogin, onOpenRegister, onOpenPremium }) {
         <div className="nav-links">
           <Link to="/" className={isActive('/')}>All exercises</Link>
           <Link to="/top-users" className={isActive('/top-users')}>Top users</Link>
-
+          {isAdmin && (
+            <Link to="/admin" className={isActive('/admin')} style={{ color: 'var(--blue)', fontWeight: 600 }}>
+              ⚙️ Admin
+            </Link>
+          )}
           {/* Other Lessons Dropdown */}
           <div className="other-lessons-wrap" ref={otherRef}>
             <a className="nav-other-btn" onClick={() => setOtherOpen(!otherOpen)}>
@@ -134,7 +138,8 @@ export default function Navbar({ onOpenLogin, onOpenRegister, onOpenPremium }) {
         onOpenRegister={onOpenRegister}
         onOpenPremium={onOpenPremium}
         onLogout={logout}
-      />
+        isAdmin={isAdmin}
+       />
     </>
   );
 }

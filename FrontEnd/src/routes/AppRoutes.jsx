@@ -10,6 +10,8 @@ const HomePage = lazy(() => import('../pages/HomePage'));
 const ExercisePage = lazy(() => import('../pages/ExercisePage'));
 const TopUsersPage = lazy(() => import('../pages/TopUsersPage'));
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
+const TopicDetailPage = lazy(() => import('../pages/TopicDetailPage'));
+const AdminPage = lazy(() => import('../pages/AdminPage'));
 
 export default function AppRoutes({ onOpenPremium }) {
   return (
@@ -19,6 +21,8 @@ export default function AppRoutes({ onOpenPremium }) {
         <Route path="/exercise/:slug" element={<ExercisePage onOpenPremium={onOpenPremium} />} />
         <Route path="/top-users" element={<TopUsersPage />} />
         <Route path="*" element={<NotFoundPage />} />
+        <Route path="/topic/:slug" element={<TopicDetailPage />} />
+        <Route path="/admin" element={<AdminPage />} />
       </Routes>
     </Suspense>
   );

@@ -19,15 +19,59 @@ const createTopic = asyncHandler(async (req, res) => {
     return successResponse(res, topic, "Topic created successfully", 201);
 });
 
-// GET ALL
+// GET ALL (với lessonCount thực tế từ bảng lessons)
 const getTopics = asyncHandler(async (req, res) => {
-    const topics = await Topic.find().sort({ createdAt: -1 });
+    const topics = await Topic.aggregate([
+        {
+            $lookup: {
+                from: "lessons",           // Tên collection Lesson trong MongoDB
+                localField: "_id",
+                foreignField: "topicId",
+                as: "lessons",
+            },
+        },
+        {
+            $addFields: {
+                lessonCount: { $size: "$lessons" }, // Đếm thực tế số bài học
+            },
+        },
+        {
+            $project: {
+                lessons: 0,                // Ẩn mảng lessons để response gọn
+            },
+        },
+        {
+            $sort: { createdAt: -1 },
+        },
+    ]);
+
     return successResponse(res, topics, "Topics fetched successfully");
 });
 
-// GET BY SLUG
+// GET BY SLUG (với lessonCount thực tế)
 const getTopicBySlug = asyncHandler(async (req, res) => {
-    const topic = await Topic.findOne({ slug: req.params.slug });
+    const [topic] = await Topic.aggregate([
+        { $match: { slug: req.params.slug } },
+        {
+            $lookup: {
+                from: "lessons",
+                localField: "_id",
+                foreignField: "topicId",
+                as: "lessons",
+            },
+        },
+        {
+            $addFields: {
+                lessonCount: { $size: "$lessons" },
+            },
+        },
+        {
+            $project: {
+                lessons: 0,
+            },
+        },
+    ]);
+
     if (!topic) {
         return errorResponse(res, "Topic not found", 404);
     }

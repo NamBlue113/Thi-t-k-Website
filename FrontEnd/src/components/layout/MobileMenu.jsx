@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 export default function MobileMenu({
   open, onClose, isPremium, isAuthenticated,
   theme, onSetTheme, onOpenLogin, onOpenRegister,
-  onOpenPremium, onLogout,
+  onOpenPremium, onLogout, isAdmin,
 }) {
   return (
     <>
@@ -23,6 +23,9 @@ export default function MobileMenu({
         <nav className="mobile-nav">
           <Link to="/" onClick={onClose}>🎧 All exercises</Link>
           <Link to="/top-users" onClick={onClose}>🏆 Top users</Link>
+          {isAdmin && (
+            <Link to="/admin" onClick={onClose} style={{ color: 'var(--blue)', fontWeight: 600 }}>⚙️ Admin</Link>
+          )}
           <a
             className="locked-link"
             onClick={() => {

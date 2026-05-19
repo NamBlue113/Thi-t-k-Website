@@ -1,33 +1,53 @@
 // ============================================
 // RegisterModal — Listening IELTS
+// Giữ nguyên HTML/CSS class từ Listening IELTS.html cũ
 // ============================================
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 
 export default function RegisterModal({ open, onClose, onSwitchToLogin }) {
-  const { register, loading } = useAuth();
-  const [nickname, setNickname] = useState('');
+  const { register, error: authError, setError, loading } = useAuth();
+  const [username, setusername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [localError, setLocalError] = useState('');
 
   if (!open) return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    const result = await register(nickname, email, password);
+    setLocalError('');
+    setError(null);
+
+    if (!username.trim() || !email.trim() || !password.trim()) {
+      setLocalError('Vui lòng nhập đầy đủ thông tin');
+      return;
+    }
+
+    if (password.length < 6) {
+      setLocalError('Mật khẩu phải có ít nhất 6 ký tự');
+      return;
+    }
+
+    setSubmitting(true);
+    const result = await register(username.trim(), email.trim(), password);
+    setSubmitting(false);
+
     if (result.success) {
+      setusername('');
+      setEmail('');
+      setPassword('');
       onClose();
-    } else {
-      setError(result.message);
     }
   };
 
+  const displayError = localError || authError;
+
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>✕</button>
+    <div className={`modal-overlay${open ? ' open' : ''}`} onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className="modal">
+        <button className="modal-close" onClick={onClose}>&#10005;</button>
         <h2>Create an account</h2>
 
         <button className="btn-google">
@@ -41,34 +61,55 @@ export default function RegisterModal({ open, onClose, onSwitchToLogin }) {
         </button>
 
         <div className="divider">
-          <div className="divider-line" /><span>Or enter your information</span><div className="divider-line" />
+          <div className="divider-line"></div>
+          <span>Or enter your information</span>
+          <div className="divider-line"></div>
         </div>
+
+        {displayError && (
+          <div style={{ color: '#EF4444', fontSize: 13, marginBottom: 12, textAlign: 'center' }}>
+            {displayError}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Nickname</label>
-            <input type="text" placeholder="Enter your nickname"
-              value={nickname} onChange={(e) => setNickname(e.target.value)} required />
+            <label>username</label>
+            <input
+              type="text"
+              placeholder="Enter your username"
+              value={username}
+              onChange={(e) => setusername(e.target.value)}
+            />
           </div>
           <div className="form-group">
             <label>Email</label>
-            <input type="email" placeholder="Enter your email"
-              value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </div>
           <div className="form-group">
             <label>Password</label>
-            <input type="password" placeholder="Enter your password"
-              value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
+            <input
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </div>
-          {error && <div style={{ color: '#EF4444', fontSize: 13, marginBottom: 8 }}>{error}</div>}
-          <button className="btn-submit" type="submit" disabled={loading}>
-            {loading ? 'Đang xử lý...' : 'Submit'}
+          <button className="btn-submit" type="submit" disabled={submitting || loading}>
+            {submitting || loading ? 'Đang đăng ký...' : 'Submit'}
           </button>
         </form>
 
         <div className="modal-footer-links">
           Already have an account?{' '}
-          <a onClick={() => { onClose(); onSwitchToLogin(); }}>Login here</a>
+          <a href="#" onClick={(e) => { e.preventDefault(); onSwitchToLogin(); }}>
+            Login here
+          </a>
         </div>
       </div>
     </div>

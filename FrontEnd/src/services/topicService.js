@@ -8,5 +8,7 @@ export const topicService = {
 
   getById: (id) => api.get(`/topics/${id}`),
 
+  create: (data) => api.post('/topics', data),
+
   getSections: (topicId) => api.get(`/topics/${topicId}/sections`),
 };

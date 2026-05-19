@@ -1,9 +1,10 @@
-const express = require("express");
 const cors = require("cors");
+const express = require("express");
 
 const lessonRoutes = require("./src/routes/lessonRoutes");
 const authRoutes = require("./src/routes/authRoutes");
 const topicRoutes = require("./src/routes/topicRoutes");
+const userRoutes = require("./src/routes/userRoutes");
 const attemptRoutes = require("./src/routes/attemptRoutes");
 const speechRoutes = require("./src/routes/speechRoutes");
 const aiRoutes = require("./src/routes/aiRoutes");
@@ -11,6 +12,7 @@ const aiRoutes = require("./src/routes/aiRoutes");
 const errorHandler = require("./src/middleware/errorMiddleware");
 
 const app = express();
+app.use(cors()); // Cho phép tất cả các nguồn (ports) truy cập vào API của bạn
 
 app.use(cors());
 app.use(express.json());
@@ -28,6 +30,7 @@ app.get("/api/health", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/topics", topicRoutes);
+app.use("/api/users", userRoutes);
 app.use("/api/attempts", attemptRoutes);
 app.use("/api/lessons", lessonRoutes);
 app.use("/api/speech", speechRoutes);

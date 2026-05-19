@@ -1,6 +1,7 @@
 // ============================================
 // HomePage — Listening IELTS
-// Dynamic rendering từ API /api/topics
+// Hiển thị topic grid từ API /api/topics
+// Giữ nguyên HTML/CSS class từ Listening IELTS.html cũ
 // ============================================
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -28,8 +29,9 @@ export default function HomePage({ onOpenPremium }) {
       onOpenPremium(topic.title);
       return;
     }
-    navigate(`/exercise/${topic.slug || topic._id}`, {
-      state: { title: topic.title, mediaType: topic.mediaType },
+    // Navigate to topic detail page (shows lessons list)
+    navigate(`/topic/${topic.slug || topic._id}`, {
+      state: { title: topic.title },
     });
   }, [navigate, isPremium, onOpenPremium]);
 
@@ -40,7 +42,7 @@ export default function HomePage({ onOpenPremium }) {
 
   return (
     <>
-      {/* Intro */}
+      {/* Intro Section */}
       <section className="intro-section">
         <h1>
           Practice English with<br />
@@ -58,7 +60,7 @@ export default function HomePage({ onOpenPremium }) {
 
       <div className="intro-divider" />
 
-      {/* Hero Mini */}
+      {/* Hero Mini — Search + Stats */}
       <section className="hero-mini">
         <SearchBar onSearch={handleSearch} />
         <div className="stats">

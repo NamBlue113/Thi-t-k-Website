@@ -1,21 +1,21 @@
 // ============================================
-// Axios Instance — Listening IELTS
+// axiosInstance — Listening IELTS
+// Base URL + JWT interceptor
 // ============================================
 import axios from 'axios';
-import { API_URL, STORAGE_KEYS } from '../utils/constants';
 
-const api = axios.create({
-  baseURL: API_URL,
+const axiosInstance = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// ── REQUEST INTERCEPTOR: attach JWT ──
-api.interceptors.request.use(
+// ── Attach JWT token from localStorage ──
+axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+    const token = localStorage.getItem('listeningielts-token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -24,15 +24,14 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// ── RESPONSE INTERCEPTOR: handle errors ──
-api.interceptors.response.use(
+// ── Handle 401 globally ──
+axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Clear auth data on token expiry
-      localStorage.removeItem(STORAGE_KEYS.TOKEN);
-      localStorage.removeItem(STORAGE_KEYS.USER);
-      localStorage.removeItem(STORAGE_KEYS.PREMIUM);
+      localStorage.removeItem('listeningielts-token');
+      localStorage.removeItem('listeningielts-user');
+      localStorage.removeItem('listeningielts-premium');
       // Redirect to home if not already there
       if (window.location.pathname !== '/') {
         window.location.href = '/';
@@ -42,4 +41,4 @@ api.interceptors.response.use(
   }
 );
 
-export default api;
+export default axiosInstance;

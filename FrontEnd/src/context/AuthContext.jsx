@@ -1,8 +1,9 @@
 // ============================================
 // AuthContext — Listening IELTS
+// Full auth flow: login, register, logout, auto-check session
 // ============================================
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { authService } from '../services/authService';
+import api from '../api/axiosInstance';
 import { STORAGE_KEYS } from '../utils/constants';
 
 const AuthContext = createContext(null);
@@ -13,18 +14,47 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // ── CHECK EXISTING SESSION ON MOUNT ──
+  // ── AUTO-CHECK SESSION ON MOUNT ──
   useEffect(() => {
-    const savedUser = localStorage.getItem(STORAGE_KEYS.USER);
-    if (token && savedUser) {
+    let cancelled = false;
+
+    async function checkSession() {
+      // If no token in localStorage, skip
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
       try {
-        setUser(JSON.parse(savedUser));
-      } catch {
-        // corrupted data — clear
-        localStorage.removeItem(STORAGE_KEYS.USER);
+        const { data } = await api.get('/auth/me');
+        if (!cancelled) {
+          const userData = data.data?.user || data.user || data.data || data;
+          setUser(userData);
+          localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(userData));
+
+          // Sync premium status
+          if (userData.plan && userData.plan !== 'free') {
+            localStorage.setItem(STORAGE_KEYS.PREMIUM, userData.plan);
+          }
+        }
+      } catch (err) {
+        if (!cancelled) {
+          // Token expired or invalid — clear
+          if (err.response?.status === 401) {
+            localStorage.removeItem(STORAGE_KEYS.TOKEN);
+            localStorage.removeItem(STORAGE_KEYS.USER);
+            localStorage.removeItem(STORAGE_KEYS.PREMIUM);
+            setToken(null);
+            setUser(null);
+          }
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
       }
     }
-    setLoading(false);
+
+    checkSession();
+    return () => { cancelled = true; };
   }, [token]);
 
   // ── LOGIN ──
@@ -32,21 +62,26 @@ export function AuthProvider({ children }) {
     setError(null);
     setLoading(true);
     try {
-      const { data } = await authService.login({ email, password });
-      const { token: newToken, user: userData } = data.data || data;
+      const { data } = await api.post('/auth/login', { email, password });
+      const newToken = data.data?.token || data.token;
+      const userData = data.data?.user || data.user || data.data;
+
+      if (!newToken) {
+        throw new Error('Server did not return a token');
+      }
 
       localStorage.setItem(STORAGE_KEYS.TOKEN, newToken);
       localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(userData));
       setToken(newToken);
       setUser(userData);
 
-      if (userData.plan && userData.plan !== 'free') {
+      if (userData?.plan && userData.plan !== 'free') {
         localStorage.setItem(STORAGE_KEYS.PREMIUM, userData.plan);
       }
 
-      return { success: true };
+      return { success: true, user: userData };
     } catch (err) {
-      const msg = err.response?.data?.message || 'Đăng nhập thất bại';
+      const msg = err.response?.data?.message || err.message || 'Đăng nhập thất bại';
       setError(msg);
       return { success: false, message: msg };
     } finally {
@@ -55,21 +90,26 @@ export function AuthProvider({ children }) {
   }, []);
 
   // ── REGISTER ──
-  const register = useCallback(async (nickname, email, password) => {
+  const register = useCallback(async (username, email, password) => {
     setError(null);
     setLoading(true);
     try {
-      const { data } = await authService.register({ nickname, email, password });
-      const { token: newToken, user: userData } = data.data || data;
+      const { data } = await api.post('/auth/register', { username, email, password });
+      const newToken = data.data?.token || data.token;
+      const userData = data.data?.user || data.user || data.data;
+
+      if (!newToken) {
+        throw new Error('Server did not return a token');
+      }
 
       localStorage.setItem(STORAGE_KEYS.TOKEN, newToken);
       localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(userData));
       setToken(newToken);
       setUser(userData);
 
-      return { success: true };
+      return { success: true, user: userData };
     } catch (err) {
-      const msg = err.response?.data?.message || 'Đăng ký thất bại';
+      const msg = err.response?.data?.message || err.message || 'Đăng ký thất bại';
       setError(msg);
       return { success: false, message: msg };
     } finally {
@@ -99,6 +139,7 @@ export function AuthProvider({ children }) {
   // ── DERIVED ──
   const isAuthenticated = !!user && !!token;
   const isPremium = user?.plan === 'premium' || user?.plan === 'premium_plus';
+  const isAdmin = user?.role === 'admin';
 
   const value = {
     user,
@@ -107,10 +148,12 @@ export function AuthProvider({ children }) {
     error,
     isAuthenticated,
     isPremium,
+    isAdmin,
     login,
     register,
     logout,
     activatePremium,
+    setError,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

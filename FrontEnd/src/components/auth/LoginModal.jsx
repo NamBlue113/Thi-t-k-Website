@@ -1,32 +1,46 @@
 // ============================================
 // LoginModal — Listening IELTS
+// Giữ nguyên HTML/CSS class từ Listening IELTS.html cũ
 // ============================================
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 
 export default function LoginModal({ open, onClose, onSwitchToRegister }) {
-  const { login, loading } = useAuth();
+  const { login, error: authError, setError, loading } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [localError, setLocalError] = useState('');
 
   if (!open) return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    const result = await login(email, password);
+    setLocalError('');
+    setError(null);
+
+    if (!email.trim() || !password.trim()) {
+      setLocalError('Vui lòng nhập đầy đủ email và mật khẩu');
+      return;
+    }
+
+    setSubmitting(true);
+    const result = await login(email.trim(), password);
+    setSubmitting(false);
+
     if (result.success) {
+      setEmail('');
+      setPassword('');
       onClose();
-    } else {
-      setError(result.message);
     }
   };
 
+  const displayError = localError || authError;
+
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>✕</button>
+    <div className={`modal-overlay${open ? ' open' : ''}`} onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className="modal">
+        <button className="modal-close" onClick={onClose}>&#10005;</button>
         <h2>Login</h2>
 
         <button className="btn-google">
@@ -40,30 +54,47 @@ export default function LoginModal({ open, onClose, onSwitchToRegister }) {
         </button>
 
         <div className="divider">
-          <div className="divider-line" /><span>Or enter your password</span><div className="divider-line" />
+          <div className="divider-line"></div>
+          <span>Or enter your password</span>
+          <div className="divider-line"></div>
         </div>
+
+        {displayError && (
+          <div style={{ color: '#EF4444', fontSize: 13, marginBottom: 12, textAlign: 'center' }}>
+            {displayError}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Username or Email</label>
-            <input type="text" placeholder="Nhập email hoặc tên đăng nhập"
-              value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <input
+              type="text"
+              placeholder="Nhập email hoặc tên đăng nhập"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </div>
           <div className="form-group">
             <label>Password</label>
-            <input type="password" placeholder="Nhập mật khẩu"
-              value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <input
+              type="password"
+              placeholder="Nhập mật khẩu"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </div>
-          {error && <div style={{ color: '#EF4444', fontSize: 13, marginBottom: 8 }}>{error}</div>}
-          <button className="btn-submit" type="submit" disabled={loading}>
-            {loading ? 'Đang xử lý...' : 'Submit'}
+          <button className="btn-submit" type="submit" disabled={submitting || loading}>
+            {submitting || loading ? 'Đang đăng nhập...' : 'Submit'}
           </button>
         </form>
 
         <div className="modal-footer-links">
           Forgot your password? <a href="#">Click here</a><br />
           Haven&apos;t had an account?{' '}
-          <a onClick={() => { onClose(); onSwitchToRegister(); }}>Register here</a>
+          <a href="#" onClick={(e) => { e.preventDefault(); onSwitchToRegister(); }}>
+            Register here
+          </a>
         </div>
       </div>
     </div>

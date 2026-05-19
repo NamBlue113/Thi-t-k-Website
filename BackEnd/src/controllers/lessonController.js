@@ -1,17 +1,31 @@
 const Lesson = require("../models/lessonModel");
 const asyncHandler = require("../utils/asyncHandler");
+const Topic = require("../models/topicModel");
 const { successResponse, errorResponse } = require("../utils/apiResponse");
 
 // CREATE LESSON (Chỉ Admin - đã chặn ở Route)
 const createLesson = asyncHandler(async (req, res) => {
     const lesson = await Lesson.create(req.body);
+
+    // Tự động tăng lessonCount của Topic
+    if (lesson.topicId) {
+        await Topic.findByIdAndUpdate(lesson.topicId, { $inc: { lessonCount: 1 } });
+    }
+
     return successResponse(res, lesson, "Lesson created successfully", 201);
 });
 
 // GET ALL LESSONS (Lấy danh sách bài học ngoài trang chủ)
 const getLessons = asyncHandler(async (req, res) => {
-    // Phục vụ giao diện, ta có thể lọc hoặc chỉ lấy các thông tin cơ bản, không lấy mảng segments để tránh nặng data
-    const lessons = await Lesson.find().sort({ createdAt: -1 });
+    const filter = {};
+
+    // Hỗ trợ lọc theo topicSlug
+    if (req.query.topicSlug) {
+        const topic = await Topic.findOne({ slug: req.query.topicSlug });
+        if (topic) filter.topicId = topic._id;
+    }
+
+    const lessons = await Lesson.find(filter).sort({ createdAt: -1 });
     return successResponse(res, lessons, "Lessons fetched successfully");
 });
 
@@ -59,6 +73,12 @@ const deleteLesson = asyncHandler(async (req, res) => {
     if (!deletedLesson) {
         return errorResponse(res, "Lesson not found", 404);
     }
+
+    // Tự động giảm lessonCount của Topic
+    if (deletedLesson.topicId) {
+        await Topic.findByIdAndUpdate(deletedLesson.topicId, { $inc: { lessonCount: -1 } });
+    }
+
     return successResponse(res, deletedLesson, "Lesson deleted successfully");
 });
 

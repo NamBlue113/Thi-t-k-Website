@@ -12,6 +12,7 @@ import LoginModal from './components/auth/LoginModal';
 import RegisterModal from './components/auth/RegisterModal';
 import PremiumModal from './components/premium/PremiumModal';
 import Toast from './components/ui/Toast';
+import AIChatbox from './components/ui/AIChatbox';
 import './styles/index.css';
 
 function AppShell() {
@@ -115,6 +116,9 @@ function AppShell() {
         show={toast.show}
         onHide={() => setToast({ show: false, message: '' })}
       />
+
+      {/* AI Chatbox */}
+      <AIChatbox />
     </>
   );
 }

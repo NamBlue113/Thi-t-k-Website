@@ -1,25 +1,24 @@
 const express = require("express");
-
 const router = express.Router();
 
 const {
+    createTopic,
     getTopics,
-    getTopicById,
-    getTopicSections,
+    getTopicBySlug,
+    updateTopic,
+    deleteTopic,
 } = require("../controllers/topicController");
 
-const optionalAuthMiddleware = require(
-    "../middleware/optionalAuthMiddleware"
-);
+const authMiddleware = require("../middleware/authMiddleware");
+const adminMiddleware = require("../middleware/adminMiddleware");
 
+// --- PUBLIC ---
 router.get("/", getTopics);
+router.get("/:slug", getTopicBySlug);
 
-router.get("/:id", getTopicById);
-
-router.get(
-    "/:id/sections",
-    optionalAuthMiddleware,
-    getTopicSections
-);
+// --- ADMIN ONLY ---
+router.post("/", authMiddleware, adminMiddleware, createTopic);
+router.put("/:id", authMiddleware, adminMiddleware, updateTopic);
+router.delete("/:id", authMiddleware, adminMiddleware, deleteTopic);
 
 module.exports = router;

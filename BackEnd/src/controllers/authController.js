@@ -1,141 +1,75 @@
 const bcrypt = require("bcryptjs");
-
 const User = require("../models/userModel");
-
 const generateToken = require("../utils/generateToken");
-
 const asyncHandler = require("../utils/asyncHandler");
+const { successResponse, errorResponse } = require("../utils/apiResponse");
 
-const {
-    successResponse,
-    errorResponse,
-} = require("../utils/apiResponse");
-
+// Hàm chuyển đổi format dữ liệu trả về cho Client
+const toAuthUser = (user) => ({
+    id: user._id,
+    username: user.username, // Đổi từ nickname sang username
+    email: user.email,
+    accountType: user.accountType || "free", // Đổi từ plan sang accountType để khớp bảng MongoDB
+    role: user.role,
+});
 
 // REGISTER
 const register = asyncHandler(async (req, res) => {
+    const { username, email, password } = req.body; // Đổi nickname -> username
 
-    const {
-        nickname,
-        email,
-        password,
-    } = req.body;
-
-    if (
-        !nickname ||
-        !email ||
-        !password
-    ) {
-        return errorResponse(
-            res,
-            "Vui lòng nhập đầy đủ thông tin",
-            400
-        );
+    if (!username || !email || !password) {
+        return errorResponse(res, "Username, email and password are required", 400);
     }
 
-    const existingUser = await User.findOne({
-        email,
-    });
+    const normalizedEmail = email.trim().toLowerCase();
 
+    const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
-        return errorResponse(
-            res,
-            "Email đã tồn tại",
-            400
-        );
+        return errorResponse(res, "Email already exists", 400);
     }
 
-    const hashedPassword = await bcrypt.hash(
-        password,
-        10
-    );
+    const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Tạo bản ghi lưu xuống MongoDB
     const user = await User.create({
-        nickname,
-        email,
+        username: username.trim(),
+        email: normalizedEmail,
         password: hashedPassword,
+        // role và accountType tự động lấy giá trị default ('user' và 'free')
     });
 
     const token = generateToken(user._id);
 
-    return successResponse(
-        res,
-        {
-            token,
-            user: {
-                id: user._id,
-                nickname: user.nickname,
-                email: user.email,
-                plan: user.plan,
-                role: user.role,
-            },
-        },
-        "Đăng ký thành công",
-        201
-    );
+    return successResponse( res,{ token,user: toAuthUser(user),},"Registered successfully",201);
 });
-
 
 // LOGIN
 const login = asyncHandler(async (req, res) => {
+    const { email, password } = req.body;
 
-    const {
-        email,
-        password,
-    } = req.body;
-
-    const user = await User.findOne({
-        email,
-    });
-
-    if (!user) {
-        return errorResponse(
-            res,
-            "Email hoặc mật khẩu không đúng",
-            401
-        );
+    if (!email || !password) {
+        return errorResponse(res, "Email and password are required", 400);
     }
 
-    const isMatch = await bcrypt.compare(
-        password,
-        user.password
-    );
+    const user = await User.findOne({email: email.trim().toLowerCase(),});
 
+    if (!user) {
+        return errorResponse(res, "Email or password is incorrect", 401);
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-        return errorResponse(
-            res,
-            "Email hoặc mật khẩu không đúng",
-            401
-        );
+        return errorResponse(res, "Email or password is incorrect", 401);
     }
 
     const token = generateToken(user._id);
 
-    return successResponse(
-        res,
-        {
-            token,
-            user: {
-                id: user._id,
-                nickname: user.nickname,
-                email: user.email,
-                plan: user.plan,
-                role: user.role,
-            },
-        },
-        "Đăng nhập thành công"
-    );
+    return successResponse(res,{token,user: toAuthUser(user),}, "Logged in successfully");
 });
-
 
 // GET ME
 const getMe = asyncHandler(async (req, res) => {
-
-    return successResponse(
-        res,
-        req.user,
-        "Lấy thông tin user thành công"
-    );
+    return successResponse(res, toAuthUser(req.user), "User fetched successfully");
 });
 
 module.exports = {

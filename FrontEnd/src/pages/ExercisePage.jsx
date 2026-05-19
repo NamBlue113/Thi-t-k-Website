@@ -33,7 +33,7 @@ export default function ExercisePage({ onOpenPremium }) {
       try {
         // First find topic by slug or id
         const { data: topicsData } = await topicService.getAll();
-        const topics = topicsData.data || [];
+        const topics = topicsData.data?.topics || [];
         const topic = topics.find(
           (t) => t.slug === slug || t._id === slug
         );

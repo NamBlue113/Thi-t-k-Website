@@ -1000,7 +1000,7 @@ body.mobile-preview-mode .preview-label{color:white;font-size:13px;font-weight:5
 <script>
 /* ─── PREMIUM STATE ─── */
 let isPremium = false;
-  const API_BASE_URL ="https://thi-t-k-website.onrender.com/api";
+  const API_BASE_URL ="https://thi-t-k-website.vercel.app/api";
 
 let currentQuestion = null;
 let currentSection = null;
@@ -1563,14 +1563,12 @@ async function openExercise(title, isVideo) {
       try {
 
         const topicRes = await fetch(
-          `${API_BASE_URL}/topics`
+          `${API_BASE_URL}/topics?limit=100`
         );
 
         const topicData = await topicRes.json();
 
-        const topic = topicData.data.find(
-          t => t.title === topicTitle
-        );
+        const topic = topicData.data.topics.find(t => t.title === topicTitle); 
 
         if (!topic) {
 

@@ -1,132 +1,65 @@
 const Topic = require("../models/topicModel");
-
-const Section = require("../models/sectionModel");
-
 const asyncHandler = require("../utils/asyncHandler");
+const { successResponse, errorResponse } = require("../utils/apiResponse");
 
-const {
-    successResponse,
-} = require("../utils/apiResponse");
+// CREATE
+const createTopic = asyncHandler(async (req, res) => {
+    const { title, slug, description, mediaType } = req.body;
 
+    if (!title || !slug || !mediaType) {
+        return errorResponse(res, "Title, slug and mediaType are required", 400);
+    }
 
-// GET TOPICS
+    const existingSlug = await Topic.findOne({ slug: slug.toLowerCase() });
+    if (existingSlug) {
+        return errorResponse(res, "Slug already exists", 400);
+    }
+
+    const topic = await Topic.create(req.body);
+    return successResponse(res, topic, "Topic created successfully", 201);
+});
+
+// GET ALL
 const getTopics = asyncHandler(async (req, res) => {
-
-    const {
-        search,
-        level,
-        type,
-        premium,
-    } = req.query;
-
-    const query = {};
-
-    if (search) {
-        query.title = {
-            $regex: search,
-            $options: "i",
-        };
-    }
-
-    if (level) {
-        query.levels = level;
-    }
-
-    if (type) {
-        query.mediaType = type;
-    }
-
-    if (premium !== undefined) {
-        query.isPremium = premium === "true";
-    }
-
-    const topics = await Topic.find(query)
-        .sort({ createdAt: -1 });
-
-    return successResponse(
-        res,
-        topics,
-        "Lấy danh sách topic thành công"
-    );
+    const topics = await Topic.find().sort({ createdAt: -1 });
+    return successResponse(res, topics, "Topics fetched successfully");
 });
 
-
-// GET TOPIC BY ID
-const getTopicById = asyncHandler(async (req, res) => {
-
-    const topic = await Topic.findById(req.params.id);
-
+// GET BY SLUG
+const getTopicBySlug = asyncHandler(async (req, res) => {
+    const topic = await Topic.findOne({ slug: req.params.slug });
     if (!topic) {
-        const error = new Error("Không tìm thấy topic");
-        error.statusCode = 404;
-        throw error;
+        return errorResponse(res, "Topic not found", 404);
     }
-
-    return successResponse(
-        res,
-        topic,
-        "Lấy topic thành công"
-    );
+    return successResponse(res, topic, "Topic fetched successfully");
 });
 
-
-// GET TOPIC SECTIONS
-const getTopicSections = asyncHandler(async (req, res) => {
-
-    const topic = await Topic.findById(req.params.id);
-
-    if (!topic) {
-        const error = new Error("Không tìm thấy topic");
-        error.statusCode = 404;
-        throw error;
-    }
-
-    // PREMIUM CHECK
-    if (topic.isPremium) {
-
-        if (!req.user) {
-            const error = new Error(
-                "Premium required"
-            );
-
-            error.statusCode = 403;
-
-            throw error;
-        }
-
-        const allowedPlans = [
-            "premium",
-            "premium_plus",
-        ];
-
-        if (
-            !allowedPlans.includes(req.user.plan)
-        ) {
-            const error = new Error(
-                "Premium required"
-            );
-
-            error.statusCode = 403;
-
-            throw error;
-        }
-    }
-
-    const sections = await Section.find({
-        topicId: topic._id,
-    }).sort({
-        order: 1,
-    });
-
-    return successResponse(
-        res,
-        sections,
-        "Lấy sections thành công"
+// UPDATE
+const updateTopic = asyncHandler(async (req, res) => {
+    const updatedTopic = await Topic.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { new: true, runValidators: true }
     );
+    if (!updatedTopic) {
+        return errorResponse(res, "Topic not found", 404);
+    }
+    return successResponse(res, updatedTopic, "Topic updated successfully");
+});
+
+// DELETE
+const deleteTopic = asyncHandler(async (req, res) => {
+    const deletedTopic = await Topic.findByIdAndDelete(req.params.id);
+    if (!deletedTopic) {
+        return errorResponse(res, "Topic not found", 404);
+    }
+    return successResponse(res, deletedTopic, "Topic deleted successfully");
 });
 
 module.exports = {
+    createTopic,
     getTopics,
-    getTopicById,
-    getTopicSections,
+    getTopicBySlug,
+    updateTopic,
+    deleteTopic,
 };

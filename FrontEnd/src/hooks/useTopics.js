@@ -23,7 +23,7 @@ export function useTopics() {
       else if (filter === 'video') params.type = 'video';
 
       const { data } = await topicService.getAll(params);
-      setTopics(data.data || []);
+      setTopics(data.data?.topics || []); 
     } catch (err) {
       setError(err.response?.data?.message || 'Không thể tải topics');
     } finally {

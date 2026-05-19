@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 
 const lessonRoutes = require("./src/routes/lessonRoutes");
-const questionRoutes = require("./src/routes/questionRoutes");
 const authRoutes = require("./src/routes/authRoutes");
 const topicRoutes = require("./src/routes/topicRoutes");
 const attemptRoutes = require("./src/routes/attemptRoutes");
@@ -31,7 +30,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/topics", topicRoutes);
 app.use("/api/attempts", attemptRoutes);
 app.use("/api/lessons", lessonRoutes);
-app.use("/api/questions", questionRoutes);
 app.use("/api/speech", speechRoutes);
 app.use("/api/ai", aiRoutes);
 

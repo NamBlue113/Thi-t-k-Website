@@ -14,9 +14,26 @@ const aiRoutes = require("./src/routes/aiRoutes");
 const errorHandler = require("./src/middleware/errorMiddleware");
 
 const app = express();
-app.use(cors()); // Cho phép tất cả các nguồn (ports) truy cập vào API của bạn
 
-app.use(cors());
+// CORS — chỉ cho phép Frontend Netlify + local dev
+const allowedOrigins = [
+  "https://tangerine-stroopwafel-f1ad56.netlify.app",
+  "http://localhost:5173",
+  "http://localhost:3000",
+];
+app.use(cors({
+  origin: (origin, callback) => {
+    // Cho phép request không có origin (Postman, curl, mobile app...)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  credentials: true,
+}));
+
 app.use(express.json());
 
 app.get("/", (req, res) => {

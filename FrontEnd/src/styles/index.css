@@ -2179,6 +2179,15 @@ body.is-premium .spinner {
     display: none;
   }
 
+  /* Giữ lại nút Login/Register bên trong mobile menu */
+  .mobile-menu-actions .btn-login {
+    display: block;
+  }
+
+  .mobile-menu-actions .btn-register {
+    display: block;
+  }
+
   .btn-hamburger {
     display: flex;
   }

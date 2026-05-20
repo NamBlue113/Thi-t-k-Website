@@ -10,4 +10,8 @@ export const lessonService = {
   getAll: (params = {}) => api.get('/lessons', { params }),
 
   create: (data) => api.post('/lessons', data),
+
+  update: (id, data) => api.put(`/lessons/${id}`, data),
+
+  delete: (id) => api.delete(`/lessons/${id}`),
 };

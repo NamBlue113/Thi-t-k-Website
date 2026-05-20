@@ -11,7 +11,10 @@ const ExercisePage = lazy(() => import('../pages/ExercisePage'));
 const TopUsersPage = lazy(() => import('../pages/TopUsersPage'));
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
 const TopicDetailPage = lazy(() => import('../pages/TopicDetailPage'));
+const ReviewDashboard = lazy(() => import('../pages/ReviewDashboard'));
 const AdminPage = lazy(() => import('../pages/AdminPage'));
+const AdminTransactionsPage = lazy(() => import('../pages/AdminTransactionsPage'));
+const ProfilePage = lazy(() => import('../pages/ProfilePage'));
 
 export default function AppRoutes({ onOpenPremium }) {
   return (
@@ -23,6 +26,9 @@ export default function AppRoutes({ onOpenPremium }) {
         <Route path="*" element={<NotFoundPage />} />
         <Route path="/topic/:slug" element={<TopicDetailPage />} />
         <Route path="/admin" element={<AdminPage />} />
+        <Route path="/review" element={<ReviewDashboard />} />
+        <Route path="/admin/transactions" element={<AdminTransactionsPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </Suspense>
   );

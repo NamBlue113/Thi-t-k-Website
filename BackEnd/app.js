@@ -7,6 +7,8 @@ const topicRoutes = require("./src/routes/topicRoutes");
 const userRoutes = require("./src/routes/userRoutes");
 const attemptRoutes = require("./src/routes/attemptRoutes");
 const speechRoutes = require("./src/routes/speechRoutes");
+const noteRoutes = require("./src/routes/noteRoutes");
+const transactionRoutes = require("./src/routes/transactionRoutes");
 const aiRoutes = require("./src/routes/aiRoutes");
 
 const errorHandler = require("./src/middleware/errorMiddleware");
@@ -33,6 +35,8 @@ app.use("/api/topics", topicRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/attempts", attemptRoutes);
 app.use("/api/lessons", lessonRoutes);
+app.use("/api/notes", noteRoutes);
+app.use("/api/transactions", transactionRoutes);
 app.use("/api/speech", speechRoutes);
 app.use("/api/ai", aiRoutes);
 

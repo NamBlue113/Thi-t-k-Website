@@ -3,7 +3,7 @@
 // Chỉ hiển thị khi user.role === 'admin'
 // ============================================
 import { useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import AddTopicForm from '../components/admin/AddTopicForm';
 import AddLessonForm from '../components/admin/AddLessonForm';
@@ -37,6 +37,15 @@ export default function AdminPage() {
         <p style={{ color: 'var(--text-muted)', fontSize: 14, marginTop: 4 }}>
           Xin chào, <strong>{user?.username}</strong> — Bạn đang ở trang quản trị.
         </p>
+        <div style={{ marginTop: 10 }}>
+          <Link to="/admin/transactions" style={{
+            padding: '7px 18px', borderRadius: 8, background: '#FEF3C7',
+            color: '#92400E', textDecoration: 'none', fontSize: 13, fontWeight: 500,
+            display: 'inline-block',
+          }}>
+            💰 Duyệt nâng cấp Premium
+          </Link>
+        </div>
       </div>
 
       {/* Tabs */}

@@ -8,6 +8,7 @@ import { useParams, useLocation, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { lessonService } from '../services/lessonService';
 import { attemptService } from '../services/attemptService';
+import { noteService } from '../services/noteService';
 import { normalizeText, extractYoutubeId } from '../utils/helpers';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import ErrorMessage from '../components/ui/ErrorMessage';
@@ -28,6 +29,8 @@ export default function ExercisePage({ onOpenPremium }) {
   const navigate = useNavigate();
   const { isPremium } = useAuth();
 
+  // Lưu mediaType để phân biệt audio/video
+  const [mediaType, setMediaType] = useState(location.state?.mediaType || 'video');
   const [lesson, setLesson] = useState(null);
   const [segments, setSegments] = useState([]);
   const [currentIdx, setCurrentIdx] = useState(0);
@@ -47,6 +50,11 @@ export default function ExercisePage({ onOpenPremium }) {
   const [result, setResult] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [allDone, setAllDone] = useState(false);
+
+  // ── Note state ──
+  const [noteOpen, setNoteOpen] = useState(false);
+  const [noteSaving, setNoteSaving] = useState(false);
+  const [noteMsg, setNoteMsg] = useState('');
 
   // ── LOAD LESSON ──
   useEffect(() => {
@@ -84,6 +92,8 @@ export default function ExercisePage({ onOpenPremium }) {
           setTopicTitle(lessonData.title || location.state?.title || 'Lesson');
           const segs = lessonData.segments || [];
           setSegments(segs);
+          // Cập nhật mediaType từ lesson hoặc giữ nguyên từ location state
+          setMediaType(lessonData.mediaType || location.state?.mediaType || 'video');
 
           // Extract YouTube ID
           if (lessonData.youtubeUrl) {
@@ -195,8 +205,8 @@ export default function ExercisePage({ onOpenPremium }) {
 
   // ── PLAY SEGMENT BUTTON ──
   const handlePlay = useCallback(() => {
+    // KHÔNG xóa answer khi replay — giữ lại nội dung user đã gõ
     setResult(null);
-    setAnswer('');
     playCurrentSegment();
   }, [playCurrentSegment]);
 
@@ -261,20 +271,81 @@ export default function ExercisePage({ onOpenPremium }) {
     handleNext();
   }, [handleNext]);
 
+  // ── PREVIOUS SEGMENT ──
+  const handlePrev = useCallback(() => {
+    if (currentIdx <= 0) return;
+    setResult(null);
+    setAnswer('');
+    setCurrentIdx((prev) => prev - 1);
+    if (player) player.pauseVideo();
+  }, [currentIdx, player]);
+
+  // ── SAVE NOTE ──
+  const handleSaveNote = async (level) => {
+    if (!lesson?._id || !currentSegment) return;
+    setNoteSaving(true);
+    setNoteMsg('');
+    try {
+      await noteService.save({
+        lessonId: lesson._id,
+        segmentId: currentSegment.segmentId || currentIdx + 1,
+        segmentContent: currentSegment.content || '',
+        difficultyLevel: level,
+      });
+      const label = level === 1 ? 'Dễ (7 ngày)' : level === 2 ? 'TB (3 ngày)' : 'Khó (1 ngày)';
+      setNoteMsg(`✅ Đã lưu: ${label}`);
+      setNoteOpen(false);
+    } catch (err) {
+      setNoteMsg('❌ ' + (err.response?.data?.message || 'Lỗi'));
+    } finally {
+      setNoteSaving(false);
+      setTimeout(() => setNoteMsg(''), 3000);
+    }
+  };
+
   // ── KEYBOARD ──
   useEffect(() => {
     function handleKey(e) {
-      if (e.key === 'Escape') navigate('/');
-      if (e.key === 'Enter' && !e.shiftKey && document.activeElement?.tagName === 'TEXTAREA') {
+      // Không xử lý phím tắt khi đang gõ trong input/textarea/select
+      const tag = document.activeElement?.tagName;
+      const isInput = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
+
+      if (e.key === 'Escape') { navigate('/'); return; }
+
+      // Enter: Check (chỉ khi đang focus textarea)
+      if (e.key === 'Enter' && !e.shiftKey && tag === 'TEXTAREA') {
         e.preventDefault();
         handleCheck();
+        return;
+      }
+
+      // Space: Replay segment (không kích hoạt khi đang gõ)
+      if (e.key === ' ' && !isInput) {
+        e.preventDefault();
+        handlePlay();
+        return;
+      }
+
+      // F: Previous segment
+      if ((e.key === 'f' || e.key === 'F') && !isInput) {
+        e.preventDefault();
+        handlePrev();
+        return;
+      }
+
+      // J: Next segment
+      if ((e.key === 'j' || e.key === 'J') && !isInput) {
+        e.preventDefault();
+        handleNext();
+        return;
       }
     }
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [navigate, handleCheck]);
+  }, [navigate, handleCheck, handlePlay, handleNext, handlePrev]);
 
   const currentSegment = segments[currentIdx] || null;
+  const isAudio = mediaType === 'audio';
 
   return (
     <div className="exercise-wrap">
@@ -318,37 +389,46 @@ export default function ExercisePage({ onOpenPremium }) {
 
           {/* SECTION DETAIL */}
           <div className="section-detail open" style={{ display: 'block' }}>
-            {/* YouTube Player */}
-            {videoId && (
+            {/* YouTube Player — Video mode */}
+            {videoId && !isAudio && (
               <>
-                <div className="yt-wrap" id="yt-wrap" style={{ display: 'block' }}>
+                <div className="yt-wrap" id="yt-wrap" style={{ display: 'block', position: 'relative' }}>
                   <div id="youtube-player" style={{ width: '100%', height: '100%' }}></div>
                 </div>
-
-                {/* Controls from ipframe.js */}
                 <div style={{ display: 'flex', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
-                  <button
-                    className="btn-check"
-                    style={{ background: 'var(--blue)' }}
-                    onClick={handlePlay}
-                  >
-                    ▶ Play Segment
-                  </button>
-                  <button
-                    className="btn-skip"
-                    onClick={() => {
-                      if (player) player.pauseVideo();
-                    }}
-                  >
-                    ⏸ Pause
-                  </button>
+                  <button className="btn-check" style={{ background: 'var(--blue)' }} onClick={handlePlay} title="Phím tắt: Space">▶ Play Segment</button>
+                  <button className="btn-skip" onClick={() => { if (player) player.pauseVideo(); }}>⏸ Pause</button>
                 </div>
               </>
             )}
 
-            {/* Audio fallback */}
-            {!videoId && lesson?.audioUrl && (
-              <audio controls src={lesson.audioUrl} style={{ width: '100%', marginBottom: 14 }}></audio>
+            {/* Audio-only mode */}
+            {videoId && isAudio && (
+              <div style={{
+                background: 'var(--surface)', border: '1px solid var(--border)',
+                borderRadius: 12, padding: '1rem 1.3rem', marginBottom: 14,
+                display: 'flex', alignItems: 'center', gap: 12, position: 'relative',
+              }}>
+                <span style={{ fontSize: 24 }}>🎵</span>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--text-primary)' }}>Audio Mode</div>
+                  <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>Đang phát âm thanh (không hiển thị video)</div>
+                </div>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  <button onClick={handlePlay} title="Phím tắt: Space" style={{ padding: '7px 14px', borderRadius: 8, border: 'none', background: 'var(--blue)', color: '#fff', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13, fontWeight: 500 }}>▶ Play</button>
+                  <button onClick={() => { if (player) player.pauseVideo(); }} style={{ padding: '7px 14px', borderRadius: 8, border: '1px solid var(--border)', background: 'transparent', color: 'var(--text-secondary)', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13 }}>⏸ Pause</button>
+                </div>
+                <div style={{ position: 'absolute', width: 1, height: 1, opacity: 0, pointerEvents: 'none', overflow: 'hidden' }}>
+                  <div id="youtube-player" style={{ width: 1, height: 1 }}></div>
+                </div>
+              </div>
+            )}
+
+            {/* No video at all */}
+            {!videoId && (
+              <div style={{ textAlign: 'center', padding: '1rem', color: 'var(--text-muted)', background: 'var(--surface)', borderRadius: 12, border: '1px solid var(--border)', marginBottom: 14, fontSize: 14 }}>
+                🎵 Audio-only lesson — bấm ▶ Play để nghe
+              </div>
             )}
 
             {/* Segment info */}
@@ -369,22 +449,66 @@ export default function ExercisePage({ onOpenPremium }) {
               placeholder="Type what you hear..."
               value={answer}
               onChange={(e) => setAnswer(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  handleCheck();
-                }
-              }}
               disabled={allDone}
             />
 
-            <div style={{ marginTop: 10, display: 'flex', gap: 8 }}>
-              <button className="btn-check" onClick={handleCheck} disabled={submitting || !answer.trim() || allDone}>
+            <div style={{ marginTop: 10, display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+              <button className="btn-check" onClick={handleCheck} disabled={submitting || !answer.trim() || allDone} title="Phím tắt: Enter">
                 {submitting ? 'Đang kiểm tra...' : 'Check'}
               </button>
+
+              {/* Note Button */}
+              <div style={{ position: 'relative' }}>
+                <button type="button" onClick={() => setNoteOpen(!noteOpen)} disabled={allDone}
+                  style={{
+                    padding: '9px 16px', borderRadius: 8, border: '1px solid #F59E0B',
+                    background: noteOpen ? '#FEF3C7' : 'transparent', color: '#92400E',
+                    cursor: allDone ? 'default' : 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: 500,
+                    opacity: allDone ? 0.5 : 1,
+                  }}
+                >📝 Note</button>
+                {noteOpen && (
+                  <div style={{
+                    position: 'absolute', bottom: '100%', left: 0, marginBottom: 6,
+                    background: 'var(--surface)', border: '1px solid var(--border)',
+                    borderRadius: 10, padding: '6px 2px', zIndex: 50,
+                    boxShadow: '0 4px 16px rgba(0,0,0,0.12)', minWidth: 180,
+                  }}>
+                    {[
+                      { level: 1, label: '😊 Dễ', sub: 'Ôn sau 7 ngày', color: '#16A34A' },
+                      { level: 2, label: '🤔 Trung bình', sub: 'Ôn sau 3 ngày', color: '#D97706' },
+                      { level: 3, label: '😰 Khó', sub: 'Ôn sau 1 ngày', color: '#DC2626' },
+                    ].map((opt) => (
+                      <button key={opt.level} type="button"
+                        onClick={() => handleSaveNote(opt.level)} disabled={noteSaving}
+                        style={{
+                          display: 'block', width: '100%', padding: '7px 12px', border: 'none',
+                          background: 'transparent', cursor: 'pointer', textAlign: 'left',
+                          fontFamily: 'inherit', fontSize: 13, borderRadius: 6,
+                          color: 'var(--text-primary)',
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.background = 'var(--bg)'}
+                        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                      >
+                        <span style={{ fontWeight: 600, color: opt.color }}>{opt.label}</span>{' '}
+                        <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>— {opt.sub}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
               <button className="btn-skip" onClick={handleSkip} disabled={allDone}>
                 Skip
               </button>
+
+              {/* Prev / Next */}
+              <button onClick={handlePrev} disabled={currentIdx <= 0 || allDone} title="Phím tắt: F"
+                style={{ padding: '9px 12px', borderRadius: 8, border: '1px solid var(--border)', background: 'transparent', color: 'var(--text-secondary)', cursor: currentIdx <= 0 ? 'default' : 'pointer', fontFamily: 'inherit', fontSize: 13, opacity: currentIdx <= 0 ? 0.4 : 1 }}
+              >◀ Prev</button>
+              <button onClick={handleNext} disabled={allDone} title="Phím tắt: J"
+                style={{ padding: '9px 12px', borderRadius: 8, border: '1px solid var(--border)', background: 'transparent', color: 'var(--text-secondary)', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13 }}
+              >Next ▶</button>
             </div>
 
             {/* Result */}
@@ -418,6 +542,15 @@ export default function ExercisePage({ onOpenPremium }) {
                   </button>
                 )}
               </div>
+            )}
+
+            {/* Note message */}
+            {noteMsg && (
+              <div style={{
+                marginTop: 8, padding: '8px 14px', borderRadius: 8,
+                background: noteMsg.startsWith('✅') ? '#DCFCE7' : '#FEF2F2',
+                color: noteMsg.startsWith('✅') ? '#166534' : '#991B1B', fontSize: 13,
+              }}>{noteMsg}</div>
             )}
 
             {/* All done */}

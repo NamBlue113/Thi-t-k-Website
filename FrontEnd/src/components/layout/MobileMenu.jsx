@@ -50,7 +50,10 @@ export default function MobileMenu({
 
         <div className="mobile-menu-actions">
           {isAuthenticated ? (
-            <button className="btn-login mobile-full" onClick={() => { onLogout(); onClose(); }}>Logout</button>
+            <>
+              <Link to="/profile" onClick={onClose} style={{ display: 'block', width: '100%', textAlign: 'center', padding: '11px 0', fontSize: 15, borderRadius: 'var(--radius-sm)', textDecoration: 'none', color: 'var(--text-primary)', border: '1px solid var(--border)', marginBottom: 8 }}>👤 Trang cá nhân</Link>
+              <button className="btn-logout mobile-full" onClick={() => { onLogout(); onClose(); }}>🚪 Đăng xuất</button>
+            </>
           ) : (
             <>
               <button className="btn-login mobile-full" onClick={() => { onClose(); onOpenLogin(); }}>Login</button>

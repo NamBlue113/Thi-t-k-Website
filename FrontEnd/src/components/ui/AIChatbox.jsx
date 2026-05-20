@@ -36,8 +36,9 @@ export default function AIChatbox() {
       const { data } = await aiService.chat(text);
       const reply = data.data?.reply || data.reply || data.message || 'No response';
       setMessages((prev) => [...prev, { sender: 'ai', text: reply }]);
-    } catch {
-      setMessages((prev) => [...prev, { sender: 'ai', text: '⚠️ Server Error. Please try again.' }]);
+    } catch (err) {
+      const msg = err.response?.data?.message || err.message || 'Server Error';
+      setMessages((prev) => [...prev, { sender: 'ai', text: `⚠️ ${msg}. Please try again.` }]);
     } finally {
       setLoading(false);
     }

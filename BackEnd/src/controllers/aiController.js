@@ -13,9 +13,9 @@ const aiChat = asyncHandler(async (req, res) => {
 
     if (!DEEPSEEK_API_KEY) {
         // Fallback: thử dùng Gemini nếu có
-        if (process.env.GEMINI_API_KEY) {
+        if (process.env.DEEPSEEK_API_KEY) {
             const { GoogleGenerativeAI } = require("@google/generative-ai");
-            const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+            const genAI = new GoogleGenerativeAI(process.env.DEEPSEEK_API_KEY);
             const model = genAI.getGenerativeModel({ model: process.env.GEMINI_MODEL || "gemini-1.5-flash" });
             const result = await model.generateContent(`You are an English tutor AI. Help students learn English clearly and concisely.\nUser: ${message}`);
             return successResponse(res, { reply: result.response.text() }, "AI replied (Gemini fallback)");

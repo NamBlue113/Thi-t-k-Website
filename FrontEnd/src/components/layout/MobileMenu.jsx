@@ -20,7 +20,7 @@ export default function MobileMenu({
           <button className="mobile-menu-close" onClick={onClose}>✕</button>
         </div>
 
-        <nav className="mobile-nav">
+        <div className="mobile-nav">
           <Link to="/" onClick={onClose}>🎧 All exercises</Link>
           <Link to="/top-users" onClick={onClose}>🏆 Top users</Link>
           {isAdmin && (
@@ -46,7 +46,7 @@ export default function MobileMenu({
               {isPremium ? '⭐ Premium' : 'Premium'}
             </span>
           </a>
-        </nav>
+        </div>
 
         <div className="mobile-menu-actions">
           {isAuthenticated ? (

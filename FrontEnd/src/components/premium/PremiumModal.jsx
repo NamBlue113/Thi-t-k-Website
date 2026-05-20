@@ -37,7 +37,7 @@ const BANK_INFO = {
   bank: 'BIDV (Ngân hàng Thương Mại CP đầu tư và phát triển)',
   account: '5601997860',
   holder: 'NGUYEN HOAI NAM',
-  content: 'PREMIUM {plan}',
+  content: 'Nâng cấp {plan}',
 };
 
 export default function PremiumModal({ open, onClose, lockedContent = '' }) {

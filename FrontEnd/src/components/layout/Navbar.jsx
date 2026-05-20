@@ -22,6 +22,16 @@ export default function Navbar({ onOpenLogin, onOpenRegister, onOpenPremium }) {
   const themeRef = useRef(null);
   const otherRef = useRef(null);
 
+  // ── BODY SCROLL LOCK KHI MOBILE MENU MỞ ──
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
+    }
+    return () => document.body.classList.remove('modal-open');
+  }, [mobileOpen]);
+
   // Close dropdowns on outside click
   useEffect(() => {
     function handleClick(e) {

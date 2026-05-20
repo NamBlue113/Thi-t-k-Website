@@ -91,6 +91,15 @@ function AppShell() {
     return () => window.removeEventListener('keydown', handleKey);
   }, []);
 
+  // ── BODY SCROLL LOCK ON MOBILE (khi có modal/menu mở) ──
+  useEffect(() => {
+    if (loginOpen || registerOpen || forgotOpen || premiumOpen) {
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
+    }
+  }, [loginOpen, registerOpen, forgotOpen, premiumOpen]);
+
   return (
     <>
       <Navbar

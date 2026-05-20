@@ -24,6 +24,12 @@ body.is-premium nav {
   border-bottom-color: #f59e0b40;
 }
 
+/* ── BODY SCROLL LOCK (khi modal/menu mobile mở) ── */
+body.modal-open {
+  overflow: hidden;
+  touch-action: none;
+}
+
 /* ============================================
    NAVBAR
    ============================================ */
@@ -2146,7 +2152,7 @@ body.is-premium .spinner {
   }
 
   .btn-login,
-  .btn-register,
+  .btn-register, .user-menu-wrap,
   .theme-dropdown-wrap {
     display: none;
   }
@@ -2271,6 +2277,13 @@ body.is-premium .spinner {
 
   .modal-overlay {
     align-items: flex-end;
+  }
+
+  /* Đảm bảo modal không bị tràn trên mobile */
+  .modal, .premium-modal {
+    max-height: 85vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .pm-plans {

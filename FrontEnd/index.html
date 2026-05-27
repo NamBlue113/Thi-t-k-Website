@@ -282,12 +282,18 @@ body.is-premium .btn-back-stages{color:#D97706}
 .btn-back-stages:hover{text-decoration:underline}
 
 /* ── AUDIO NAV ARROWS ── */
-.audio-nav{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.audio-nav-counter{font-size:13px;font-weight:600;color:var(--text-secondary);min-width:80px;text-align:center}
-.btn-nav-arrow{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text-primary);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
-.btn-nav-arrow:hover:not(:disabled){background:var(--blue);color:white;border-color:var(--blue)}
-body.is-premium .btn-nav-arrow:hover:not(:disabled){background:linear-gradient(135deg,#D97706,#F59E0B);border-color:#D97706}
-.btn-nav-arrow:disabled{opacity:.35;cursor:not-allowed}
+.audio-nav{display:flex;align-items:center;gap:0;margin-bottom:14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;width:fit-content;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.audio-nav-counter{font-size:13px;font-weight:600;color:var(--text-secondary);padding:0 16px;white-space:nowrap;border-left:1px solid var(--border);border-right:1px solid var(--border);min-width:70px;text-align:center;line-height:36px;height:36px;display:flex;align-items:center;justify-content:center}
+.btn-nav-arrow{width:38px;height:36px;border-radius:0;border:none;background:transparent;color:var(--text-secondary);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;font-family:inherit}
+.btn-nav-arrow:hover:not(:disabled){background:var(--blue-light);color:var(--blue)}
+body.is-premium .btn-nav-arrow:hover:not(:disabled){background:#FEF3C7;color:#D97706}
+.btn-nav-arrow:disabled{opacity:.30;cursor:not-allowed}
+
+/* ── AUDIO SLIDE ANIMATION ── */
+@keyframes slideInRight{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideInLeft{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:translateX(0)}}
+.slide-in-right{animation:slideInRight .28s cubic-bezier(.4,0,.2,1)}
+.slide-in-left{animation:slideInLeft .28s cubic-bezier(.4,0,.2,1)}
 
 .section-item{background:var(--surface);padding:14px 18px;border-radius:10px;margin-bottom:8px;cursor:pointer;border:1px solid var(--border);font-size:15px;font-weight:500;color:var(--text-primary);display:flex;align-items:center;justify-content:space-between;transition:background .15s}
 .section-item:hover{background:var(--blue-light)}
@@ -522,6 +528,32 @@ body.mobile-preview-mode .preview-label{color:white;font-size:13px;font-weight:5
   .stat{min-width:60px} 
 }
 
+/* ── STAGE CAROUSEL ── */
+.stage-carousel-wrap{margin-bottom:1.5rem}
+.stage-carousel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.stage-carousel-label{font-family:'Sora',sans-serif;font-size:12px;font-weight:600;color:var(--text-secondary);letter-spacing:.06em;text-transform:uppercase}
+.stage-nav-row{display:flex;align-items:center;gap:10px}
+.stage-nav-counter{font-size:13px;font-weight:600;color:var(--text-secondary);min-width:44px;text-align:center}
+.btn-stage-nav{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text-primary);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s,border-color .15s,opacity .15s;flex-shrink:0;font-family:inherit}
+.btn-stage-nav:hover:not(:disabled){background:var(--blue);color:white;border-color:var(--blue)}
+body.is-premium .btn-stage-nav:hover:not(:disabled){background:linear-gradient(135deg,#D97706,#F59E0B);border-color:#D97706}
+.btn-stage-nav:disabled{opacity:.28;cursor:not-allowed}
+.stage-card{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:22px;cursor:pointer;transition:transform .18s,border-color .18s,box-shadow .18s}
+.stage-card:hover{transform:translateY(-3px);border-color:var(--blue);box-shadow:var(--shadow)}
+body.is-premium .stage-card:hover{border-color:#F59E0B;box-shadow:0 8px 28px rgba(245,158,11,.14)}
+.stage-card-top{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.stage-card-badge{width:52px;height:52px;border-radius:14px;background:var(--blue);color:white;font-family:'Sora',sans-serif;font-weight:700;font-size:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+body.is-premium .stage-card-badge{background:linear-gradient(135deg,#D97706,#F59E0B)}
+.stage-card-title{font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:3px}
+.stage-card-sub{font-size:13px;color:var(--text-muted)}
+.stage-card-cta{display:flex;align-items:center;justify-content:space-between;background:var(--blue-light);border:1px solid var(--blue);border-radius:10px;padding:11px 16px;font-size:14px;font-weight:600;color:var(--blue);transition:background .15s}
+body.is-premium .stage-card-cta{background:#FEF3C7;border-color:#D97706;color:#D97706}
+[data-theme="dark"] body.is-premium .stage-card-cta{background:#2A2000;border-color:#D97706;color:#FBBF24}
+.stage-dots{display:flex;justify-content:center;gap:7px;margin-top:16px}
+.stage-dot{width:7px;height:7px;border-radius:50%;background:var(--border);transition:background .2s,transform .2s;cursor:pointer}
+.stage-dot.active{background:var(--blue);transform:scale(1.4)}
+body.is-premium .stage-dot.active{background:#D97706}
+
 /* ── SEGMENT DICTATION ── */
 @keyframes inputShake {
   0%, 100% { transform: translateX(0); }
@@ -722,11 +754,11 @@ body.is-premium .speed-select:focus {
       <a href="#" class="view-all">Xem tất cả →</a>
     </div>
     <div class="filter-tabs">
-      <div class="tab active" data-filter="all">Tất cả</div>
-      <div class="tab" data-filter="beginner">Beginner (A1–A2)</div>
-      <div class="tab" data-filter="intermediate">Intermediate (B1–B2)</div>
-      <div class="tab" data-filter="advanced">Advanced (C1–C2)</div>
-      <div class="tab" data-filter="video">Video</div>
+      <div class="tab active" data-filter="all" onclick="applyFilter('all')">Tất cả</div>
+      <div class="tab" data-filter="beginner" onclick="applyFilter('beginner')">Beginner (A1–A2)</div>
+      <div class="tab" data-filter="intermediate" onclick="applyFilter('intermediate')">Intermediate (B1–B2)</div>
+      <div class="tab" data-filter="advanced" onclick="applyFilter('advanced')">Advanced (C1–C2)</div>
+      <div class="tab" data-filter="video" onclick="applyFilter('video')">Video</div>
     </div>
 
     <!-- PREMIUM WELCOME BANNER (chỉ hiện khi Premium) -->
@@ -739,13 +771,20 @@ body.is-premium .speed-select:focus {
     </div>
 
     <div class="topics-grid" id="mainGrid">
-      <div class="card featured" data-tags="intermediate advanced" onclick="openExercise('IELTS Listening', false)">
-        <div class="card-thumb" style="background:#DBEAFE">🎓</div>
-        <div class="card-body">
-          <div class="card-top"><span class="card-title">IELTS Listening</span><span class="badge-featured">Featured</span></div>
-          <div class="card-meta"><strong>Levels:</strong> B1–C1<br>344 lessons</div>
-        </div>
-      </div>
+    <div class="card featured" data-tags="intermediate advanced video" onclick="openExercise('IELTS Listening', true)">
+  <div class="card-thumb" style="background:#DBEAFE">🎓</div>
+  <div class="card-body">
+    <div class="card-top">
+      <span class="card-title">IELTS Listening</span>
+      <span class="badge-featured">Featured</span>
+      <span class="badge-video">Video</span>
+    </div>
+    <div class="card-meta">
+      <strong>Levels:</strong> B1–C1<br>
+      344 lessons • Real Exam Practice
+    </div>
+  </div>
+</div>
 
       <div class="card" data-tags="beginner intermediate advanced" onclick="openExercise('Short Stories', false)">
         <div class="card-thumb" style="background:#EEF2FF">📖</div>
@@ -835,6 +874,7 @@ body.is-premium .speed-select:focus {
         </div>
       </div>
     </div>
+    </div><!-- /#mainGrid -->
 
     <!-- PREMIUM LESSONS SECTION (chỉ hiện khi Premium) -->
     <div class="premium-lessons-section" id="premiumLessonsSection">
@@ -1149,23 +1189,75 @@ function getStageSections(stageIndex, sections) {
   return sections.slice(start, end);
 }
 
+/* ── STAGE CAROUSEL STATE ── */
+let _scIdx = 0;
+let _scTotal = 0;
+let _scIsVideo = false;
+
 function buildStageList(topicTitle, isVideo) {
-  let html = `<div class="stage-list" id="stageList">`;
+  // Count valid stages
+  let total = 0;
   for (let i = 0; i < STAGES_COUNT; i++) {
-    const stageSections = getStageSections(i, allSections);
-    if (!stageSections.length) break;
-    html += `
-      <button class="stage-btn" onclick="enterStage(${i}, ${isVideo})">
-        <div class="stage-num">${i + 1}</div>
-        <div class="stage-info">
-          <div class="stage-title">Stage ${i + 1}</div>
-          <div class="stage-sub">${stageSections.length} bài · ${isVideo ? 'Video' : 'Audio'}</div>
-        </div>
-        <span class="stage-arrow">›</span>
-      </button>`;
+    if (getStageSections(i, allSections).length) total++;
+    else break;
   }
-  html += `</div>`;
-  return html;
+  _scTotal = total;
+  _scIdx = 0;
+  _scIsVideo = isVideo;
+
+  // Dots
+  let dots = '';
+  for (let i = 0; i < total; i++)
+    dots += `<div class="stage-dot${i===0?' active':''}" id="_sdot${i}" onclick="_scGo(${i})"></div>`;
+
+  return `
+    <div class="stage-carousel-wrap" id="_scWrap">
+      <div class="stage-carousel-header">
+        <span class="stage-carousel-label">Chọn Stage</span>
+        <div class="stage-nav-row">
+          <button class="btn-stage-nav" id="_scPrev" onclick="_scPrev()" disabled title="Stage trước">&#8592;</button>
+          <span class="stage-nav-counter" id="_scCounter">1 / ${total}</span>
+          <button class="btn-stage-nav" id="_scNext" onclick="_scNext()" ${total<=1?'disabled':''} title="Stage tiếp">&#8594;</button>
+        </div>
+      </div>
+      <div id="_scSlot">${_buildStageCard(0, isVideo)}</div>
+      <div class="stage-dots" id="_scDots">${dots}</div>
+    </div>`;
+}
+
+function _buildStageCard(i, isVideo) {
+  const secs = getStageSections(i, allSections);
+  const type = isVideo ? '🎬 Video' : '🎵 Audio';
+  return `
+    <div class="stage-card" onclick="enterStage(${i}, ${isVideo})">
+      <div class="stage-card-top">
+        <div class="stage-card-badge">${i+1}</div>
+        <div>
+          <div class="stage-card-title">Stage ${i+1}</div>
+          <div class="stage-card-sub">${secs.length} bài &middot; ${type}</div>
+        </div>
+      </div>
+      <div class="stage-card-cta">
+        <span>Bắt đầu luyện tập</span>
+        <span>&#8250;</span>
+      </div>
+    </div>`;
+}
+
+function _scPrev() { _scGo(_scIdx - 1); }
+function _scNext() { _scGo(_scIdx + 1); }
+
+function _scGo(newIdx) {
+  if (newIdx < 0 || newIdx >= _scTotal) return;
+  _scIdx = newIdx;
+  document.getElementById('_scSlot').innerHTML = _buildStageCard(newIdx, _scIsVideo);
+  document.getElementById('_scCounter').textContent = `${newIdx+1} / ${_scTotal}`;
+  document.getElementById('_scPrev').disabled = newIdx <= 0;
+  document.getElementById('_scNext').disabled = newIdx >= _scTotal-1;
+  for (let i = 0; i < _scTotal; i++) {
+    const d = document.getElementById('_sdot'+i);
+    if (d) { d.classList.toggle('active', i === newIdx); }
+  }
 }
 
 function enterStage(stageIndex, isVideo) {
@@ -1230,22 +1322,24 @@ function prevQuestion(isVideo) {
 function buildExerciseUI(isVideo, stageIndex) {
   return `
     <button class="btn-back-stages" onclick="backToStages()">← Quay lại Stage</button>
-    <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Stage ${stageIndex + 1} / ${STAGES_COUNT}</div>
+    <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Stage ${stageIndex + 1}</div>
     ${buildSpeedBar(isVideo)}
     <div class="section-detail open">
       ${isVideo
         ? `<div class="yt-wrap"><div id="questionVideo"></div></div>`
         : `<audio id="questionAudio" controls src=""></audio>`}
+      
       <div class="audio-nav">
-        <button class="btn-nav-arrow" id="btnPrev" onclick="prevQuestion(${isVideo})" title="Bài trước">&#8592;</button>
-        <span class="audio-nav-counter" id="audioCounter">1 / ?</span>
-        <button class="btn-nav-arrow" id="btnNext" onclick="nextQuestion(${isVideo})" title="Bài tiếp theo">&#8594;</button>
+        <button class="btn-nav-arrow" id="btnPrev" onclick="prevItemAnimated()" title="Trước">&#8592;</button>
+        <span class="audio-nav-counter" id="audioCounter">1 / 1</span>
+        <button class="btn-nav-arrow" id="btnNext" onclick="nextItemAnimated()" title="Tiếp theo">&#8594;</button>
       </div>
+
       <div style="margin-bottom:12px"><strong id="questionText">Loading question...</strong></div>
       <textarea id="answerInput" placeholder="Type what you hear..."></textarea>
       <br>
       <button class="btn-check" id="submitBtn" onclick="submitAnswer()">Check</button>
-      <button class="btn-skip" onclick="nextQuestion(${isVideo})">Skip</button>
+      <button class="btn-skip" onclick="nextItem()">Skip</button>
       <button class="btn-next-segment" id="nextSegmentBtn" onclick="nextSegment()">Next Segment ▶</button>
       <div id="attemptResult" style="margin-top:16px"></div>
     </div>`;
@@ -1410,19 +1504,13 @@ document.getElementById('premiumModal').addEventListener('click', function(e) {
 
   }
 
-/* ─── BUILD EXERCISE PAGE ─── */
 async function openExercise(title, isVideo) {
-
     window.currentIsVideo = isVideo;
     currentTopicTitle = title;
     currentTopicIsVideo = isVideo;
 
-    // Clean up previous YouTube player & intervals
-    if (videoPauseInterval) {
-      clearInterval(videoPauseInterval);
-      videoPauseInterval = null;
-    }
-
+    // Clean up previous
+    if (videoPauseInterval) clearInterval(videoPauseInterval);
     if (youtubePlayer) {
       try { youtubePlayer.destroy(); } catch (e) {}
       youtubePlayer = null;
@@ -1435,14 +1523,55 @@ async function openExercise(title, isVideo) {
     document.getElementById('ex-title-crumb').textContent = title;
     document.getElementById('ex-title-h1').textContent = title;
 
-    const container =
-      document.getElementById('sections-container');
-
-    container.innerHTML = `<div style="text-align:center;padding:2.5rem 1rem;color:var(--text-muted)"><div style="font-size:28px;margin-bottom:10px">⏳</div>Đang tải bài học...</div>`;
+    const container = document.getElementById('sections-container');
+    container.innerHTML = `<div style="text-align:center;padding:3rem 1rem;color:var(--text-muted)">
+      <div style="font-size:32px;margin-bottom:12px">⏳</div>Đang tải bài học...
+    </div>`;
 
     showPage('exercise');
+
+    // === ĐẶC BIỆT CHO IELTS LISTENING ===
+    // === ĐẶC BIỆT CHO IELTS LISTENING & STORIES FOR KIDS ===
+    if (title === "IELTS Listening") {
+      allSections = [{
+        _id: "special-ielts-video",
+        title: "IELTS Listening Practice",
+        youtubeUrl: "https://youtu.be/gj1V2HOudvw",
+        segments: []  
+      }];
+    } 
+    else if (title === "Stories for Kids") {
+      allSections = [{
+        _id: "special-stories-kids",
+        title: "Stories for Kids",
+        youtubeUrl: "https://www.youtube.com/watch?v=wtMUy_3NGl4",
+        segments: [
+          { content: "Once upon a time, in a kingdom very far away, there lived a king and a queen." },
+          { content: "The king was handsome and kind." },
+          { content: "Everybody loved him." },
+          { content: "But the real ruler of the kingdom was his wife... the queen" }
+        ]
+      }];
+    }
+
+    // Tự động vào Stage 1 cho các bài Video đặc biệt
+    if (title === "IELTS Listening" || title === "Stories for Kids") {
+      currentTopicIsVideo = true;
+      window.currentIsVideo = true;
+      
+      document.getElementById('sections-container').innerHTML = 
+        buildStageList(title, true) + buildSpeedBar(true);
+      
+      setTimeout(() => {
+        enterStage(0, true);
+      }, 300);
+      
+      return;
+    }
+
+    // === Các bài khác giữ nguyên logic cũ ===
     await loadAllSectionsForStages(title, isVideo);
-  }
+}
 
   async function loadAllSectionsForStages(topicTitle, isVideo) {
     try {
@@ -1495,133 +1624,88 @@ async function openExercise(title, isVideo) {
         ? match[2]
         : null;
     }
-
-  function renderCurrentQuestion(isVideo) {
+function renderCurrentQuestion(isVideo) {
 
     currentSegmentIndex = 0;
-
-    currentSegment = currentSection.segments?.[
-      currentSegmentIndex
-      ];
+    currentSegment = currentSection.segments?.[currentSegmentIndex] || null;
 
     console.log("Segment:", currentSegment);
-      questionStartTime = Date.now();
+    questionStartTime = Date.now();
 
-      const segments = currentSection.segments;
-      const hasSegments = segments && segments.length > 0;
+    const segments = currentSection.segments;
+    const hasSegments = segments && segments.length > 0;
 
-      document.getElementById(
-        "questionText"
-      ).textContent =
-        hasSegments
-          ? `Segment ${
-              currentSegmentIndex + 1
-            }/${segments.length}`
-          : currentSection.title || "Listening Exercise";
+    // Cập nhật tiêu đề
+    document.getElementById("questionText").textContent =
+      hasSegments
+        ? `Segment ${currentSegmentIndex + 1}/${segments.length}`
+        : currentSection.title || "Listening Exercise";
 
-      if (isVideo) {
-      const videoId =
-          extractYoutubeId(
-            currentSection.youtubeUrl
-          );
+    // Xử lý media (Video hoặc Audio)
+    if (isVideo) {
+      const videoId = extractYoutubeId(currentSection.youtubeUrl);
 
-        if (!youtubePlayer) {
-
-          youtubePlayer =
-            new YT.Player(
-              "questionVideo",
-              {
-                videoId,
-
-                playerVars: {
-                  rel: 0,
-                  controls: 1,
-                },
-
-                events: {
-                  onReady: () => {
-                    console.log("Player ready");
-                    try { youtubePlayer.setPlaybackRate(currentSpeed); } catch(e) {}
-                    if (hasSegments) {
-                      playSegment();
-                    }
-                  }
-                }
-              }
-            );
-
-        } else {
-
-          youtubePlayer.loadVideoById(
-            videoId
-          );
-
-          if (hasSegments) {
-
-            // Poll until player is ready after loading new video
-            let attempts = 0;
-            const readyCheck = setInterval(() => {
-              attempts++;
-              try {
-                if (
-                  youtubePlayer &&
-                  typeof youtubePlayer.seekTo === "function" &&
-                  youtubePlayer.getPlayerState() >= 0
-                ) {
-                  clearInterval(readyCheck);
-                  playSegment();
-                } else if (attempts > 25) {
-                  clearInterval(readyCheck);
-                }
-              } catch (e) {
-                if (attempts > 25) {
-                  clearInterval(readyCheck);
-                }
-              }
-            }, 200);
+      if (!youtubePlayer) {
+        youtubePlayer = new YT.Player("questionVideo", {
+          videoId: videoId,
+          playerVars: {
+            rel: 0,
+            controls: 1,
+          },
+          events: {
+            onReady: () => {
+              console.log("YouTube Player ready");
+              try { 
+                youtubePlayer.setPlaybackRate(currentSpeed); 
+              } catch(e) {}
+              if (hasSegments) playSegment();
+            }
           }
-
-        }
-
+        });
       } else {
-
-        const audioEl = document.getElementById("questionAudio");
+        youtubePlayer.loadVideoById(videoId);
+        if (hasSegments) {
+          // Đợi player sẵn sàng rồi play segment
+          let attempts = 0;
+          const readyCheck = setInterval(() => {
+            attempts++;
+            try {
+              if (youtubePlayer && typeof youtubePlayer.seekTo === "function") {
+                clearInterval(readyCheck);
+                playSegment();
+              }
+            } catch (e) {
+              if (attempts > 30) clearInterval(readyCheck);
+            }
+          }, 200);
+        }
+      }
+    } else {
+      const audioEl = document.getElementById("questionAudio");
+      if (audioEl) {
         audioEl.src = currentSection.audioUrl || "";
         audioEl.playbackRate = currentSpeed;
       }
-
-      document.getElementById(
-        "answerInput"
-      ).value = "";
-
-      document.getElementById(
-        "answerInput"
-      ).classList.remove("input-shake");
-
-      document.getElementById(
-        "attemptResult"
-      ).innerHTML =
-        hasSegments
-          ? `<div class="segment-info">
-              <span>📝</span>
-              <span>Segment <strong>${
-                currentSegmentIndex + 1
-              }</strong> of <strong>${
-                segments.length
-              }</strong></span>
-            </div>`
-          : "";
-
-      const nextBtn =
-        document.getElementById(
-          "nextSegmentBtn"
-        );
-
-      if (nextBtn) {
-        nextBtn.classList.remove("show");
-      }
     }
 
+    // Reset input và result
+    document.getElementById("answerInput").value = "";
+    document.getElementById("answerInput").classList.remove("input-shake");
+
+    document.getElementById("attemptResult").innerHTML = hasSegments ? `
+      <div class="segment-info">
+        <span>📝</span>
+        <span>Segment <strong>${currentSegmentIndex + 1}</strong> / <strong>${segments.length}</strong></span>
+      </div>
+    ` : "";
+
+    // Cập nhật counter (rất quan trọng)
+    updateCounter();
+
+    const nextBtn = document.getElementById("nextSegmentBtn");
+    if (nextBtn) nextBtn.classList.remove("show");
+}
+  
   function playSegment() {
 
     if (!currentSegment) return;
@@ -1804,59 +1888,44 @@ function loadYoutube(sectionId) {
 
 /* ─── FILTER TABS ─── */
 function applyFilter(filter) {
-  /* Mark active tab */
+  // Active tab
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  const activeTab = document.querySelector(`.tab[data-filter="${filter}"]`);
+  const activeTab = document.querySelector('.tab[data-filter="' + filter + '"]');
   if (activeTab) activeTab.classList.add('active');
 
-  /* Filter free cards */
+  // Filter main grid cards
   const mainCards = document.querySelectorAll('#mainGrid .card');
-  let mainVisible = 0;
+  let visibleCount = 0;
   mainCards.forEach(card => {
-    const tags = card.dataset.tags || '';
-    const show = filter === 'all' || tags.includes(filter);
-    card.style.display = show ? '' : 'none';
-    if (show) mainVisible++;
+    const tags = (card.dataset.tags || '').toLowerCase();
+    let show = filter === 'all' ? true : tags.includes(filter);
+    card.style.display = show ? 'flex' : 'none';
+    if (show) visibleCount++;
   });
 
-  /* Filter premium cards (only when section is visible) */
-  const premSection = document.getElementById('premiumLessonsSection');
-  let premVisible = 0;
-  if (premSection && premSection.offsetParent !== null) {
-    const premCards = document.querySelectorAll('#premiumGrid .card');
-    premCards.forEach(card => {
-      const tags = card.dataset.tags || '';
-      const show = filter === 'all' || tags.includes(filter);
-      card.style.display = show ? '' : 'none';
-      if (show) premVisible++;
-    });
-    /* Hide whole premium section if no cards match */
-    premSection.style.display = (premVisible === 0 && filter !== 'all') ? 'none' : '';
-  }
+  // Filter premium grid cards (if visible)
+  const premiumCards = document.querySelectorAll('#premiumGrid .card');
+  premiumCards.forEach(card => {
+    const tags = (card.dataset.tags || '').toLowerCase();
+    let show = filter === 'all' ? true : tags.includes(filter);
+    card.style.display = show ? 'flex' : 'none';
+  });
 
-  /* Show/hide empty state for main grid */
-  let emptyEl = document.getElementById('filterEmpty');
-  if (mainVisible === 0) {
-    if (!emptyEl) {
-      emptyEl = document.createElement('div');
-      emptyEl.id = 'filterEmpty';
-      emptyEl.style.cssText = 'grid-column:1/-1;text-align:center;padding:2.5rem 1rem;color:var(--text-muted);font-size:15px';
-      emptyEl.innerHTML = '<div style="font-size:36px;margin-bottom:10px">🔍</div>Không có bài học nào cho mục này.';
-      document.getElementById('mainGrid').appendChild(emptyEl);
+  // Empty message
+  let empty = document.getElementById('filterEmpty');
+  if (visibleCount === 0 && filter !== 'all') {
+    if (!empty) {
+      empty = document.createElement('div');
+      empty.id = 'filterEmpty';
+      empty.style.cssText = 'grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; color: var(--text-muted);';
+      empty.innerHTML = '<div style="font-size:48px;margin-bottom:12px">🔍</div>Không có bài học nào cho mức độ này.';
+      document.getElementById('mainGrid').appendChild(empty);
     }
-    emptyEl.style.display = '';
-  } else if (emptyEl) {
-    emptyEl.style.display = 'none';
+    empty.style.display = 'block';
+  } else if (empty) {
+    empty.style.display = 'none';
   }
 }
-
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    applyFilter(tab.dataset.filter);
-  });
-});
-
-/* ─── SEARCH ─── */
 function doSearch() {
   const v = document.getElementById('searchInput').value.trim();
   if (v) alert('Tìm kiếm: ' + v);
@@ -2266,6 +2335,85 @@ function disableMobilePreview() {
       alert("Submit failed");
     }
   }
+  // ==================== CHUYỂN ĐOẠN BẰNG MŨI TÊN ====================
+// ── SLIDE ANIMATION HELPER ──
+function animateSlide(direction) {
+  const detail = document.querySelector('.section-detail.open');
+  if (!detail) return;
+  detail.classList.remove('slide-in-right', 'slide-in-left');
+  void detail.offsetWidth; // reflow
+  detail.classList.add(direction === 'next' ? 'slide-in-right' : 'slide-in-left');
+}
+
+function prevItemAnimated() {
+  animateSlide('prev');
+  prevItem();
+}
+
+function nextItemAnimated() {
+  animateSlide('next');
+  nextItem();
+}
+
+function updateCounter() {
+  const total = window.currentSections ? window.currentSections.length : 1;
+  let text = `${currentQuestionIndex + 1} / ${total}`;
+  
+  if (currentSection && currentSection.segments && currentSection.segments.length > 1) {
+    text += ` • Segment ${currentSegmentIndex + 1}/${currentSection.segments.length}`;
+  }
+  document.getElementById('audioCounter').textContent = text;
+}
+
+function loadCurrentSegment() {
+  if (!currentSection?.segments?.length) return;
+  
+  currentSegment = currentSection.segments[currentSegmentIndex];
+  
+  document.getElementById("questionText").textContent = 
+    `Segment ${currentSegmentIndex + 1}/${currentSection.segments.length}`;
+  
+  document.getElementById("answerInput").value = "";
+  document.getElementById("attemptResult").innerHTML = `
+    <div class="segment-info">
+      <span>📝</span>
+      <span>Segment <strong>${currentSegmentIndex + 1}</strong> / <strong>${currentSection.segments.length}</strong></span>
+    </div>
+  `;
+  
+  updateCounter();
+
+  // Play segment nếu là video
+  if (window.currentIsVideo && youtubePlayer) {
+    playSegment();
+  }
+}
+
+function prevItem() {
+  const segments = currentSection?.segments || [];
+  
+  if (segments.length > 1 && currentSegmentIndex > 0) {
+    // Chuyển segment trước
+    currentSegmentIndex--;
+    loadCurrentSegment();
+  } else if (currentQuestionIndex > 0) { 
+    // Chuyển bài trước
+    prevQuestion(window.currentIsVideo || false);
+  }
+}
+
+function nextItem() {
+  const segments = currentSection?.segments || [];
+  
+  if (segments.length > 1 && currentSegmentIndex < segments.length - 1) {
+    // Chuyển segment tiếp theo
+    currentSegmentIndex++;
+    loadCurrentSegment();
+  } else {
+    // Chuyển bài tiếp theo
+    nextQuestion(window.currentIsVideo || false);
+  }
+}
 </script>
 </body>
 </html>

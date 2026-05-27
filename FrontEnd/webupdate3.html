@@ -1544,8 +1544,13 @@ async function openExercise(title, isVideo) {
       allSections = [{
         _id: "special-stories-kids",
         title: "Stories for Kids",
-        youtubeUrl: "https://youtu.be/P9iJfxDfkfQ",
-        segments: []  
+        youtubeUrl: "https://www.youtube.com/watch?v=wtMUy_3NGl4",
+        segments: [
+          { content: "Once upon a time, in a kingdom very far away, there lived a king and a queen." },
+          { content: "The king was handsome and kind." },
+          { content: "Everybody loved him." },
+          { content: "But the real ruler of the kingdom was his wife... the queen" }
+        ]
       }];
     }
 
@@ -2391,7 +2396,7 @@ function prevItem() {
     // Chuyển segment trước
     currentSegmentIndex--;
     loadCurrentSegment();
-  } else if (currentQuestionIndex > 0) {
+  } else if (currentQuestionIndex > 0) { 
     // Chuyển bài trước
     prevQuestion(window.currentIsVideo || false);
   }
@@ -2410,5 +2415,554 @@ function nextItem() {
   }
 }
 </script>
+
+<!-- ══════════════════════════════════════════
+     AI ENGLISH TUTOR CHATBOX
+══════════════════════════════════════════ -->
+<style>
+/* ── CHATBOX CONTAINER ── */
+#aiChatWidget {
+  position: fixed;
+  bottom: 28px;
+  left: 28px;
+  z-index: 900;
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+
+/* ── TOGGLE BUTTON ── */
+#aiChatToggle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--blue);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 24px rgba(26,111,212,.35);
+  transition: transform .2s, box-shadow .2s, background .2s;
+  position: relative;
+}
+body.is-premium #aiChatToggle {
+  background: linear-gradient(135deg, #D97706, #F59E0B);
+  box-shadow: 0 6px 24px rgba(245,158,11,.35);
+}
+#aiChatToggle:hover {
+  transform: scale(1.08) translateY(-2px);
+  box-shadow: 0 10px 32px rgba(26,111,212,.45);
+}
+body.is-premium #aiChatToggle:hover {
+  box-shadow: 0 10px 32px rgba(245,158,11,.45);
+}
+#aiChatToggle svg {
+  width: 24px;
+  height: 24px;
+  color: white;
+  transition: transform .3s;
+}
+#aiChatToggle.open svg.icon-chat { display: none; }
+#aiChatToggle.open svg.icon-close { display: block !important; }
+
+/* Notification dot */
+#aiChatToggle .notif-dot {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 10px;
+  height: 10px;
+  background: #EF4444;
+  border-radius: 50%;
+  border: 2px solid white;
+  animation: pulseDot 2s infinite;
+}
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: .7; }
+}
+#aiChatToggle.open .notif-dot { display: none; }
+
+/* ── CHAT PANEL ── */
+#aiChatPanel {
+  position: absolute;
+  bottom: 66px;
+  left: 0;
+  width: 340px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: 0 16px 48px rgba(0,0,0,.16);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform-origin: bottom left;
+  transform: scale(.88) translateY(12px);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform .22s cubic-bezier(.34,1.56,.64,1), opacity .18s ease;
+}
+#aiChatPanel.open {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+  pointer-events: all;
+}
+body.is-premium #aiChatPanel {
+  border-color: #F59E0B40;
+}
+
+/* ── HEADER ── */
+.aic-header {
+  background: var(--blue);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+body.is-premium .aic-header {
+  background: linear-gradient(135deg, #D97706, #F59E0B);
+}
+.aic-header-icon {
+  width: 34px;
+  height: 34px;
+  background: rgba(255,255,255,.2);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.aic-header-info { flex: 1; }
+.aic-header-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  line-height: 1.2;
+}
+.aic-header-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,.75);
+  margin-top: 1px;
+}
+.aic-online {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: rgba(255,255,255,.85);
+}
+.aic-online-dot {
+  width: 7px;
+  height: 7px;
+  background: #4ADE80;
+  border-radius: 50%;
+  animation: pulseDot 2.5s infinite;
+}
+
+/* ── MESSAGES BODY ── */
+.aic-body {
+  flex: 1;
+  padding: 14px 12px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 320px;
+  min-height: 200px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.aic-body::-webkit-scrollbar { width: 4px; }
+.aic-body::-webkit-scrollbar-track { background: transparent; }
+.aic-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* ── MESSAGE BUBBLES ── */
+.aic-msg {
+  display: flex;
+  align-items: flex-end;
+  gap: 7px;
+  animation: msgFadeUp .25s ease both;
+}
+@keyframes msgFadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.aic-msg.user { flex-direction: row-reverse; }
+
+.aic-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+.aic-avatar.bot {
+  background: var(--blue-light);
+  color: var(--blue);
+  font-size: 14px;
+}
+body.is-premium .aic-avatar.bot {
+  background: #FEF3C7;
+  color: #D97706;
+}
+.aic-avatar.user-av {
+  background: var(--bg);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  font-size: 12px;
+}
+
+.aic-bubble {
+  max-width: 78%;
+  padding: 9px 12px;
+  border-radius: 14px;
+  font-size: 13px;
+  line-height: 1.55;
+  word-break: break-word;
+}
+.aic-msg.bot .aic-bubble {
+  background: var(--bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 4px;
+}
+.aic-msg.user .aic-bubble {
+  background: var(--blue);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+body.is-premium .aic-msg.user .aic-bubble {
+  background: linear-gradient(135deg, #D97706, #F59E0B);
+}
+
+/* ── TYPING INDICATOR ── */
+.aic-typing {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  border-bottom-left-radius: 4px;
+  width: fit-content;
+}
+.aic-typing span {
+  width: 6px;
+  height: 6px;
+  background: var(--text-muted);
+  border-radius: 50%;
+  animation: typingBounce .9s infinite ease-in-out;
+}
+.aic-typing span:nth-child(2) { animation-delay: .15s; }
+.aic-typing span:nth-child(3) { animation-delay: .3s; }
+@keyframes typingBounce {
+  0%, 80%, 100% { transform: translateY(0); opacity: .5; }
+  40% { transform: translateY(-5px); opacity: 1; }
+}
+
+/* ── QUICK CHIPS ── */
+.aic-chips {
+  padding: 0 12px 10px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.aic-chip {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.aic-chip:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+  background: var(--blue-light);
+}
+body.is-premium .aic-chip:hover {
+  border-color: #D97706;
+  color: #D97706;
+  background: #FEF3C7;
+}
+
+/* ── INPUT AREA ── */
+.aic-input-wrap {
+  border-top: 1px solid var(--border);
+  padding: 10px 12px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  background: var(--surface);
+}
+.aic-textarea {
+  flex: 1;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 13px;
+  resize: none;
+  outline: none;
+  max-height: 80px;
+  min-height: 36px;
+  line-height: 1.5;
+  background: var(--bg);
+  color: var(--text-primary);
+  transition: border-color .15s;
+  overflow-y: auto;
+}
+.aic-textarea:focus { border-color: var(--blue); }
+body.is-premium .aic-textarea:focus { border-color: #F59E0B; }
+.aic-textarea::placeholder { color: var(--text-muted); }
+
+.aic-send {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--blue);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background .15s, transform .15s;
+}
+.aic-send:hover { background: var(--blue-dark); transform: scale(1.05); }
+body.is-premium .aic-send { background: linear-gradient(135deg, #D97706, #F59E0B); }
+body.is-premium .aic-send:hover { background: linear-gradient(135deg, #B45309, #D97706); }
+.aic-send:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+.aic-send svg { width: 16px; height: 16px; color: white; }
+
+/* ── DARK MODE ADJUSTMENTS ── */
+[data-theme="dark"] .aic-msg.bot .aic-bubble {
+  background: #1E2A3A;
+  border-color: var(--border);
+}
+
+@media (max-width: 480px) {
+  #aiChatPanel { width: calc(100vw - 56px); }
+  #aiChatWidget { bottom: 18px; left: 18px; }
+}
+</style>
+
+<!-- CHATBOX HTML -->
+<div id="aiChatWidget">
+  <!-- Toggle Button -->
+  <button id="aiChatToggle" onclick="toggleAIChat()" title="AI English Tutor">
+    <span class="notif-dot"></span>
+    <!-- Chat icon -->
+    <svg class="icon-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    <!-- Close icon (hidden by default) -->
+    <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </button>
+
+  <!-- Chat Panel -->
+  <div id="aiChatPanel">
+    <!-- Header -->
+    <div class="aic-header">
+      <div class="aic-header-icon">🤖</div>
+      <div class="aic-header-info">
+        <div class="aic-header-title">AI English Tutor</div>
+        <div class="aic-header-sub">IELTS · Grammar · Vocabulary</div>
+      </div>
+      <div class="aic-online">
+        <span class="aic-online-dot"></span>
+        Online
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="aic-body" id="aicBody">
+      <div class="aic-msg bot">
+        <div class="aic-avatar bot">🤖</div>
+        <div class="aic-bubble">
+          Hi! 👋 I'm your AI English Tutor.<br><br>
+          Ask me anything about <strong>IELTS</strong>, grammar, vocabulary, or speaking tips!
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick chips -->
+    <div class="aic-chips" id="aicChips">
+      <span class="aic-chip" onclick="aicSendChip('How can I improve IELTS Writing Band 7?')">✍️ IELTS Writing</span>
+      <span class="aic-chip" onclick="aicSendChip('Explain the difference between Present Perfect and Simple Past')">📚 Grammar</span>
+      <span class="aic-chip" onclick="aicSendChip('Give me 5 advanced vocabulary words for IELTS')">💡 Vocabulary</span>
+    </div>
+
+    <!-- Input -->
+    <div class="aic-input-wrap">
+      <textarea
+        class="aic-textarea"
+        id="aicInput"
+        placeholder="Ask a question in English..."
+        rows="1"
+        onkeydown="aicKeyDown(event)"
+        oninput="aicAutoResize(this)"
+      ></textarea>
+      <button class="aic-send" id="aicSendBtn" onclick="aicSend()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── AI CHATBOX ──
+const aicMessages = [];
+let aicIsOpen = false;
+let aicIsTyping = false;
+
+function toggleAIChat() {
+  aicIsOpen = !aicIsOpen;
+  const panel = document.getElementById('aiChatPanel');
+  const btn = document.getElementById('aiChatToggle');
+  panel.classList.toggle('open', aicIsOpen);
+  btn.classList.toggle('open', aicIsOpen);
+  if (aicIsOpen) {
+    setTimeout(() => document.getElementById('aicInput').focus(), 250);
+  }
+}
+
+function aicAutoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 80) + 'px';
+}
+
+function aicKeyDown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    aicSend();
+  }
+}
+
+function aicSendChip(text) {
+  document.getElementById('aicChips').style.display = 'none';
+  document.getElementById('aicInput').value = text;
+  aicSend();
+}
+
+function aicScrollToBottom() {
+  const body = document.getElementById('aicBody');
+  body.scrollTop = body.scrollHeight;
+}
+
+function aicAddMessage(role, html) {
+  const body = document.getElementById('aicBody');
+  const isBot = role === 'bot';
+  const div = document.createElement('div');
+  div.className = `aic-msg ${isBot ? 'bot' : 'user'}`;
+  div.innerHTML = `
+    <div class="aic-avatar ${isBot ? 'bot' : 'user-av'}">${isBot ? '🤖' : '👤'}</div>
+    <div class="aic-bubble">${html}</div>
+  `;
+  body.appendChild(div);
+  aicScrollToBottom();
+  return div;
+}
+
+function aicShowTyping() {
+  const body = document.getElementById('aicBody');
+  const div = document.createElement('div');
+  div.className = 'aic-msg bot';
+  div.id = 'aicTypingMsg';
+  div.innerHTML = `
+    <div class="aic-avatar bot">🤖</div>
+    <div class="aic-typing"><span></span><span></span><span></span></div>
+  `;
+  body.appendChild(div);
+  aicScrollToBottom();
+}
+
+function aicRemoveTyping() {
+  const el = document.getElementById('aicTypingMsg');
+  if (el) el.remove();
+}
+
+function aicFormatResponse(text) {
+  // Convert **bold**, line breaks, and basic markdown
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/\n\n/g, '<br><br>')
+    .replace(/\n/g, '<br>')
+    .replace(/`(.*?)`/g, '<code style="background:var(--bg);padding:1px 5px;border-radius:4px;font-size:12px;font-family:monospace">$1</code>');
+}
+
+async function aicSend() {
+  const input = document.getElementById('aicInput');
+  const sendBtn = document.getElementById('aicSendBtn');
+  const text = input.value.trim();
+  if (!text || aicIsTyping) return;
+
+  // Add user message
+  aicAddMessage('user', text.replace(/</g, '&lt;').replace(/>/g, '&gt;'));
+  aicMessages.push({ role: 'user', content: text });
+  input.value = '';
+  input.style.height = 'auto';
+
+  // Hide chips
+  document.getElementById('aicChips').style.display = 'none';
+
+  // Show typing
+  aicIsTyping = true;
+  sendBtn.disabled = true;
+  aicShowTyping();
+
+  try {
+    const systemPrompt = `You are a friendly and knowledgeable AI English Tutor specializing in IELTS preparation, grammar, vocabulary, and speaking skills. 
+- Answer clearly and concisely (keep responses under 150 words unless a detailed explanation is truly needed)
+- Use **bold** for key terms
+- Give practical examples when helpful
+- Be encouraging and supportive
+- Always respond in English, even if the user writes in another language
+- Focus on actionable advice for English learners`;
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: aicMessages
+      })
+    });
+
+    const data = await response.json();
+    aicRemoveTyping();
+
+    const replyText = data.content?.[0]?.text || 'Sorry, I could not get a response. Please try again.';
+    aicMessages.push({ role: 'assistant', content: replyText });
+    aicAddMessage('bot', aicFormatResponse(replyText));
+
+  } catch (err) {
+    aicRemoveTyping();
+    aicAddMessage('bot', '⚠️ Connection error. Please check your network and try again.');
+    console.error('AI Chat error:', err);
+  } finally {
+    aicIsTyping = false;
+    sendBtn.disabled = false;
+  }
+}
+</script>
+
 </body>
 </html>

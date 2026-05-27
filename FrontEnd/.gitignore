@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Dependencies
 node_modules/
 **/node_modules/
@@ -24,3 +25,10 @@ coverage/
 Thumbs.db
 .vscode/
 .idea/
+=======
+node_modules
+dist
+.env
+*.local
+.DS_Store
+>>>>>>> 299d449215bf14876fb79919b535471259a409f7

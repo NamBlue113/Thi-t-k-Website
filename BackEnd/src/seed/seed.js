@@ -240,7 +240,7 @@ const seedData = async () => {
         const demoUsers = [
 
             {
-                nickname: "Alexander",
+                username: "Alexander",
                 email: "alex@gmail.com",
                 password: await bcrypt.hash(
                     "123456",
@@ -250,7 +250,7 @@ const seedData = async () => {
             },
 
             {
-                nickname: "Lạc Gia",
+                username: "Lạc Gia",
                 email: "lacgia@gmail.com",
                 password: await bcrypt.hash(
                     "123456",
@@ -260,7 +260,7 @@ const seedData = async () => {
             },
 
             {
-                nickname: "IELTSCONGVU",
+                username: "IELTSCONGVU",
                 email: "ielt@gmail.com",
                 password: await bcrypt.hash(
                     "123456",

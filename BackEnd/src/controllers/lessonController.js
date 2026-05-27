@@ -1,114 +1,86 @@
 const Lesson = require("../models/lessonModel");
+const asyncHandler = require("../utils/asyncHandler");
+const Topic = require("../models/topicModel");
+const { successResponse, errorResponse } = require("../utils/apiResponse");
 
-console.log("NEW LESSON CONTROLLER RUNNING");
+// CREATE LESSON (Chỉ Admin - đã chặn ở Route)
+const createLesson = asyncHandler(async (req, res) => {
+    const lesson = await Lesson.create(req.body);
 
-// CREATE LESSON
-const createLesson = async (req, res) => {
-    try {
-        const lesson = await Lesson.create(req.body);
-
-        res.status(201).json({
-            message: "Tạo bài học thành công",
-            data: lesson,
-        });
-
-    } catch (error) {
-        res.status(500).json({
-            message: error.message,
-        });
+    // Tự động tăng lessonCount của Topic
+    if (lesson.topicId) {
+        await Topic.findByIdAndUpdate(lesson.topicId, { $inc: { lessonCount: 1 } });
     }
-};
 
+    return successResponse(res, lesson, "Lesson created successfully", 201);
+});
 
-// GET ALL LESSONS
-const getLessons = async (req, res) => {
-    try {
-        const lessons = await Lesson.find();
+// GET ALL LESSONS (Lấy danh sách bài học ngoài trang chủ)
+const getLessons = asyncHandler(async (req, res) => {
+    const filter = {};
 
-        res.status(200).json(lessons);
-
-    } catch (error) {
-        res.status(500).json({
-            message: error.message,
-        });
+    // Hỗ trợ lọc theo topicSlug
+    if (req.query.topicSlug) {
+        const topic = await Topic.findOne({ slug: req.query.topicSlug });
+        if (topic) filter.topicId = topic._id;
     }
-};
 
+    const lessons = await Lesson.find(filter).sort({ createdAt: -1 });
+    return successResponse(res, lessons, "Lessons fetched successfully");
+});
 
-// GET LESSON BY ID
-const getLessonById = async (req, res) => {
-    try {
-        const lesson = await Lesson.findById(req.params.id);
+// GET LESSON BY ID (Vào chi tiết một bài học để làm bài)
+const getLessonById = asyncHandler(async (req, res) => {
+    const lesson = await Lesson.findById(req.params.id);
 
-        if (!lesson) {
-            return res.status(404).json({
-                message: "Không tìm thấy bài học",
-            });
+    if (!lesson) {
+        return errorResponse(res, "Lesson not found", 404);
+    }
+
+    // --- KIỂM TRA PHÂN QUYỀN VIP TẠI ĐÂY ---
+    if (lesson.isPremium) {
+        const vipPlans = ["premium", "premium_plus"];
+        if (!req.user || !vipPlans.includes(req.user.plan)) {
+            return errorResponse(
+                res,
+                "Bài học này chỉ dành riêng cho thành viên VIP. Vui lòng nâng cấp tài khoản!",
+                403
+            );
         }
-
-        res.status(200).json(lesson);
-
-    } catch (error) {
-        res.status(500).json({
-            message: error.message,
-        });
     }
-};
 
+    return successResponse(res, lesson, "Lesson fetched successfully");
+});
 
 // UPDATE LESSON
-const updateLesson = async (req, res) => {
-    try {
-        const updatedLesson = await Lesson.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            {
-                new: true,
-            }
-        );
+const updateLesson = asyncHandler(async (req, res) => {
+    const updatedLesson = await Lesson.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { new: true, runValidators: true }
+    );
 
-        if (!updatedLesson) {
-            return res.status(404).json({
-                message: "Không tìm thấy bài học",
-            });
-        }
-
-        res.status(200).json({
-            message: "Cập nhật thành công",
-            data: updatedLesson,
-        });
-
-    } catch (error) {
-        res.status(500).json({
-            message: error.message,
-        });
+    if (!updatedLesson) {
+        return errorResponse(res, "Lesson not found", 404);
     }
-};
-
+    return successResponse(res, updatedLesson, "Lesson updated successfully");
+});
 
 // DELETE LESSON
-const deleteLesson = async (req, res) => {
-    try {
-        const deletedLesson = await Lesson.findByIdAndDelete(req.params.id);
+const deleteLesson = asyncHandler(async (req, res) => {
+    const deletedLesson = await Lesson.findByIdAndDelete(req.params.id);
 
-        if (!deletedLesson) {
-            return res.status(404).json({
-                message: "Không tìm thấy bài học",
-            });
-        }
-
-        res.status(200).json({
-            message: "Xóa thành công",
-            data: deletedLesson,
-        });
-
-    } catch (error) {
-        res.status(500).json({
-            message: error.message,
-        });
+    if (!deletedLesson) {
+        return errorResponse(res, "Lesson not found", 404);
     }
-};
 
+    // Tự động giảm lessonCount của Topic
+    if (deletedLesson.topicId) {
+        await Topic.findByIdAndUpdate(deletedLesson.topicId, { $inc: { lessonCount: -1 } });
+    }
+
+    return successResponse(res, deletedLesson, "Lesson deleted successfully");
+});
 
 module.exports = {
     createLesson,

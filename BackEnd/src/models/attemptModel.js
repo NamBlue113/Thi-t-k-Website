@@ -8,9 +8,14 @@ const attemptSchema = new mongoose.Schema(
             default: null,
         },
 
-        sectionId: {
+        lessonId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Section",
+            ref: "Lesson",
+            required: true,
+        },
+
+        segmentId: {
+            type: Number,
             required: true,
         },
 
@@ -49,6 +54,9 @@ const attemptSchema = new mongoose.Schema(
         timestamps: true,
     }
 );
+
+attemptSchema.index({ lessonId: 1, segmentId: 1 });
+attemptSchema.index({ userId: 1 });
 
 module.exports = mongoose.model(
     "Attempt",

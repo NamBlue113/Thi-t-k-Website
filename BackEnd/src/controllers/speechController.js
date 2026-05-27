@@ -1,38 +1,17 @@
-// ======================================================
-// FILE: BackEnd/src/controllers/speechController.js
-// ======================================================
-
 const speechService = require("../services/speechService");
+const asyncHandler = require("../utils/asyncHandler");
+const { successResponse, errorResponse } = require("../utils/apiResponse");
 
+const analyzeSpeech = asyncHandler(async (req, res) => {
+    const { transcript } = req.body;
 
-
-const analyzeSpeech =
-async(req,res)=>{
-
-    try{
-
-        const { transcript } = req.body;
-
-        const result =
-        await speechService.analyzeSpeech(
-            transcript
-        );
-
-        res.json(result);
-
-    }
-    catch(error){
-
-        console.log(error);
-
-        res.status(500).json({
-            message:"Speech analysis failed"
-        });
-
+    if (!transcript || !transcript.trim()) {
+        return errorResponse(res, "Transcript is required", 400);
     }
 
-};
+    const result = speechService.analyzeSpeech(transcript);
 
-module.exports = {
-    analyzeSpeech
-};
+    return successResponse(res, result, "Speech analyzed successfully");
+});
+
+module.exports = { analyzeSpeech };

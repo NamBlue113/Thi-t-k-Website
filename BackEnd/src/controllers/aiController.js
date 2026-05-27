@@ -1,69 +1,62 @@
-require("dotenv").config();
+const asyncHandler = require("../utils/asyncHandler");
+const { successResponse, errorResponse } = require("../utils/apiResponse");
 
-const {
-    GoogleGenerativeAI
-} = require("@google/generative-ai");
+const DEEPSEEK_API_KEY = (process.env.DEEPSEEK_API_KEY || "").trim();
+const DEEPSEEK_MODEL = process.env.DEEPSEEK_MODEL || "deepseek-chat";
 
-const genAI =
-new GoogleGenerativeAI(
-    process.env.GEMINI_API_KEY
-);
+const aiChat = asyncHandler(async (req, res) => {
+    const { message } = req.body;
 
-
-
-const aiChat =
-async(req,res)=>{
-
-    try{
-
-        const { message } =
-        req.body;
-
-
-
-        const model =
-        genAI.getGenerativeModel({
-            model:"gemini-1.5-flash"
-        });
-
-
-
-        const result =
-        await model.generateContent(
-        `
-        You are an English tutor AI.
-
-        Help students learn English.
-
-        User:
-        ${message}
-        `
-        );
-
-
-
-        const reply =
-        result.response.text();
-
-
-
-        res.json({
-            reply
-        });
-
-    }
-    catch(error){
-
-        console.log(error);
-
-        res.status(500).json({
-            message:"AI Error"
-        });
-
+    if (!message || !message.trim()) {
+        return errorResponse(res, "Message is required", 400);
     }
 
-};
+    if (!DEEPSEEK_API_KEY) {
+        // Fallback: thử dùng Gemini nếu có
+        if (process.env.DEEPSEEK_API_KEY) {
+            const { GoogleGenerativeAI } = require("@google/generative-ai");
+            const genAI = new GoogleGenerativeAI(process.env.DEEPSEEK_API_KEY);
+            const model = genAI.getGenerativeModel({ model: process.env.GEMINI_MODEL || "gemini-1.5-flash" });
+            const result = await model.generateContent(`You are an English tutor AI. Help students learn English clearly and concisely.\nUser: ${message}`);
+            return successResponse(res, { reply: result.response.text() }, "AI replied (Gemini fallback)");
+        }
+        return errorResponse(res, "AI service is not configured (DEEPSEEK_API_KEY missing)", 503);
+    }
 
-module.exports = {
-    aiChat
-};
+    // Gọi DeepSeek API (tương thích OpenAI format)
+    const response = await fetch("https://api.deepseek.com/chat/completions", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${DEEPSEEK_API_KEY}`,
+        },
+        body: JSON.stringify({
+            model: DEEPSEEK_MODEL,
+            messages: [
+                {
+                    role: "system",
+                    content: "You are an English tutor AI. Help students learn English clearly and concisely. Reply in Vietnamese if the user writes in Vietnamese, otherwise reply in English. Keep answers short and helpful.",
+                },
+                {
+                    role: "user",
+                    content: message,
+                },
+            ],
+            max_tokens: 800,
+            temperature: 0.7,
+        }),
+    });
+
+    if (!response.ok) {
+        const errText = await response.text();
+        console.error("DeepSeek API error:", response.status, errText);
+        return errorResponse(res, "AI service error: " + response.status, 502);
+    }
+
+    const json = await response.json();
+    const reply = json.choices?.[0]?.message?.content || "Xin lỗi, tôi không thể trả lời lúc này.";
+
+    return successResponse(res, { reply }, "AI replied successfully");
+});
+
+module.exports = { aiChat };

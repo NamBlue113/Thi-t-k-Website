@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+=<!DOCTYPE html>
 <html lang="vi" data-theme="light">
 <head>
 <meta charset="UTF-8">
@@ -377,6 +377,81 @@ body.is-premium .hero-mini{background:linear-gradient(135deg,#92400E 0%,#B45309 
 .hero-mini .search-bar button{background:var(--accent);border:none;padding:0 18px;cursor:pointer;color:white;font-size:16px}
 body.is-premium .hero-mini .search-bar button{background:#D97706}
 
+/* ── TOPIC CAROUSEL ── */
+.topic-carousel-wrap{
+  padding:1.25rem 0 1.5rem;
+  background:linear-gradient(135deg,#0E4FA0 0%,#1A6FD4 60%,#3B8FE8 100%);
+  position:relative;
+}
+body.is-premium .topic-carousel-wrap{
+  background:linear-gradient(135deg,#92400E 0%,#B45309 50%,#D97706 100%);
+}
+.topic-carousel-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 2.5rem 0.75rem;
+}
+.topic-carousel-label{
+  font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  color:rgba(255,255,255,.65);
+}
+.carousel-arrow-btns{display:flex;gap:6px}
+.carousel-arr{
+  width:32px;height:32px;border-radius:8px;border:1.5px solid rgba(255,255,255,.3);
+  background:rgba(255,255,255,.1);color:white;font-size:14px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .18s;
+  backdrop-filter:blur(4px);flex-shrink:0;
+}
+.carousel-arr:hover{background:rgba(255,255,255,.25);border-color:rgba(255,255,255,.6)}
+.carousel-arr:disabled{opacity:.3;cursor:not-allowed}
+
+.topic-carousel-track-wrap{
+  overflow:hidden;position:relative;
+  padding:0 2.5rem;
+}
+.topic-carousel-track{
+  display:flex;gap:12px;
+  transition:transform .38s cubic-bezier(.4,0,.2,1);
+  will-change:transform;
+}
+.topic-chip{
+  flex-shrink:0;
+  display:flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,.14);
+  border:1.5px solid rgba(255,255,255,.22);
+  border-radius:12px;padding:10px 14px;
+  cursor:pointer;transition:all .2s;
+  backdrop-filter:blur(6px);
+  min-width:160px;max-width:180px;
+  animation:chipFadeIn .4s ease both;
+}
+.topic-chip:hover{
+  background:rgba(255,255,255,.26);
+  border-color:rgba(255,255,255,.5);
+  transform:translateY(-2px);
+}
+@keyframes chipFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.topic-chip-icon{font-size:22px;flex-shrink:0;line-height:1}
+.topic-chip-body{min-width:0}
+.topic-chip-name{font-size:13px;font-weight:600;color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+.topic-chip-count{font-size:11px;color:rgba(255,255,255,.65);margin-top:2px}
+.topic-chip.chip-featured{
+  border-color:rgba(255,255,255,.55);
+  background:rgba(255,255,255,.22);
+}
+.topic-chip.chip-video::after{
+  content:'▶';font-size:9px;color:rgba(255,255,255,.6);
+  margin-left:auto;padding-left:6px;flex-shrink:0;
+}
+
+/* Dots indicator */
+.carousel-dots{display:flex;justify-content:center;gap:5px;padding-top:12px}
+.cdot{
+  width:6px;height:6px;border-radius:3px;
+  background:rgba(255,255,255,.3);
+  transition:all .25s;cursor:pointer;
+}
+.cdot.active{width:18px;background:rgba(255,255,255,.85)}
+
 /* Dark mode card thumb backgrounds */
 [data-theme="dark"] .card-thumb[style*="DBEAFE"]{background:#1A2E44!important}
 [data-theme="dark"] .card-thumb[style*="EEF2FF"]{background:#1E1A3A!important}
@@ -748,6 +823,70 @@ body.is-premium .speed-select:focus {
     </div>
   </section>
 
+  <!-- TOPIC CAROUSEL -->
+  <div class="topic-carousel-wrap">
+    <div class="topic-carousel-header">
+      <span class="topic-carousel-label">Quick Access Topics</span>
+      <div class="carousel-arrow-btns">
+        <button class="carousel-arr" id="carouselPrev" onclick="carouselMove(-1)">&#9664;</button>
+        <button class="carousel-arr" id="carouselNext" onclick="carouselMove(1)">&#9654;</button>
+      </div>
+    </div>
+    <div class="topic-carousel-track-wrap" id="carouselWrap">
+      <div class="topic-carousel-track" id="carouselTrack">
+        <div class="topic-chip chip-featured chip-video" onclick="openExercise('IELTS Listening',true)">
+          <div class="topic-chip-icon">&#127891;</div>
+          <div class="topic-chip-body"><div class="topic-chip-name">IELTS Listening</div><div class="topic-chip-count">344 lessons &middot; B1&ndash;C1</div></div>
+        </div>
+        <div class="topic-chip chip-video" onclick="openExercise('Short Stories',true)">
+          <div class="topic-chip-icon">&#128214;</div>
+          <div class="topic-chip-body"><div class="topic-chip-name">Short Stories</div><div class="topic-chip-count">289 lessons &middot; A1&ndash;C1</div></div>
+        </div>
+        <div class="topic-chip chip-video" onclick="openExercise('Conversations',true)">
+          <div class="topic-chip-icon">&#128172;</div>
+          <div class="topic-chip-body"><div class="topic-chip-name">Conversations</div><div class="topic-chip-count">100 lessons &middot; A1&ndash;B1</div></div>
+        </div>
+        <div class="topic-chip chip-video" onclick="openExercise('Stories for Kids',true)">
+          <div class="topic-chip-icon">&#129498;</div>
+          <div class="topic-chip-body"><div class="topic-chip-name">Stories for Kids</div><div class="topic-chip-count">13 lessons &middot; A2&ndash;B2</div></div>
+        </div>
+        <div class="topic-chip chip-video" onclick="openExercise('TOEIC Listening',true)">
+          <div class="topic-chip-icon">&#127911;</div>
+          <div class="topic-chip-body"><div class="topic-chip-name">TOEIC Listening</div><div class="topic-chip-count">600 lessons &middot; A2&ndash;C1</div></div>
+        </div>
+        <div class="topic-chip chip-video" onclick="openExercise('Random Videos',true)">
+          <div class="topic-chip-icon">&#9654;&#65039;</div>
+          <div class="topic-chip-body"><div class="topic-chip-name">Random Videos</div><div class="topic-chip-count">181 lessons &middot; B1&ndash;C2</div></div>
+        </div>
+        <div class="topic-chip chip-video" onclick="openExercise('News',true)">
+          <div class="topic-chip-icon">&#128240;</div>
+          <div class="topic-chip-body"><div class="topic-chip-name">News</div><div class="topic-chip-count">203 lessons &middot; B1&ndash;C1</div></div>
+        </div>
+        <div class="topic-chip chip-video" onclick="openExercise('TED Talks',true)">
+          <div class="topic-chip-icon">&#127908;</div>
+          <div class="topic-chip-body"><div class="topic-chip-name">TED Talks</div><div class="topic-chip-count">90 lessons &middot; C1&ndash;C2</div></div>
+        </div>
+        <div class="topic-chip chip-video" onclick="openExercise('TOEFL Listening',true)">
+          <div class="topic-chip-icon">&#128221;</div>
+          <div class="topic-chip-body"><div class="topic-chip-name">TOEFL Listening</div><div class="topic-chip-count">54 lessons &middot; B1&ndash;C2</div></div>
+        </div>
+        <div class="topic-chip chip-video" onclick="openExercise('Medical English (OET)',true)">
+          <div class="topic-chip-icon">&#127973;</div>
+          <div class="topic-chip-body"><div class="topic-chip-name">Medical English</div><div class="topic-chip-count">80 lessons &middot; B1&ndash;C2</div></div>
+        </div>
+        <div class="topic-chip chip-video" onclick="openExercise('IPA',true)">
+          <div class="topic-chip-icon">&#128292;</div>
+          <div class="topic-chip-body"><div class="topic-chip-name">IPA</div><div class="topic-chip-count">42 lessons &middot; A1</div></div>
+        </div>
+        <div class="topic-chip chip-video" onclick="openExercise('Numbers',true)">
+          <div class="topic-chip-icon">&#128290;</div>
+          <div class="topic-chip-body"><div class="topic-chip-name">Numbers</div><div class="topic-chip-count">9 lessons &middot; A1</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-dots" id="carouselDots"></div>
+  </div>
+
   <main id="all-topics">
     <div class="section-header">
       <h2 class="section-title">All topics</h2>
@@ -786,18 +925,18 @@ body.is-premium .speed-select:focus {
   </div>
 </div>
 
-      <div class="card" data-tags="beginner intermediate advanced" onclick="openExercise('Short Stories', false)">
+      <div class="card" data-tags="beginner intermediate advanced video" onclick="openExercise('Short Stories', true)">
         <div class="card-thumb" style="background:#EEF2FF">📖</div>
         <div class="card-body">
-          <div class="card-top"><span class="card-title">Short Stories</span></div>
+          <div class="card-top"><span class="card-title">Short Stories</span><span class="badge-video">Video</span></div>
           <div class="card-meta"><strong>Levels:</strong> A1–C1<br>289 lessons</div>
         </div>
       </div>
 
-      <div class="card" data-tags="beginner" onclick="openExercise('Conversations', false)">
+      <div class="card" data-tags="beginner video" onclick="openExercise('Conversations', true)">
         <div class="card-thumb" style="background:#F0FDF4">💬</div>
         <div class="card-body">
-          <div class="card-top"><span class="card-title">Conversations</span></div>
+          <div class="card-top"><span class="card-title">Conversations</span><span class="badge-video">Video</span></div>
           <div class="card-meta"><strong>Levels:</strong> A1–B1<br>100 lessons</div>
         </div>
       </div>
@@ -810,10 +949,10 @@ body.is-premium .speed-select:focus {
         </div>
       </div>
 
-      <div class="card" data-tags="beginner intermediate advanced" onclick="openExercise('TOEIC Listening', false)">
+      <div class="card" data-tags="beginner intermediate advanced video" onclick="openExercise('TOEIC Listening', true)">
         <div class="card-thumb" style="background:#EFF6FF">🎧</div>
         <div class="card-body">
-          <div class="card-top"><span class="card-title">TOEIC Listening</span></div>
+          <div class="card-top"><span class="card-title">TOEIC Listening</span><span class="badge-video">Video</span></div>
           <div class="card-meta"><strong>Levels:</strong> A2–C1<br>600 lessons</div>
         </div>
       </div>
@@ -842,34 +981,34 @@ body.is-premium .speed-select:focus {
         </div>
       </div>
 
-      <div class="card" data-tags="intermediate advanced" onclick="openExercise('TOEFL Listening', false)">
+      <div class="card" data-tags="intermediate advanced video" onclick="openExercise('TOEFL Listening', true)">
         <div class="card-thumb" style="background:#EEF2FF">📝</div>
         <div class="card-body">
-          <div class="card-top"><span class="card-title">TOEFL Listening</span></div>
+          <div class="card-top"><span class="card-title">TOEFL Listening</span><span class="badge-video">Video</span></div>
           <div class="card-meta"><strong>Levels:</strong> B1–C2<br>54 lessons</div>
         </div>
       </div>
 
-      <div class="card" data-tags="intermediate advanced" onclick="openExercise('Medical English (OET)', false)">
+      <div class="card" data-tags="intermediate advanced video" onclick="openExercise('Medical English (OET)', true)">
         <div class="card-thumb" style="background:#ECFDF5">🏥</div>
         <div class="card-body">
-          <div class="card-top"><span class="card-title">Medical English (OET)</span></div>
+          <div class="card-top"><span class="card-title">Medical English (OET)</span><span class="badge-video">Video</span></div>
           <div class="card-meta"><strong>Levels:</strong> B1–C2<br>80 lessons</div>
         </div>
       </div>
 
-      <div class="card" data-tags="beginner" onclick="openExercise('IPA', false)">
+      <div class="card" data-tags="beginner video" onclick="openExercise('IPA', true)">
         <div class="card-thumb" style="background:#FEF3C7">🔤</div>
         <div class="card-body">
-          <div class="card-top"><span class="card-title">IPA</span></div>
+          <div class="card-top"><span class="card-title">IPA</span><span class="badge-video">Video</span></div>
           <div class="card-meta"><strong>Levels:</strong> A1<br>42 lessons</div>
         </div>
       </div>
 
-      <div class="card" data-tags="beginner" onclick="openExercise('Numbers', false)">
+      <div class="card" data-tags="beginner video" onclick="openExercise('Numbers', true)">
         <div class="card-thumb" style="background:#F5F3FF">🔢</div>
         <div class="card-body">
-          <div class="card-top"><span class="card-title">Numbers</span></div>
+          <div class="card-top"><span class="card-title">Numbers</span><span class="badge-video">Video</span></div>
           <div class="card-meta"><strong>Levels:</strong> A1<br>9 lessons</div>
         </div>
       </div>
@@ -1535,30 +1674,300 @@ async function openExercise(title, isVideo) {
     if (title === "IELTS Listening") {
       allSections = [{
         _id: "special-ielts-video",
-        title: "IELTS Listening Practice",
-        youtubeUrl: "https://youtu.be/gj1V2HOudvw",
-        segments: []  
+        title: "IELTS Listening Practice (VSTEP)",
+        youtubeUrl: "https://youtu.be/gj1V2HOudvw?list=PLzEIxlOIjMJ2ux1_5idQ3NSJOGoYAoSUY",
+        segments: [
+          { content: "Come on, Holly! We're going to be late!" },
+          { content: "Today's the day of the parking space lottery. I want to see if I get a parking space for next year." },
+          { content: "Yes, parking is very limited. Only a few students can bring their cars, and freshmen are never allowed to park on campus." },
+          { content: "No, it costs $120 a year." },
+          { content: "Hey, Lucy. Are you going to watch any of the movies at the film festival?" },
+          { content: "Aw, that's no fun. Can't you even take one night off? Your dormitory is so close to the Annenberg Center. It'll take you 5 minutes to get there." },
+          { content: "School of Rock. Have you seen it?" },
+          { content: "Well, it's a comedy and it's really funny. It's about this guy who's really trying to make it as a rock star." },
+          { content: "No, I'm on my way to the recreation center to play basketball. Want to come?" },
+          { content: "If you're a full-time student, membership is included in your tuition. Do you have your student ID card?" },
+          { content: "Yes. You can use the swimming pool, the gym, the weight room—anything you want. All you need to do is show your ID card at the door." }
+        ]
       }];
-    } 
+    }
     else if (title === "Stories for Kids") {
       allSections = [{
         _id: "special-stories-kids",
-        title: "Stories for Kids",
-        youtubeUrl: "https://youtu.be/P9iJfxDfkfQ",
-        segments: []  
+        title: "Stories for Kids — The Girl and the Ice Cream Truck",
+        youtubeUrl: "https://www.youtube.com/watch?v=1DeQVnSxcLk",
+        segments: [
+          { content: "A girl sits at her bedroom window, looking down at the street." },
+          { content: "She is waiting for summer." },
+          { content: "She wants to eat ice cream and go swimming." },
+          { content: "She wants picnics and strawberries." },
+          { content: "She is tired of winter jackets and gloves." },
+          { content: "She is tired of grey skies and snow." },
+          { content: "Her mother says that summer is far away." },
+          { content: "Her father says that more snow is coming." },
+          { content: "Still, she sits at the window, waiting for some sign that summer has arrived." },
+          { content: "Just then, she sees an ice cream truck driving down the street." },
+          { content: "That MUST mean it's summer now! she squeals." },
+          { content: "She runs to her closet and puts on her bathing suit and her summer hat." },
+          { content: "She looks down and sees her bare feet in the icy grass." },
+          { content: "She looks up just in time to see the ice cream truck turn the corner and pull into the auto repair shop." },
+          { content: "Don't draw a conclusion based on a single observation; one ice cream truck does not make a summer" }
+        ]
+      }];
+    }
+    else if (title === "Short Stories") {
+      allSections = [{
+        _id: "special-short-stories",
+        title: "Short Stories — First Time Camping",
+        youtubeUrl: "https://youtu.be/Ab1cNRnu1t8",
+        segments: [
+          { content: "Hi everyone, welcome back to the Five Minute English Podcast. I'm Jessica, and today I want to share a story about something I'll never forget: my first time going camping." },
+          { content: "It happened about 2 years ago with my best friends from university. We wanted to do something fun and different during our summer break, so we decided to go camping in the mountains, about 3 hours from the city." },
+          { content: "I had never been camping before, so I was super excited and a little nervous, too." },
+          { content: "When we arrived, the air felt so fresh and everything was so quiet. There were green trees everywhere, and we could hear birds singing in the distance." },
+          { content: "We found a nice flat spot near a small river and started setting up our tents. At first, we thought it would be easy, but it was not easy at all." },
+          { content: "The wind kept blowing our tent down and we couldn't stop laughing. It took us almost an hour to get it right." },
+          { content: "After that, we built a small campfire and cooked some simple food: noodles, sausages, and marshmallows." },
+          { content: "It wasn't anything fancy, but I swear it was one of the best meals I've ever had." },
+          { content: "When the sun went down, we sat around the fire, told stories, and sang songs together." },
+          { content: "The best part was looking up at the night sky. It was full of stars. I had never seen so many stars in my life." },
+          { content: "It made me feel tiny but so peaceful at the same time." },
+          { content: "The next morning, I woke up early to the sound of birds. The air was cold, but it felt fresh and clean." },
+          { content: "We made coffee, took some photos, and just enjoyed the quiet morning before packing everything up." },
+          { content: "Of course, we made sure to clean the place before leaving. We wanted to keep the mountain beautiful." },
+          { content: "That trip taught me a lot: how to work together, how to stay calm when things go wrong, and how amazing it feels to be close to nature." }
+        ]
+      }];
+    }
+    else if (title === "Conversations") {
+      allSections = [{
+        _id: "special-conversations",
+        title: "Conversations — Amy & Todd",
+        youtubeUrl: "https://youtu.be/ObDFSlEh1Aw",
+        segments: [
+          { content: "So, Todd, where are you from?" },
+          { content: "I am from the US. I am from San Francisco; it's on the west coast." },
+          { content: "And what do you do?" },
+          { content: "I'm an English teacher. Also, I create ELLLO, so I work on ELLLO a lot." },
+          { content: "How old are you?" },
+          { content: "I am 47." },
+          { content: "Who is your best friend?" },
+          { content: "My best friend is Don. He is a teacher too; he lives in America." },
+          { content: "And are you married?" },
+          { content: "No, I am not married. I am still single." },
+          { content: "Where is your mom from?" },
+          { content: "My mom is from California. She is from Los Angeles." },
+          { content: "She is a manager. She works in a clothing store." },
+          { content: "My dad is from San Francisco. He met my mother in Los Angeles." },
+          { content: "He is also a manager. He works for a tree-cutting company. They cut trees." },
+          { content: "I'm from Glasgow, on the west coast of Scotland, in the United Kingdom." },
+          { content: "I teach English." },
+          { content: "Of course you can ask! I'm 34." },
+          { content: "Well, she's retired now, but she was a nurse." },
+          { content: "He's also retired, but he used to be a teacher." }
+        ]
+      }];
+    }
+    else if (title === "TOEIC Listening") {
+      allSections = [{
+        _id: "special-toeic",
+        title: "TOEIC Listening — Daily Routines",
+        youtubeUrl: "https://www.youtube.com/watch?v=27IphexD2QM",
+        segments: [
+          { content: "What do you do in the morning?" },
+          { content: "I wake up, I take a shower, I get dressed, and I eat breakfast." },
+          { content: "I get up at 6:00." },
+          { content: "I know. I like mornings, though." },
+          { content: "What do you do during the day?" },
+          { content: "Well, I go to school. I teach students." },
+          { content: "I teach maths. What do you do?" },
+          { content: "I work at a bike shop." },
+          { content: "I fix and sell bikes." },
+          { content: "What do you do at lunch?" },
+          { content: "I eat with my friends. And you?" },
+          { content: "I eat in the park." },
+          { content: "Yeah, I like to read on my lunch break." },
+          { content: "I read about history." },
+          { content: "What do you do on the weekend?" },
+          { content: "I play sports at the park. How about you?" },
+          { content: "I study at the library." },
+          { content: "I play soccer with my friends." }
+        ]
+      }];
+    }
+    else if (title === "Random Videos") {
+      allSections = [{
+        _id: "special-random-videos",
+        title: "Random Videos — Regular People",
+        youtubeUrl: "https://www.youtube.com/watch?v=Jd_zBzi8vpY",
+        segments: [
+          { content: "Hard to get good help. In fact, your mother asked me to come up here and kill you." },
+          { content: "How do you expect to get into college with grades like this?" },
+          { content: "No problem. See, I'm not going to college." },
+          { content: "I'm gonna get through high school and then get a job like regular people." },
+          { content: "Yeah, you know, work in the gas station, drive a bus, something like that." },
+          { content: "So what you're saying is your mother and I shouldn't care if you get D's because you don't need good grades to be regular people." },
+          { content: "All right, I'm going to give you $300 a week." },
+          { content: "$300 a week, $1,200 a month." },
+          { content: "Yes, you will. And I will take $350 for taxes." },
+          { content: "Now, you've got to have an apartment because you are not going to live here." },
+          { content: "All right, live in New Jersey. You've got to have a car." },
+          { content: "Figure $100 a month for clothes and shoes." },
+          { content: "You haven't eaten yet." },
+          { content: "I can get by on bologna and cereal. So I got everything I need plus $200 for the month." },
+          { content: "You plan to have a girlfriend?" }
+        ]
+      }];
+    }
+    else if (title === "News") {
+      allSections = [{
+        _id: "special-news",
+        title: "News — Social Media & Children",
+        youtubeUrl: "https://www.youtube.com/watch?v=2FZEznNC-Fs",
+        segments: [
+          { content: "A group of senior doctors in the UK say that time spent on screens and social media harms children." },
+          { content: "The UK government is considering how to deal with concerns about the impacts of social media on teenagers." },
+          { content: "Banning social media for under 16s, as has already happened in Australia, is one of the options being discussed." },
+          { content: "The senior doctors from the Academy of Medical Royal Colleges compared social media to smoking." },
+          { content: "It's difficult to prove that social media directly causes harm, but it has been linked to problems like anxiety and poor wellbeing in some studies." },
+          { content: "'Overwhelming consensus' that screen time harms children, top doctors say." },
+          { content: "Consensus means an agreement or decision by a group of people." },
+          { content: "An overwhelming consensus means that in a group of people, pretty much everyone agrees." },
+          { content: "If you are behind the curve, you are not acting quickly enough to deal with a particular change or trend." },
+          { content: "The phrase 'nothing is off the table' means that all options are still on the table, they're still being considered, and no decisions have been made yet." },
+          { content: "UK technology secretary Liz Kendall has said new measures for under 16s will be brought in by the end of 2026." }
+        ]
+      }];
+    }
+    else if (title === "TED Talks") {
+      allSections = [{
+        _id: "special-ted-talks",
+        title: "TED Talks — Social Health",
+        youtubeUrl: "https://www.youtube.com/watch?v=LpSDuDIaBGk",
+        segments: [
+          { content: "By thinking of our health as primarily physical and mental, we overlook what I believe is the greatest challenge and the greatest opportunity of our time: social health." },
+          { content: "While physical health is about our bodies and mental health is about our minds, social health is about our relationships." },
+          { content: "Globally, one in four people feel lonely. And 20 percent of adults worldwide don't feel like they have anyone they can reach out to for support." },
+          { content: "Disconnection triggers stress in the body. It weakens people's immune systems. It puts them at a greater risk of stroke, heart disease, diabetes, dementia, depression and early death." },
+          { content: "Being socially healthy is about having the right quantity and quality of connection for you." },
+          { content: "Aim to interact with five different people each week, to strengthen at least three close relationships overall, and to spend one hour a day connecting." },
+          { content: "Research has shown that interacting with a variety of people is more rewarding." },
+          { content: "People who just smiled, made eye contact and chit-chatted with a barista, felt happier and a greater sense of belonging than people who just rushed to get their coffee and go." },
+          { content: "Studies have shown that face-to-face is ideal, so do that whenever possible. But there are absolutely still benefits to staying connected virtually." },
+          { content: "Adults in the US spend an average of 4.5 hours each day on their smartphones." },
+          { content: "So instead of scrolling on social media, text a friend. Instead of reading news headlines, write a thank-you card. Instead of listening to a podcast, call a family member." },
+          { content: "Be proactive and intentional about your social health." }
+        ]
+      }];
+    }
+    else if (title === "TOEFL Listening") {
+      allSections = [{
+        _id: "special-toefl",
+        title: "TOEFL Listening — The Great Winds Book Discussion",
+        youtubeUrl: "https://www.youtube.com/watch?v=YP3_xRpV2zc",
+        segments: [
+          { content: "All right, Liam, thanks for meeting up. So how are you feeling about The Great Winds so far?" },
+          { content: "Honestly, it's been a little dense. The language is beautiful, but some parts are hard to follow." },
+          { content: "I get that. I had to reread a few sections, especially the second chapter. The pacing is slow, but I think the author does that on purpose." },
+          { content: "Yeah, it gives you more time to absorb the descriptions and atmosphere." },
+          { content: "And the setting is almost like a character itself. The winds play such a huge role." },
+          { content: "It's interesting how the wind reflects the character's emotions." },
+          { content: "Like when Clara feels trapped, the wind outside is howling and relentless." },
+          { content: "And when she has a moment of clarity at the end of chapter 3, the wind calms. It's such a strong symbol." },
+          { content: "She's complex, which makes her interesting, but her indecision drives me crazy." },
+          { content: "She's stuck between her family's expectations and her own desires—something a lot of people go through." },
+          { content: "That's why the garden scene stood out to me. When he and Clara talked there, they both finally open up." },
+          { content: "I think the wilting flowers represent how their dreams are withering, or maybe how fragile their relationship is." },
+          { content: "I think the mirrors represent self-reflection. Every time a character looks in a mirror, they have to face who they really are." },
+          { content: "I think Clara will finally make a bold decision, but it might come at a cost." }
+        ]
+      }];
+    }
+    else if (title === "Medical English (OET)") {
+      allSections = [{
+        _id: "special-medical",
+        title: "Medical English — Doctor Appointments in the US",
+        youtubeUrl: "https://youtu.be/fQgnwZ04aoU",
+        segments: [
+          { content: "Today, we're going to talk about doctors and appointments." },
+          { content: "Every time I have to go to the doctor, I get a little bit nervous, but that's okay." },
+          { content: "First of all, it's important to talk about health insurance in the US." },
+          { content: "Most people have insurance because, without it, the cost of getting medical treatment can be astronomical." },
+          { content: "If you're single and you're just insuring yourself, the average cost per month is around $300." },
+          { content: "However, if you're insuring a family, it can be over $1,000 per month." },
+          { content: "Even though you pay all this money for your monthly premium, you still have to pay more money when you actually go to the doctor's office." },
+          { content: "If something serious happens—say you get in an accident—your hospital bills could be tens of thousands of dollars if you don't have insurance." },
+          { content: "When you go to a new doctor for the first time, the receptionist usually gives you a long form to fill out." },
+          { content: "You have to write down your medical history, your insurance information, and things like that." },
+          { content: "Before you see the doctor, a nurse will usually measure your height, weight, and blood pressure." },
+          { content: "Usually, you'll have about a 15-minute consultation with the doctor, and hopefully, it's productive." },
+          { content: "The doctor might write you a prescription if you need to pick up medication at the pharmacy." },
+          { content: "If you need to see a specialist, the doctor will refer you to one, and then you'll set up an appointment with them." }
+        ]
+      }];
+    }
+    else if (title === "IPA") {
+      allSections = [{
+        _id: "special-ipa",
+        title: "IPA — Short Vowel /ɪ/",
+        youtubeUrl: "https://www.youtube.com/watch?v=TNFKG0yvDx4",
+        segments: [
+          { content: "This is a short vowel sound. It's pronounced /ɪ/." },
+          { content: "Now here are some words which have this sound: kit, bid, hymn, minute." },
+          { content: "For speakers of some languages, it may be difficult to tell the difference between this vowel — the short vowel /ɪ/ — and another sound, the long vowel /iː/." },
+          { content: "Listen carefully to hear the difference between the two." },
+          { content: "In each pair of examples, I'll say the short sound /ɪ/ first:" },
+          { content: "hit, heat" },
+          { content: "lip, leap" },
+          { content: "sick, seek" },
+          { content: "will, wheel" }
+        ]
+      }];
+    }
+    else if (title === "Numbers") {
+      allSections = [{
+        _id: "special-numbers",
+        title: "Numbers — Ages, Time & Quantities",
+        youtubeUrl: "https://youtu.be/LDeSv6fTIiU",
+        segments: [
+          { content: "She's 32." },
+          { content: "She's 57." },
+          { content: "I'm 29 years old." },
+          { content: "She's 47 years old." },
+          { content: "She's 21 and she's a nurse." },
+          { content: "I'm 34." },
+          { content: "He is 27 and he is Polish." },
+          { content: "I'm 45." },
+          { content: "He's 40." },
+          { content: "I'm 35 years old and I'm a waiter." },
+          { content: "Daniel's Irish and he's 28." },
+          { content: "Lily's 16 and she's from Brighton." },
+          { content: "Is it 8 o'clock?" },
+          { content: "It's half past six." },
+          { content: "It's quarter past three." },
+          { content: "It's half past nine." },
+          { content: "We have 60 DVDs." },
+          { content: "72 floors." },
+          { content: "Go to page 84." }
+        ]
       }];
     }
 
-    // Tự động vào Stage 1 cho các bài Video đặc biệt
-    if (title === "IELTS Listening" || title === "Stories for Kids") {
-      currentTopicIsVideo = true;
-      window.currentIsVideo = true;
+    // Tự động vào Stage 1 cho tất cả bài Video đặc biệt
+    const specialVideoTopics = [
+      "IELTS Listening", "Stories for Kids", "Short Stories", "Conversations",
+      "TOEIC Listening", "Random Videos", "News", "TED Talks",
+      "TOEFL Listening", "Medical English (OET)", "IPA", "Numbers"
+    ];
+    if (specialVideoTopics.includes(title)) {
+      currentTopicIsVideo = isVideo;
+      window.currentIsVideo = isVideo;
       
       document.getElementById('sections-container').innerHTML = 
-        buildStageList(title, true) + buildSpeedBar(true);
+        buildStageList(title, isVideo) + buildSpeedBar(isVideo);
       
       setTimeout(() => {
-        enterStage(0, true);
+        enterStage(0, isVideo);
       }, 300);
       
       return;
@@ -2181,12 +2590,12 @@ function disableMobilePreview() {
       if (currentSegment && currentSegment.content) {
 
         const normalizedAnswer =
-          answer.trim().toLowerCase();
+          answer.trim().toLowerCase().replace(/[.,!?;:'"]/g, '').replace(/\s+/g, ' ');
 
         const normalizedSegment =
           currentSegment.content
             .trim()
-            .toLowerCase();
+            .toLowerCase().replace(/[.,!?;:'"]/g, '').replace(/\s+/g, ' ');
 
         const isCorrect =
           normalizedAnswer ===
@@ -2197,73 +2606,57 @@ function disableMobilePreview() {
             "attemptResult"
           );
 
+        const nextBtn =
+          document.getElementById("nextSegmentBtn");
+
         if (isCorrect) {
 
           resultDiv.innerHTML = `
             <div style="
-              padding:14px;
-              border-radius:10px;
+              padding:16px;
+              border-radius:12px;
               background:#f0fdf4;
               margin-top:10px;
               border:1px solid #bbf7d0;
+              display:flex;align-items:center;gap:10px;
             ">
-              <div class="result-correct">
-                ✅ Correct!
-              </div>
-              <div style="font-size:13px;color:var(--text-secondary);margin-top:4px">
-                "${currentSegment.content}"
+              <span style="font-size:28px">✅</span>
+              <div>
+                <div style="font-weight:700;font-size:16px;color:#15803d">Correct!</div>
+                <div style="font-size:13px;color:var(--text-secondary);margin-top:2px">${currentSegment.content}</div>
               </div>
             </div>
           `;
 
-          answerInput.classList.remove(
-            "input-shake"
-          );
-
-          const nextBtn =
-            document.getElementById(
-              "nextSegmentBtn"
-            );
-
-          if (nextBtn) {
-            nextBtn.classList.add("show");
-          }
-
+          answerInput.classList.remove("input-shake");
+          if (nextBtn) nextBtn.classList.add("show");
           setButtonsDisabled(false);
 
         } else {
 
           resultDiv.innerHTML = `
             <div style="
-              padding:14px;
-              border-radius:10px;
+              padding:16px;
+              border-radius:12px;
               background:#fef2f2;
               margin-top:10px;
               border:1px solid #fecaca;
+              display:flex;align-items:center;gap:10px;
             ">
-              <div class="result-wrong">
-                ❌ Not correct. Try again!
-              </div>
-              <div style="font-size:13px;color:var(--text-secondary);margin-top:4px">
-                Expected: "${currentSegment.content}"
+              <span style="font-size:28px">❌</span>
+              <div style="flex:1">
+                <div style="font-weight:700;font-size:16px;color:#dc2626">Fail!</div>
+                <div style="font-size:13px;color:var(--text-secondary);margin-top:2px">
+                  Đáp án: <em>${currentSegment.content}</em>
+                </div>
               </div>
             </div>
           `;
 
-          answerInput.classList.add(
-            "input-shake"
-          );
+          answerInput.classList.add("input-shake");
+          setTimeout(() => answerInput.classList.remove("input-shake"), 500);
 
-          setTimeout(() => {
-
-            answerInput.classList.remove(
-              "input-shake"
-            );
-          }, 500);
-
-          answerInput.value = "";
-          answerInput.focus();
-
+          if (nextBtn) nextBtn.classList.add("show");
           setButtonsDisabled(false);
         }
 
@@ -2350,6 +2743,88 @@ function nextItemAnimated() {
   nextItem();
 }
 
+// ==================== TOPIC CAROUSEL ====================
+(function(){
+  let carouselIndex = 0;
+  let chipWidth = 0;
+  let visibleCount = 0;
+  let totalChips = 0;
+  let maxIndex = 0;
+
+  function initCarousel() {
+    const track = document.getElementById('carouselTrack');
+    const wrap = document.getElementById('carouselWrap');
+    if (!track || !wrap) return;
+    const chips = track.querySelectorAll('.topic-chip');
+    totalChips = chips.length;
+    if (!totalChips) return;
+
+    // Measure chip + gap
+    const gap = 12;
+    chipWidth = chips[0].getBoundingClientRect().width + gap;
+    const wrapWidth = wrap.getBoundingClientRect().width;
+    visibleCount = Math.max(1, Math.floor((wrapWidth + gap) / chipWidth));
+    maxIndex = Math.max(0, totalChips - visibleCount);
+
+    buildDots();
+    updateCarousel(false);
+  }
+
+  function buildDots() {
+    const dotsEl = document.getElementById('carouselDots');
+    if (!dotsEl) return;
+    const pages = maxIndex + 1;
+    dotsEl.innerHTML = '';
+    for (let i = 0; i < pages; i++) {
+      const d = document.createElement('div');
+      d.className = 'cdot' + (i === 0 ? ' active' : '');
+      d.onclick = (function(idx){ return function(){ carouselIndex = idx; updateCarousel(true); }; })(i);
+      dotsEl.appendChild(d);
+    }
+  }
+
+  function updateCarousel(animate) {
+    const track = document.getElementById('carouselTrack');
+    if (!track) return;
+    carouselIndex = Math.max(0, Math.min(carouselIndex, maxIndex));
+    const offset = carouselIndex * chipWidth;
+    if (!animate) track.style.transition = 'none';
+    track.style.transform = 'translateX(-' + offset + 'px)';
+    if (!animate) { void track.offsetWidth; track.style.transition = ''; }
+
+    // Update arrows
+    const prev = document.getElementById('carouselPrev');
+    const next = document.getElementById('carouselNext');
+    if (prev) prev.disabled = carouselIndex <= 0;
+    if (next) next.disabled = carouselIndex >= maxIndex;
+
+    // Update dots
+    const dots = document.querySelectorAll('.cdot');
+    dots.forEach(function(d, i){ d.classList.toggle('active', i === carouselIndex); });
+  }
+
+  window.carouselMove = function(dir) {
+    carouselIndex += dir;
+    updateCarousel(true);
+  };
+
+  // Init on load and resize
+  window.addEventListener('load', initCarousel);
+  window.addEventListener('resize', function(){ carouselIndex = 0; initCarousel(); });
+
+  // Touch/swipe support
+  let touchStartX = 0;
+  document.addEventListener('DOMContentLoaded', function(){
+    const wrap = document.getElementById('carouselWrap');
+    if (!wrap) return;
+    wrap.addEventListener('touchstart', function(e){ touchStartX = e.touches[0].clientX; }, {passive:true});
+    wrap.addEventListener('touchend', function(e){
+      const dx = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(dx) > 40) { carouselIndex += dx > 0 ? 1 : -1; updateCarousel(true); }
+    }, {passive:true});
+  });
+})();
+
 function updateCounter() {
   const total = window.currentSections ? window.currentSections.length : 1;
   let text = `${currentQuestionIndex + 1} / ${total}`;
@@ -2391,7 +2866,7 @@ function prevItem() {
     // Chuyển segment trước
     currentSegmentIndex--;
     loadCurrentSegment();
-  } else if (currentQuestionIndex > 0) {
+  } else if (currentQuestionIndex > 0) { 
     // Chuyển bài trước
     prevQuestion(window.currentIsVideo || false);
   }

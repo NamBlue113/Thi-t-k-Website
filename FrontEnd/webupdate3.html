@@ -635,6 +635,7 @@ body.is-premium .speed-select:focus {
   background: var(--bg);
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <script src="https://www.youtube.com/iframe_api"></script>
 <body>
@@ -2910,59 +2911,54 @@ async function aicSend() {
   const input = document.getElementById('aicInput');
   const sendBtn = document.getElementById('aicSendBtn');
   const text = input.value.trim();
+  
   if (!text || aicIsTyping) return;
 
-  // Add user message
   aicAddMessage('user', text.replace(/</g, '&lt;').replace(/>/g, '&gt;'));
   aicMessages.push({ role: 'user', content: text });
+
   input.value = '';
   input.style.height = 'auto';
-
-  // Hide chips
   document.getElementById('aicChips').style.display = 'none';
 
-  // Show typing
   aicIsTyping = true;
   sendBtn.disabled = true;
   aicShowTyping();
 
   try {
-    const systemPrompt = `You are a friendly and knowledgeable AI English Tutor specializing in IELTS preparation, grammar, vocabulary, and speaking skills. 
-- Answer clearly and concisely (keep responses under 150 words unless a detailed explanation is truly needed)
-- Use **bold** for key terms
-- Give practical examples when helpful
-- Be encouraging and supportive
-- Always respond in English, even if the user writes in another language
-- Focus on actionable advice for English learners`;
-
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: systemPrompt,
-        messages: aicMessages
-      })
+    // Dùng axios trực tiếp + full URL
+    const response = await axios.post('http://localhost:5000/api/chat', {
+      message: text
     });
 
-    const data = await response.json();
     aicRemoveTyping();
 
-    const replyText = data.content?.[0]?.text || 'Sorry, I could not get a response. Please try again.';
-    aicMessages.push({ role: 'assistant', content: replyText });
-    aicAddMessage('bot', aicFormatResponse(replyText));
+    if (response.data.success && response.data.data?.reply) {
+      const reply = response.data.data.reply;
+      aicMessages.push({ role: 'assistant', content: reply });
+      aicAddMessage('bot', aicFormatResponse(reply));
+    } else {
+      aicAddMessage('bot', '⚠️ ' + (response.data.message || 'Lỗi server'));
+    }
 
   } catch (err) {
+    console.error('AI Chat Error:', err);
     aicRemoveTyping();
-    aicAddMessage('bot', '⚠️ Connection error. Please check your network and try again.');
-    console.error('AI Chat error:', err);
+    
+    let errorMsg = '❌ Không thể kết nối với AI Tutor. Kiểm tra backend đang chạy chưa?';
+    if (err.response) {
+      errorMsg = `❌ Lỗi ${err.response.status}: ${err.response.data?.message || ''}`;
+    } else if (err.request) {
+      errorMsg = '❌ Backend không phản hồi. Kiểm tra server có đang chạy ở port 5000 không?';
+    }
+    aicAddMessage('bot', errorMsg);
   } finally {
     aicIsTyping = false;
     sendBtn.disabled = false;
   }
 }
-</script>
 
-</body>
+</script>
+</body> 
 </html>
+ 

@@ -28,7 +28,7 @@ export default function ResultDisplay({ result }) {
       <div className="result-wrong">❌ Not correct. Try again!</div>
       {result.expected && (
         <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>
-          Expected: "{result.expected}"
+          Hint: "{result.masked || result.expected}"
         </div>
       )}
     </div>

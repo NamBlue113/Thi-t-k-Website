@@ -24,6 +24,10 @@ const transactionSchema = new mongoose.Schema(
             type: Number,
             required: true,
         },
+        transferContent: {
+            type: String,
+            default: "",
+        },
         status: {
             type: String,
             enum: ["pending", "approved", "rejected"],

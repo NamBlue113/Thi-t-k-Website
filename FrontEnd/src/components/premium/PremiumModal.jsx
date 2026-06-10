@@ -37,11 +37,11 @@ const BANK_INFO = {
   bank: 'BIDV (Ngân hàng Thương Mại CP đầu tư và phát triển)',
   account: '5601997860',
   holder: 'NGUYEN HOAI NAM',
-  content: 'Nâng cấp {plan}',
+  content: '{userId} nâng cấp {plan}',
 };
 
 export default function PremiumModal({ open, onClose, lockedContent = '' }) {
-  const { isPremium } = useAuth();
+  const { isPremium, user } = useAuth();
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [requesting, setRequesting] = useState(false);
   const [requestMsg, setRequestMsg] = useState('');
@@ -111,7 +111,7 @@ export default function PremiumModal({ open, onClose, lockedContent = '' }) {
                 <strong>Ngân hàng:</strong> {BANK_INFO.bank}<br />
                 <strong>Số TK:</strong> {BANK_INFO.account}<br />
                 <strong>Chủ TK:</strong> {BANK_INFO.holder}<br />
-                <strong>Nội dung CK:</strong> <span style={{ color: 'var(--blue)', fontWeight: 600 }}>{BANK_INFO.content.replace('{plan}', selectedPlan === 'premium' ? 'PREMIUM' : 'PREMIUM+')}</span>
+                <strong>Nội dung CK:</strong> <span style={{ color: 'var(--blue)', fontWeight: 600 }}>{BANK_INFO.content.replace('{userId}', user?._id || 'ID').replace('{plan}', selectedPlan === 'premium' ? 'premium' : 'premium+')}</span>
               </div>
             </div>
 

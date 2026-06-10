@@ -8,7 +8,7 @@ import AudioPlayer from './AudioPlayer';
 import AnswerInput from './AnswerInput';
 import ResultDisplay from './ResultDisplay';
 import SegmentPlayer from './SegmentPlayer';
-import { normalizeText } from '../../utils/helpers';
+import { normalizeText, maskAnswer } from '../../utils/helpers';
 
 export default function ExercisePlayer({
   section,
@@ -39,7 +39,8 @@ export default function ExercisePlayer({
         setResult({ correct: true, expected: currentSegment.content });
         setShowNextSegment(true);
       } else {
-        setResult({ correct: false, expected: currentSegment.content });
+        const masked = maskAnswer(currentSegment.content, answer);
+        setResult({ correct: false, expected: currentSegment.content, masked });
       }
       setSubmitting(false);
       return;
@@ -52,7 +53,8 @@ export default function ExercisePlayer({
     if (normExpected && normAnswer === normExpected) {
       setResult({ correct: true, expected: section.correctAnswer });
     } else if (normExpected) {
-      setResult({ correct: false, expected: section.correctAnswer });
+      const masked = maskAnswer(section.correctAnswer, answer);
+      setResult({ correct: false, expected: section.correctAnswer, masked });
     } else {
       setResult({ correct: false, expected: 'No answer key' });
     }

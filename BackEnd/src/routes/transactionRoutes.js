@@ -6,6 +6,7 @@ const {
     getPending,
     approveTransaction,
     rejectTransaction,
+    processWebhook,
 } = require("../controllers/transactionController");
 
 const authMiddleware = require("../middleware/authMiddleware");
@@ -22,5 +23,8 @@ router.post("/approve/:id", authMiddleware, adminMiddleware, approveTransaction)
 
 // ADMIN: từ chối
 router.post("/reject/:id", authMiddleware, adminMiddleware, rejectTransaction);
+
+// WEBHOOK: auto-process transfer from bank notification (public endpoint)
+router.post("/webhook", processWebhook);
 
 module.exports = router;

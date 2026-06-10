@@ -9,7 +9,7 @@ import { useAuth } from '../context/AuthContext';
 import { lessonService } from '../services/lessonService';
 import { attemptService } from '../services/attemptService';
 import { noteService } from '../services/noteService';
-import { normalizeText, extractYoutubeId } from '../utils/helpers';
+import { normalizeText, extractYoutubeId, maskAnswer } from '../utils/helpers';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import ErrorMessage from '../components/ui/ErrorMessage';
 
@@ -235,7 +235,9 @@ export default function ExercisePage({ onOpenPremium }) {
         });
       } catch { /* silent */ }
     } else {
-      setResult({ correct: false, expected: seg.content });
+      // Mask: show correct words, hide everything from first error onward
+      const masked = maskAnswer(seg.content, answer.trim());
+      setResult({ correct: false, expected: seg.content, masked });
     }
 
     setSubmitting(false);
@@ -296,7 +298,16 @@ export default function ExercisePage({ onOpenPremium }) {
       setNoteMsg(`✅ Đã lưu: ${label}`);
       setNoteOpen(false);
     } catch (err) {
-      setNoteMsg('❌ ' + (err.response?.data?.message || 'Lỗi'));
+      const status = err.response?.status;
+      if (status === 401) {
+        setNoteMsg('⚠️ Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+      } else if (status >= 500) {
+        setNoteMsg('⚠️ Lỗi máy chủ. Vui lòng thử lại sau.');
+      } else if (status === 400) {
+        setNoteMsg('⚠️ ' + (err.response?.data?.message || 'Dữ liệu không hợp lệ'));
+      } else {
+        setNoteMsg('❌ ' + (err.response?.data?.message || 'Lỗi khi lưu ghi chú'));
+      }
     } finally {
       setNoteSaving(false);
       setTimeout(() => setNoteMsg(''), 3000);
@@ -529,7 +540,7 @@ export default function ExercisePage({ onOpenPremium }) {
                     padding: '14px 18px', borderRadius: 10,
                     fontSize: 14, fontWeight: 500
                   }}>
-                    ❌ Chưa đúng. Đáp án: <span style={{ fontWeight: 600 }}>{result.expected}</span>
+                    ❌ Chưa đúng. Gợi ý: <span style={{ fontWeight: 600 }}>{result.masked || '***'}</span>
                   </div>
                 )}
                 {!allDone && (

@@ -4,7 +4,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { topicService } from '../services/topicService';
 import { attemptService } from '../services/attemptService';
-import { normalizeText } from '../utils/helpers';
+import { normalizeText, maskAnswer } from '../utils/helpers';
 
 export function useExercise() {
   const [sections, setSections] = useState([]);
@@ -73,8 +73,9 @@ export function useExercise() {
         setResult({ correct: true, status: 'correct', score: 100 });
         return { correct: true };
       } else if (normalizedExpected) {
-        setResult({ correct: false, status: 'wrong', expected: currentSection.correctAnswer });
-        return { correct: false, expected: currentSection.correctAnswer };
+        const masked = maskAnswer(currentSection.correctAnswer, answer);
+        setResult({ correct: false, status: 'wrong', expected: currentSection.correctAnswer, masked });
+        return { correct: false, expected: currentSection.correctAnswer, masked };
       }
     } finally {
       setSubmitting(false);

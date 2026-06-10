@@ -20,6 +20,52 @@ export function normalizeText(text) {
 }
 
 /**
+ * Mask incorrect answer word-by-word from left to right.
+ * Correct words are shown as-is. From the first mismatched word onward,
+ * all remaining words are replaced with '*' matching the original word's
+ * character count.
+ *
+ * Example:
+ *   maskAnswer("What do you do in the morning", "What are you doing")
+ *   → "What ** *** ** ** *** *******"
+ *
+ * Edge cases:
+ *   - User types fewer words than correct → remaining words masked
+ *   - User types more words → extra words ignored (only correct length used)
+ *   - Empty answer → all words masked
+ *
+ * Designed for extensibility — color highlighting, per-word hints, and
+ * Easy/Normal/Hard difficulty modes can be built on top of this function.
+ */
+export function maskAnswer(correctAnswer, userAnswer) {
+  if (!correctAnswer) return '';
+
+  const correctWords = correctAnswer.trim().split(/\s+/);
+  const userWords = (userAnswer || '').trim().split(/\s+/);
+
+  const displayWords = [];
+  let mismatchFound = false;
+
+  for (let i = 0; i < correctWords.length; i++) {
+    if (!mismatchFound && i < userWords.length) {
+      const normCorrect = normalizeText(correctWords[i]);
+      const normUser = normalizeText(userWords[i]);
+
+      if (normCorrect === normUser) {
+        displayWords.push(correctWords[i]);
+      } else {
+        mismatchFound = true;
+        displayWords.push('*'.repeat(correctWords[i].length));
+      }
+    } else {
+      displayWords.push('*'.repeat(correctWords[i].length));
+    }
+  }
+
+  return displayWords.join(' ');
+}
+
+/**
  * Get CSS color for a topic thumbnail based on index
  */
 const THUMB_COLORS = [

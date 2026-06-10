@@ -23,12 +23,16 @@ const requestUpgrade = asyncHandler(async (req, res) => {
         return errorResponse(res, "Bạn đã có một yêu cầu đang chờ duyệt. Vui lòng chờ Admin xử lý.", 400);
     }
 
+    // Tạo nội dung chuyển khoản có chứa USER_ID để đối soát
+    const transferContent = `${req.user._id} nâng cấp ${packageType.replace("_", "+")}`;
+
     const transaction = await Transaction.create({
         userId: req.user._id,
         username: req.user.username,
         email: req.user.email,
         packageType,
         amount,
+        transferContent,
         status: "pending",
     });
 
@@ -83,4 +87,66 @@ const rejectTransaction = asyncHandler(async (req, res) => {
     return successResponse(res, transaction, "Transaction rejected");
 });
 
-module.exports = { requestUpgrade, getPending, approveTransaction, rejectTransaction };
+// WEBHOOK: Tự động xử lý thanh toán từ nội dung chuyển khoản
+// Dùng cho integration với cổng thanh toán / bank notification
+const processWebhook = asyncHandler(async (req, res) => {
+    const { transferContent, amount } = req.body;
+
+    if (!transferContent) {
+        return errorResponse(res, "transferContent is required", 400);
+    }
+
+    // Parse: "{USER_ID} nâng cấp premium" hoặc "{USER_ID} nâng cấp premium+"
+    const match = transferContent.match(/^(\S+)\s+nâng cấp\s+(.+)$/i);
+    if (!match) {
+        console.error(`[Webhook] Cannot parse transfer content: "${transferContent}"`);
+        return errorResponse(res, "Invalid transfer content format. Cannot extract USER_ID.", 400);
+    }
+
+    const userId = match[1];
+    const planRaw = match[2].toLowerCase().replace(/\s+/g, "_");
+
+    let packageType;
+    if (planRaw === "premium") {
+        packageType = "premium";
+    } else if (planRaw === "premium+") {
+        packageType = "premium_plus";
+    } else {
+        console.error(`[Webhook] Unknown plan in transfer: "${transferContent}"`);
+        return errorResponse(res, `Unknown plan type: "${match[2]}"`, 400);
+    }
+
+    // Kiểm tra userId hợp lệ
+    const mongoose = require("mongoose");
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+        console.error(`[Webhook] Invalid USER_ID: "${userId}"`);
+        return errorResponse(res, "Invalid USER_ID in transfer content", 400);
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+        console.error(`[Webhook] User not found: "${userId}"`);
+        return errorResponse(res, "User not found", 404);
+    }
+
+    // Tạo transaction record
+    const transaction = await Transaction.create({
+        userId: user._id,
+        username: user.username,
+        email: user.email,
+        packageType,
+        amount: amount || (packageType === "premium" ? 50000 : 100000),
+        transferContent,
+        status: "approved",
+    });
+
+    // Kích hoạt tài khoản
+    user.plan = packageType;
+    await user.save();
+
+    console.log(`[Webhook] Activated ${packageType} for user ${user._id} (${user.username})`);
+
+    return successResponse(res, transaction, "Webhook processed. User plan updated.");
+});
+
+module.exports = { requestUpgrade, getPending, approveTransaction, rejectTransaction, processWebhook };

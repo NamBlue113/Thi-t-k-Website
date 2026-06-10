@@ -33,10 +33,9 @@ axiosInstance.interceptors.response.use(
       localStorage.removeItem('listeningielts-token');
       localStorage.removeItem('listeningielts-user');
       localStorage.removeItem('listeningielts-premium');
-      // Redirect to home if not already there
-      if (window.location.pathname !== '/') {
-        window.location.href = '/';
-      }
+      // Dispatch session-expired event instead of hard redirect.
+      // Each page/component can decide how to handle it (show modal, toast, etc.)
+      window.dispatchEvent(new CustomEvent('auth:session-expired'));
     }
     return Promise.reject(error);
   }

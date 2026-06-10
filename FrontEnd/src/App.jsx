@@ -65,6 +65,15 @@ function AppShell() {
     setForgotOpen(true);
   }, []);
 
+  // ── LISTEN FOR SESSION-EXPIRED: open login modal ──
+  useEffect(() => {
+    function handleSessionExpired() {
+      setLoginOpen(true);
+    }
+    window.addEventListener('auth:session-expired', handleSessionExpired);
+    return () => window.removeEventListener('auth:session-expired', handleSessionExpired);
+  }, []);
+
   // ── LISTEN FOR EXERCISE NAVIGATION FROM OTHER LESSONS ──
   useEffect(() => {
     function handleOpenExercise(e) {

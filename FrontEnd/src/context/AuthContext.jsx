@@ -14,6 +14,16 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // ── LISTEN FOR SESSION-EXPIRED EVENT (dispatched by axios interceptor) ──
+  useEffect(() => {
+    function handleSessionExpired() {
+      setToken(null);
+      setUser(null);
+    }
+    window.addEventListener('auth:session-expired', handleSessionExpired);
+    return () => window.removeEventListener('auth:session-expired', handleSessionExpired);
+  }, []);
+
   // ── AUTO-CHECK SESSION ON MOUNT ──
   useEffect(() => {
     let cancelled = false;

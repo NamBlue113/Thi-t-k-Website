@@ -71,7 +71,7 @@ export default function Navbar({ onOpenLogin, onOpenRegister, onOpenPremium }) {
         <Link to="/" className="logo" style={{ textDecoration: 'none' }}>
           <div className="logo-mark">🎧</div>
           <span className="logo-text">
-            Listening<span>IELTS</span>
+            Dictation<span>English</span>
           </span>
         </Link>
 

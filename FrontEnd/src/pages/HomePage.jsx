@@ -70,7 +70,7 @@ export default function HomePage({ onOpenPremium }) {
           Practice English with<br />
           <span>dictation exercises</span>
         </h1>
-        <p>Welcome to Listening IELTS — the app will help you improve your English listening skills.</p>
+        <p>Welcome to DictationEnglish — the app will help you improve your English listening skills.</p>
         <p>This website contains thousands of audio recordings &amp; videos to help English learners practice easily and improve quickly.</p>
         <button
           className="btn-start"

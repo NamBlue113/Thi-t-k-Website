@@ -3,6 +3,6 @@
 // ============================================
 export default function Footer() {
   return (
-    <footer>© 2026 ListeningIELTS · Luyện nghe tiếng Anh mỗi ngày</footer>
+    <footer>© 2026 DictationEnglish · Luyện nghe tiếng Anh mỗi ngày</footer>
   );
 }

@@ -15,7 +15,7 @@ export default function MobileMenu({
         <div className="mobile-menu-header">
           <div className="logo">
             <div className="logo-mark">🎧</div>
-            <span className="logo-text">Listening<span>IELTS</span></span>
+            <span className="logo-text">Dictation<span>English</span></span>
           </div>
           <button className="mobile-menu-close" onClick={onClose}>✕</button>
         </div>

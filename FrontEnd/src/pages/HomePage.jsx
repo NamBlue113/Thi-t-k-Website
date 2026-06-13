@@ -3,10 +3,11 @@
 // Hiển thị topic grid từ API /api/topics
 // Giữ nguyên HTML/CSS class từ Listening IELTS.html cũ
 // ============================================
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTopics } from '../hooks/useTopics';
+import { streakService } from '../services/streakService';
 import SearchBar from '../components/topic/SearchBar';
 import FilterTabs from '../components/topic/FilterTabs';
 import TopicGrid from '../components/topic/TopicGrid';
@@ -16,8 +17,29 @@ import ErrorMessage from '../components/ui/ErrorMessage';
 
 export default function HomePage({ onOpenPremium }) {
   const navigate = useNavigate();
-  const { isPremium } = useAuth();
+  const { isPremium, isAuthenticated } = useAuth();
   const { topics, loading, error, filter, setFilter, search, setSearch, refetch } = useTopics();
+
+  const [streak, setStreak] = useState({ currentStreak: 0, longestStreak: 0, todayDone: false });
+
+  // ── FETCH STREAK ──
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchStreak() {
+      try {
+        const { data } = await streakService.getStreak();
+        if (!cancelled && data.data) {
+          setStreak(data.data);
+        }
+      } catch {
+        // Khong co token hoac loi — giu streak = 0
+      }
+    }
+    if (isAuthenticated) {
+      fetchStreak();
+    }
+    return () => { cancelled = true; };
+  }, [isAuthenticated]);
 
   // ── SPLIT TOPICS ──
   const freeTopics = topics.filter((t) => !t.isPremium);
@@ -77,8 +99,16 @@ export default function HomePage({ onOpenPremium }) {
             <div className="stat-label">Levels</div>
           </div>
           <div className="stat">
-            <div className="stat-num">50K+</div>
-            <div className="stat-label">Students</div>
+            <div className="stat-num">
+              {isAuthenticated ? (
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                  🔥 {streak.currentStreak}
+                </span>
+              ) : (
+                '50K+'
+              )}
+            </div>
+            <div className="stat-label">{isAuthenticated ? 'Day Streak' : 'Students'}</div>
           </div>
         </div>
       </section>

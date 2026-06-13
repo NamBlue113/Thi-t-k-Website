@@ -4,6 +4,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { streakService } from '../../services/streakService';
 import { useTheme } from '../../context/ThemeContext';
 import MobileMenu from './MobileMenu';
 import PremiumBadge from '../premium/PremiumBadge';
@@ -18,6 +19,15 @@ export default function Navbar({ onOpenLogin, onOpenRegister, onOpenPremium }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef(null);
+  const [streakCount, setStreakCount] = useState(0);
+
+  // Fetch streak for navbar display
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    streakService.getStreak().then(({ data }) => {
+      if (data.data?.currentStreak) setStreakCount(data.data.currentStreak);
+    }).catch(() => {});
+  }, [isAuthenticated]);
 
   const themeRef = useRef(null);
   const otherRef = useRef(null);
@@ -118,6 +128,17 @@ export default function Navbar({ onOpenLogin, onOpenRegister, onOpenPremium }) {
 
         <div className="nav-right">
           <PremiumBadge />
+          {isAuthenticated && streakCount > 0 && (
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', gap: 4,
+              background: 'linear-gradient(135deg, #FF6B35, #F7931E)',
+              color: '#fff', fontSize: 13, fontWeight: 600,
+              padding: '4px 12px', borderRadius: 20,
+              fontFamily: 'inherit',
+            }}>
+              🔥 {streakCount}
+            </span>
+          )}
           {isAuthenticated ? (
             <div className="user-menu-wrap" ref={userMenuRef} style={{ position: 'relative' }}>
               <button

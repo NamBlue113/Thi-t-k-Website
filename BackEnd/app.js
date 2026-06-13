@@ -10,6 +10,7 @@ const speechRoutes = require("./src/routes/speechRoutes");
 const noteRoutes = require("./src/routes/noteRoutes");
 const transactionRoutes = require("./src/routes/transactionRoutes");
 const aiRoutes = require("./src/routes/aiRoutes");
+const streakRoutes = require("./src/routes/streakRoutes");
 
 const errorHandler = require("./src/middleware/errorMiddleware");
 
@@ -56,6 +57,7 @@ app.use("/api/notes", noteRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/speech", speechRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/streak", streakRoutes);
 
 app.use(errorHandler);
 

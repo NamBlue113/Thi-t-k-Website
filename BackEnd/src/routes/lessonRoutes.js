@@ -7,11 +7,11 @@ const {createLesson, getLessons, getLessonById, updateLesson, deleteLesson,} = r
 const authMiddleware = require("../middleware/authMiddleware");
 const premiumMiddleware = require("../middleware/premiumMiddleware");
 const adminMiddleware = require("../middleware/adminMiddleware");
-// Lưu ý: Giả sử bạn có middleware check admin trong authMiddleware hoặc viết riêng
+const optionalAuthMiddleware = require("../middleware/optionalAuthMiddleware");
 
-// --- NHÓM API ĐỌC (Ai cũng xem được danh sách, nhưng vào chi tiết bài VIP thì tính sau) ---
+// --- NHÓM API ĐỌC (Ai cũng xem được danh sách, nhưng vào chi tiết bài VIP thì check plan) ---
 router.get("/", getLessons);
-router.get("/:id", getLessonById); // Trong Controller của hàm này bạn sẽ check nếu bài là premium thì bắt tài khoản VIP mới cho xem dữ liệu chi tiết.
+router.get("/:id", optionalAuthMiddleware, getLessonById); // optionalAuthMiddleware giúp lấy req.user nếu có token, để controller check premium
 
 // --- NHÓM API QUẢN TRỊ (Chỉ Admin mới có quyền Thêm, Sửa, Xóa) ---
 // Bạn chèn authMiddleware để lấy thông tin user, sau đó chèn middleware check admin (ví dụ:isAdmin)

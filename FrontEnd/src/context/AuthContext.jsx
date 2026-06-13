@@ -146,6 +146,27 @@ export function AuthProvider({ children }) {
     }
   }, [user]);
 
+  // ── REFRESH USER (lay plan moi nhat tu DB sau khi nang cap) ──
+  const refreshUser = useCallback(async () => {
+    if (!token) return null;
+    try {
+      const { data } = await api.get('/auth/me');
+      const userData = data.data?.user || data.user || data.data || data;
+      if (userData) {
+        setUser(userData);
+        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(userData));
+        if (userData.plan && userData.plan !== 'free') {
+          localStorage.setItem(STORAGE_KEYS.PREMIUM, userData.plan);
+        } else {
+          localStorage.removeItem(STORAGE_KEYS.PREMIUM);
+        }
+      }
+      return userData;
+    } catch {
+      return null;
+    }
+  }, [token]);
+
   // ── DERIVED ──
   const isAuthenticated = !!user && !!token;
   const isPremium = user?.plan === 'premium' || user?.plan === 'premium_plus';
@@ -163,6 +184,7 @@ export function AuthProvider({ children }) {
     register,
     logout,
     activatePremium,
+    refreshUser,
     setError,
   };
 
